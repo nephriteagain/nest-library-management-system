@@ -13,6 +13,8 @@ import { BooksService } from './books.service';
 import type { Book } from 'src/types/models';
 import { Document, ObjectId } from 'mongoose';
 import { Response } from 'express';
+import { UseGuards } from '@nestjs/common';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('books')
 export class BooksController {
@@ -45,7 +47,7 @@ export class BooksController {
         }
         return res.status(HttpStatus.NOT_FOUND);
     }
-
+    
     @Get(':id')
     async getBook(
         @Param('id') id: ObjectId,
@@ -56,5 +58,12 @@ export class BooksController {
             return res.send(book);
         }
         return res.status(HttpStatus.NOT_FOUND);
+    }
+
+    @UseGuards(AuthGuard)
+    @Get('')
+    async getBooks() : Promise<Document[]> {
+        const books = await this.bookService.getBooks()
+        return books
     }
 }

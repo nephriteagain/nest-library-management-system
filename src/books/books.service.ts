@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { Book } from 'src/types/models';
+import { Book, BaseDocument } from 'src/types/models';
 import BookSchema from 'src/db/schemas/book.schema';
 import { Document, ObjectId } from 'mongoose';
+
+// TODO: fix BaseDocument not working
+
 
 @Injectable()
 export class BooksService {
@@ -13,6 +16,9 @@ export class BooksService {
         console.log(id, 'service');
         const book = await BookSchema.findById(id);
         return book;
+    }
+    async getBooks() : Promise<Document[]>{
+        return BookSchema.find({})
     }
     async delete(id: ObjectId) {
         const deleteStatus = await BookSchema.findByIdAndDelete(id);
