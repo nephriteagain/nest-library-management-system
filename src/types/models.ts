@@ -1,4 +1,7 @@
-import { ObjectId } from 'mongoose';
+import { ObjectId, Document } from 'mongoose';
+
+export type BaseDocument<T> = T & Document;
+
 export interface Book {
     title: string;
     authors: string[];
@@ -25,4 +28,11 @@ export interface Inventory {
     total: number;
     available: number;
     borrowed: number;
+}
+
+export interface Employee {
+    name: string;
+    age: number;
+    email: string;
+    password: string;
 }

@@ -1,6 +1,14 @@
 import * as mongoose from 'mongoose';
 
 const EmployeeSchema = new mongoose.Schema({
+    email: {
+        type: String,
+        required: true,
+    },
+    password: {
+        type: String,
+        required: true,
+    },
     name: {
         type: String,
         required: true,
@@ -12,9 +20,6 @@ const EmployeeSchema = new mongoose.Schema({
     joinDate: {
         type: Number,
         default: Date.now(),
-    },
-    isAdmin: {
-        type: Boolean,
     },
 });
 
