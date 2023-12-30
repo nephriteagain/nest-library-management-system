@@ -8,8 +8,14 @@ import { BorrowModule } from './borrow/borrow.module';
 import { InventoryModule } from './inventory/inventory.module';
 
 @Module({
-  imports: [DatabaseModule, BooksModule, MembersModule, BorrowModule, InventoryModule, ],
-  controllers: [AppController],
-  providers: [AppService,],
+    imports: [
+        DatabaseModule,
+        BooksModule,
+        MembersModule,
+        BorrowModule,
+        InventoryModule,
+    ],
+    controllers: [AppController],
+    providers: [AppService],
 })
 export class AppModule {}

@@ -3,15 +3,15 @@ import * as mongoose from 'mongoose';
 const BorrowSchema = new mongoose.Schema({
     title: {
         type: String,
-        required: true
-    },  
+        required: true,
+    },
     borrower: {
         type: String,
-        required: true
+        required: true,
     },
     returnDate: {
         type: mongoose.SchemaTypes.Number,
-        default: Date.now()
+        default: Date.now(),
     },
     borrowDate: {
         type: mongoose.SchemaTypes.Number,
@@ -19,9 +19,8 @@ const BorrowSchema = new mongoose.Schema({
     },
     approvedBy: {
         type: String,
-        required: true    
-    }
-    
+        required: true,
+    },
 });
 
-export default mongoose.model('BORROW',BorrowSchema)
+export default mongoose.model('BORROW', BorrowSchema);

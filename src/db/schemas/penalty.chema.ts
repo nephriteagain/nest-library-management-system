@@ -1,22 +1,22 @@
-import * as mongoose from 'mongoose'
+import * as mongoose from 'mongoose';
 
 const PenaltySchema = new mongoose.Schema({
     bookId: {
         type: mongoose.SchemaTypes.ObjectId,
-        required: true
+        required: true,
     },
     borrower: {
         type: String,
-        required: true
+        required: true,
     },
     penalty: {
         type: Number,
-        required: true
+        required: true,
     },
     approvedBy: {
         type: String,
-        required: true
-    }
-})
+        required: true,
+    },
+});
 
-export default mongoose.model('PENALTY',PenaltySchema)
+export default mongoose.model('PENALTY', PenaltySchema);

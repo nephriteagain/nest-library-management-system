@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 
-const MemberSchema = new mongoose.Schema({
+const EmployeeSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -13,10 +13,9 @@ const MemberSchema = new mongoose.Schema({
         type: Number,
         default: Date.now(),
     },
-    approvedBy: {
-        type: String,
-        required: true,
+    isAdmin: {
+        type: Boolean,
     },
 });
 
-export default mongoose.model('MEMBERS', MemberSchema);
+export default mongoose.model('EMPLOYEE', EmployeeSchema);

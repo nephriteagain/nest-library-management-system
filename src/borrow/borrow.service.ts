@@ -5,15 +5,18 @@ import { Document, ObjectId } from 'mongoose';
 
 @Injectable()
 export class BorrowService {
-    async add(newBorrowData: Borrow, employeeId: ObjectId) : Promise<Document> {
-        const borrow = await BorrowSchema.create({...newBorrowData, approvedBy: employeeId })
-        return borrow
+    async add(newBorrowData: Borrow, employeeId: ObjectId): Promise<Document> {
+        const borrow = await BorrowSchema.create({
+            ...newBorrowData,
+            approvedBy: employeeId,
+        });
+        return borrow;
     }
-    async getBorrowData(id: ObjectId) : Promise<Document|null> {
-        return await BorrowSchema.findById(id)
+    async getBorrowData(id: ObjectId): Promise<Document | null> {
+        return await BorrowSchema.findById(id);
     }
 
-    async getBorrowList() : Promise<Document[]> {
-        return await BorrowSchema.find({}).limit(20)
+    async getBorrowList(): Promise<Document[]> {
+        return await BorrowSchema.find({}).limit(20);
     }
 }
