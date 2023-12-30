@@ -10,11 +10,11 @@ const BorrowSchema = new mongoose.Schema({
         required: true
     },
     returnDate: {
-        type: mongoose.SchemaTypes.Date,
-        default: new Date()
+        type: mongoose.SchemaTypes.Number,
+        default: Date.now()
     },
     borrowDate: {
-        type: mongoose.SchemaTypes.Date,
+        type: mongoose.SchemaTypes.Number,
         required: true,
     },
     approvedBy: {

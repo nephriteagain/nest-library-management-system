@@ -1,3 +1,4 @@
+import { ObjectId } from "mongoose";
 export interface Book {
     title: string;
     authors: string[];
@@ -8,6 +9,13 @@ export interface Book {
 export interface Member {
     name: string;
     age: number;
-    joinDate: Date;
+    joinDate: number;
     approvedBy: string;
+}
+
+export interface Borrow {
+    title: string;
+    borrower: ObjectId;
+    date: number;
+    returnDate: number;
 }

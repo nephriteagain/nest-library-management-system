@@ -13,8 +13,8 @@ const BookSchema = new mongoose.Schema({
         type: Number,        
     },
     dateAdded: {
-        type: mongoose.SchemaTypes.Date,
-        default: new Date()
+        type: mongoose.SchemaTypes.Number,
+        default: Date.now()
     }
     
 });

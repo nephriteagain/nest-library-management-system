@@ -10,8 +10,8 @@ const MemberSchema = new mongoose.Schema({
         required: true
     },
     joinDate: {
-        type: String,
-        default: new Date()
+        type: Number,
+        default: Date.now()
     },
     approvedBy: {
         type: String,
