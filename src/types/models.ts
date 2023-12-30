@@ -19,3 +19,10 @@ export interface Borrow {
     date: number;
     returnDate: number;
 }
+
+export interface Inventory {
+    title: string;
+    total: number;
+    available: number;
+    borrowed: number;
+}
