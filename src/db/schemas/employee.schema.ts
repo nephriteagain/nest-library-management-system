@@ -1,6 +1,7 @@
-import * as mongoose from 'mongoose';
+import { Schema, model, } from 'mongoose'
+import { EmployeeSchemaType } from 'src/types/models';
 
-const EmployeeSchema = new mongoose.Schema({
+const EmployeeSchema = new Schema<EmployeeSchemaType>({
     email: {
         type: String,
         required: true,
@@ -24,4 +25,4 @@ const EmployeeSchema = new mongoose.Schema({
     },
 });
 
-export default mongoose.model('EMPLOYEE', EmployeeSchema);
+export default model('EMPLOYEE', EmployeeSchema);

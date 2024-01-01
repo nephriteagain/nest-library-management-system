@@ -40,12 +40,17 @@ export interface Inventory {
     borrowed: number;
 }
 
-export interface Employee {
+export type EmployeeArgs = {
     name: string;
     age: number;
     email: string;
     password: string;
 }
+
+export interface EmployeeSchemaType extends EmployeeArgs {
+    joinDate: number;
+}
+
 
 export type  ReturnArgs =  {
     title: string;

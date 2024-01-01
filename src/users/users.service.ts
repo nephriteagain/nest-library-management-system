@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { Document, ObjectId } from 'mongoose';
 import EmployeeSchema from 'src/db/schemas/employee.schema';
-import { Employee, BaseDocument } from 'src/types/models';
+import { EmployeeArgs, BaseDocument } from 'src/types/models';
 import { genSaltSync, compareSync, hashSync } from 'bcrypt';
 
 @Injectable()
 export class UsersService {
-    async findUser(email: string): Promise<BaseDocument<Employee> | null> {
+    async findUser(email: string): Promise<BaseDocument<EmployeeArgs> | null> {
         const user = await EmployeeSchema.findOne({ email });
         return user;
     }
 
-    async createUser(userData: Employee): Promise<BaseDocument<Employee>> {
+    async createUser(userData: EmployeeArgs): Promise<BaseDocument<EmployeeArgs>> {
         const salt = genSaltSync();
         const hashedPassword = hashSync(userData.password, salt);
 

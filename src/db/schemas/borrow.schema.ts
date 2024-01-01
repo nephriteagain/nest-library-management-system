@@ -1,9 +1,9 @@
-import * as mongoose from 'mongoose';
+import { Schema, model, SchemaTypes } from 'mongoose'
 import { BorrowSchemaType } from 'src/types/models';
 
-const BorrowSchema = new mongoose.Schema<BorrowSchemaType>({
+const BorrowSchema = new Schema<BorrowSchemaType>({
     bookId: {
-        type: mongoose.SchemaTypes.ObjectId,
+        type: SchemaTypes.ObjectId,
         required: true,        
     },
     title: {
@@ -11,15 +11,15 @@ const BorrowSchema = new mongoose.Schema<BorrowSchemaType>({
         required: true,
     },
     borrower: {
-        type: mongoose.SchemaTypes.ObjectId,
+        type: SchemaTypes.ObjectId,
         required: true,
     },
     date: {
-        type: mongoose.SchemaTypes.Number,
+        type: SchemaTypes.Number,
         default: Date.now(),
     },
     promisedReturnDate: {
-        type: mongoose.SchemaTypes.Number,
+        type: SchemaTypes.Number,
         required: true,
     },
     approvedBy: {
@@ -28,4 +28,4 @@ const BorrowSchema = new mongoose.Schema<BorrowSchemaType>({
     },
 });
 
-export default mongoose.model('BORROW', BorrowSchema);
+export default model('BORROW', BorrowSchema);
