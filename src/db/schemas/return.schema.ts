@@ -1,6 +1,7 @@
 import * as mongoose from 'mongoose';
+import { ReturnSchemaType } from 'src/types/models';
 
-const BorrowSchema = new mongoose.Schema({
+const ReturnSchema = new mongoose.Schema<ReturnSchemaType>({
     title: {
         type: String,
         required: true,
@@ -18,9 +19,9 @@ const BorrowSchema = new mongoose.Schema({
         required: true,
     },
     approvedBy: {
-        type: String,
+        type: mongoose.SchemaTypes.ObjectId,
         required: true,
     },
 });
 
-export default mongoose.model('BORROW', BorrowSchema);
+export default mongoose.model('RETURN', ReturnSchema);

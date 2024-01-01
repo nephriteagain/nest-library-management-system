@@ -9,6 +9,7 @@ import { InventoryModule } from './inventory/inventory.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
+import { ReturnModule } from './return/return.module';
 
 @Module({
     imports: [
@@ -20,6 +21,7 @@ import { ConfigModule } from '@nestjs/config';
         AuthModule,
         UsersModule,
         ConfigModule.forRoot(),
+        ReturnModule,
     ],
     controllers: [AppController],
     providers: [AppService],

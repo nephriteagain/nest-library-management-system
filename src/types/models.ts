@@ -35,3 +35,18 @@ export interface Employee {
     email: string;
     password: string;
 }
+
+export type  ReturnArgs =  {
+    title: string;
+    borrower: ObjectId;
+    borrowDate: number;    
+}
+
+export interface ReturnSchemaType {
+    title: string;
+    borrower: ObjectId;
+    returnDate: number;
+    borrowDate: number;
+    approvedBy: ObjectId
+
+}
