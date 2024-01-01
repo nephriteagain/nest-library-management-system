@@ -12,16 +12,12 @@ import { BorrowService } from './borrow.service';
 import { Document, ObjectId } from 'mongoose';
 import { Borrow } from 'src/types/models';
 import { Response, Request } from 'express';
-import { AuthGuard } from 'src/auth/auth.guard';
-import { JwtService } from '@nestjs/jwt';
 import { AuthService } from 'src/auth/auth.service';
 
 @Controller('borrow')
 export class BorrowController {
     constructor(
         private borrowService: BorrowService,
-        private authGuard: AuthGuard,
-        private jwtService: JwtService,
         private authService: AuthService,
         ) {}
 
@@ -49,7 +45,7 @@ export class BorrowController {
         if (!accessToken) {
             return res.sendStatus(HttpStatus.UNAUTHORIZED)
         }
-        const { sub: aprrovedBy } = this.jwtService.decode(accessToken)
+        const { sub: aprrovedBy } = this.authService.getTokenData(accessToken)
         // console.log({approvedBy})
         await this.borrowService.add(body, aprrovedBy)
         return res.sendStatus(HttpStatus.CREATED)

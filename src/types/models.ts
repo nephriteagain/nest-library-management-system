@@ -13,7 +13,6 @@ export interface Member {
     name: string;
     age: number;
     joinDate: number;
-    approvedBy: string;
 }
 
 export interface Borrow {

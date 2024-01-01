@@ -20,8 +20,8 @@ export class MembersService {
         return Boolean(removedStatus);
     }
 
-    async addMember(member: Member): Promise<Document> {
-        const newMember = await MembersShema.create(member);
+    async addMember(member: Member, approvedBy: ObjectId): Promise<Document> {
+        const newMember = await MembersShema.create({...member, approvedBy});
         return newMember;
     }
 }

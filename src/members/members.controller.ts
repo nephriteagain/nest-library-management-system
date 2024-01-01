@@ -7,15 +7,20 @@ import {
     Post,
     Param,
     Body,
+    Req
 } from '@nestjs/common';
 import { MembersService } from './members.service';
 import { ObjectId, Document } from 'mongoose';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { Member } from 'src/types/models';
+import { AuthService } from 'src/auth/auth.service';
 
 @Controller('members')
 export class MembersController {
-    constructor(private membersService: MembersService) {}
+    constructor(
+        private membersService: MembersService,
+        private authService: AuthService,
+    ) {}
 
     @Get('')
     async getMembers(): Promise<Document[]> {
@@ -42,8 +47,13 @@ export class MembersController {
     }
 
     @Post('')
-    async addMember(@Body() body: Member): Promise<Document> {
-        const newMember = await this.membersService.addMember(body);
-        return newMember;
+    async addMember(@Body() body: Member, @Req() req: Request, @Res() res: Response): Promise<Response<Document>> {        
+        const accessToken = this.authService.extractTokenFromHeader(req)
+        if (!accessToken) {
+            return res.sendStatus(HttpStatus.UNAUTHORIZED)
+        }
+        const {sub: approvedBy} = this.authService.getTokenData(accessToken)                
+        const newMember = await this.membersService.addMember(body, approvedBy);
+        return res.send(newMember);
     }
 }
