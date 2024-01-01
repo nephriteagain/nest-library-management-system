@@ -9,8 +9,8 @@ import {
     Req
 } from '@nestjs/common';
 import { BorrowService } from './borrow.service';
-import { Document, ObjectId } from 'mongoose';
-import { BorrowArgs } from 'src/types/models';
+import { ObjectId } from 'mongoose';
+import { BorrowArgs, BorrowSchemaType } from 'src/types/models';
 import { Response, Request } from 'express';
 import { AuthService } from 'src/auth/auth.service';
 
@@ -22,7 +22,7 @@ export class BorrowController {
         ) {}
 
     @Get('')
-    async getBorrowList(): Promise<Document[]> {
+    async getBorrowList(): Promise<BorrowSchemaType[]> {
         return this.borrowService.getBorrowList();
     }
 
@@ -30,7 +30,7 @@ export class BorrowController {
     async getBorrowItem(
         @Param('id') id: ObjectId,
         @Res() res: Response,
-    ): Promise<Response<Document>> {
+    ): Promise<Response<BorrowSchemaType|404>> {
         const borrowItem = await this.borrowService.getBorrowData(id);
         if (borrowItem) {
             return res.send(borrowItem);
@@ -40,7 +40,7 @@ export class BorrowController {
 
     @Post('')
     // TODO: add a pipe validation to check if all property is all there and removed excess properties
-    async addNewEntry(@Body() body: BorrowArgs, @Req() req: Request, @Res() res: Response) {
+    async addNewEntry(@Body() body: BorrowArgs, @Req() req: Request, @Res() res: Response) : Promise<Response<404|201>> {
         const accessToken = this.authService.extractTokenFromHeader(req)        
         if (!accessToken) {
             return res.sendStatus(HttpStatus.UNAUTHORIZED)
