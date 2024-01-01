@@ -1,8 +1,9 @@
-import * as mongoose from 'mongoose';
+import { Schema, SchemaTypes, model } from 'mongoose'
+import { PenaltySchemaType } from 'src/types/models';
 
-const PenaltySchema = new mongoose.Schema({
+const PenaltySchema = new Schema<PenaltySchemaType>({
     bookId: {
-        type: mongoose.SchemaTypes.ObjectId,
+        type: SchemaTypes.ObjectId,
         required: true,
     },
     borrower: {
@@ -19,4 +20,4 @@ const PenaltySchema = new mongoose.Schema({
     },
 });
 
-export default mongoose.model('PENALTY', PenaltySchema);
+export default model('PENALTY', PenaltySchema);

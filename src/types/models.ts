@@ -58,7 +58,7 @@ export interface EmployeeSchemaType extends EmployeeArgs {
 }
 
 
-export type  ReturnArgs =  {
+export type ReturnArgs =  {
     title: string;
     borrower: ObjectId;
     borrowDate: number;    
@@ -67,4 +67,14 @@ export type  ReturnArgs =  {
 export interface ReturnSchemaType extends ReturnArgs {
     returnDate: number;
     approvedBy: ObjectId
+}
+
+export type PenaltyArgs = {
+    bookId: ObjectId;
+    borrower: ObjectId;
+    penalty: number;    
+}
+
+export interface PenaltySchemaType extends PenaltyArgs {
+    approvedBy: ObjectId;
 }
