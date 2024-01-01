@@ -14,14 +14,15 @@ import { Borrow } from 'src/types/models';
 import { Response, Request } from 'express';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { JwtService } from '@nestjs/jwt';
-// import {  } from '@nestjs/jwt'
+import { AuthService } from 'src/auth/auth.service';
 
 @Controller('borrow')
 export class BorrowController {
     constructor(
         private borrowService: BorrowService,
         private authGuard: AuthGuard,
-        private jwtService: JwtService
+        private jwtService: JwtService,
+        private authService: AuthService,
         ) {}
 
     @Get('')
@@ -44,7 +45,7 @@ export class BorrowController {
     @Post('')
     // TODO: add a pipe validation to check if all property is all there and removed excess properties
     async addNewEntry(@Body() body: Borrow, @Req() req: Request, @Res() res: Response) {
-        const accessToken = this.authGuard.extractTokenFromHeader(req)        
+        const accessToken = this.authService.extractTokenFromHeader(req)        
         if (!accessToken) {
             return res.sendStatus(HttpStatus.UNAUTHORIZED)
         }

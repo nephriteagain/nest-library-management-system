@@ -8,16 +8,20 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response } from 'express';
 import { jwtConstants } from './constants';
+import { AuthService } from './auth.service';
 
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-    constructor(private jwtService: JwtService) {}
+    constructor(
+        private jwtService: JwtService,
+        private authService: AuthService
+    ) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest();
         const response: Response = context.switchToHttp().getResponse();
-        const token = this.extractTokenFromHeader(request);
+        const token = this.authService.extractTokenFromHeader(request);
         if (!token) {
             response.redirect(HttpStatus.PERMANENT_REDIRECT, '/signin');
             return false;
@@ -36,8 +40,4 @@ export class AuthGuard implements CanActivate {
         return true;
     }
 
-    extractTokenFromHeader(request: Request): string | undefined {
-        const [type, token] = request.headers.authorization?.split(' ') ?? [];
-        return type === 'Bearer' ? token : undefined;
-    }
 }

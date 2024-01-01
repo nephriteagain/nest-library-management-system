@@ -19,7 +19,7 @@ import { ConfigModule } from '@nestjs/config';
         InventoryModule,
         AuthModule,
         UsersModule,
-        ConfigModule.forRoot({envFilePath: '../.env'}),
+        ConfigModule.forRoot(),
     ],
     controllers: [AppController],
     providers: [AppService],
