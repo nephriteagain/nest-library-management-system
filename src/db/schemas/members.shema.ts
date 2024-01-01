@@ -1,6 +1,7 @@
-import * as mongoose from 'mongoose';
+import { SchemaTypes, model, Schema } from 'mongoose'
+import { MemberSchemaType } from 'src/types/models';
 
-const MemberSchema = new mongoose.Schema({
+const MemberSchema = new Schema<MemberSchemaType>({
     name: {
         type: String,
         required: true,
@@ -14,9 +15,9 @@ const MemberSchema = new mongoose.Schema({
         default: Date.now(),
     },
     approvedBy: {
-        type: String,
+        type: SchemaTypes.ObjectId,
         required: true,
     },
-});
+})
 
-export default mongoose.model('MEMBERS', MemberSchema);
+export default model('MEMBERS', MemberSchema);

@@ -12,7 +12,7 @@ import {
 import { MembersService } from './members.service';
 import { ObjectId, Document } from 'mongoose';
 import { Response, Request } from 'express';
-import { Member } from 'src/types/models';
+import { MemberArgs } from 'src/types/models';
 import { AuthService } from 'src/auth/auth.service';
 
 @Controller('members')
@@ -47,7 +47,7 @@ export class MembersController {
     }
 
     @Post('')
-    async addMember(@Body() body: Member, @Req() req: Request, @Res() res: Response): Promise<Response<Document>> {        
+    async addMember(@Body() body: MemberArgs, @Req() req: Request, @Res() res: Response): Promise<Response<Document>> {        
         const accessToken = this.authService.extractTokenFromHeader(req)
         if (!accessToken) {
             return res.sendStatus(HttpStatus.UNAUTHORIZED)

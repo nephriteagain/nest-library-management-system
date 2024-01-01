@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Member } from 'src/types/models';
+import { MemberArgs } from 'src/types/models';
 import MembersShema from 'src/db/schemas/members.shema';
 import { Document, ObjectId } from 'mongoose';
 
@@ -20,7 +20,7 @@ export class MembersService {
         return Boolean(removedStatus);
     }
 
-    async addMember(member: Member, approvedBy: ObjectId): Promise<Document> {
+    async addMember(member: MemberArgs, approvedBy: ObjectId): Promise<Document> {
         const newMember = await MembersShema.create({...member, approvedBy});
         return newMember;
     }

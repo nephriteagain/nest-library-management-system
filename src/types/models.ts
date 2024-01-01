@@ -13,10 +13,14 @@ export interface BookSchemaType extends BookArgs {
 }
 
 
-export interface Member {
+export type MemberArgs = {
     name: string;
     age: number;
     joinDate: number;
+}
+
+export interface MemberSchemaType extends MemberArgs {
+    approvedBy: ObjectId;
 }
 
 export type BorrowArgs = {
