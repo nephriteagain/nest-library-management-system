@@ -3,4 +3,4 @@ dotenv.config()
 
 export const jwtConstants = {
     secret: `${process.env.SECRET_KEY}`,
-};
+}  as const satisfies Record<string,string>
