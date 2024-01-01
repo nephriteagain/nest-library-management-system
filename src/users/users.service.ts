@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { Document, ObjectId } from 'mongoose';
 import EmployeeSchema from 'src/db/schemas/employee.schema';
-import { EmployeeArgs, BaseDocument } from 'src/types/models';
+import { EmployeeArgs, BaseDocument, EmployeeSchemaType } from 'src/types/models';
 import { genSaltSync, compareSync, hashSync } from 'bcrypt';
 
 @Injectable()
@@ -11,7 +10,7 @@ export class UsersService {
         return user;
     }
 
-    async createUser(userData: EmployeeArgs): Promise<BaseDocument<EmployeeArgs>> {
+    async createUser(userData: EmployeeArgs): Promise<EmployeeSchemaType> {
         const salt = genSaltSync();
         const hashedPassword = hashSync(userData.password, salt);
 

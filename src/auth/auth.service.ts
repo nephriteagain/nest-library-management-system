@@ -16,8 +16,7 @@ export class AuthService {
     ) {}
 
     async signIn(username: string, pass: string): Promise<{access_token:string}> {
-        const user = await this.usersService.findUser(username);
-        // console.log(user);
+        const user = await this.usersService.findUser(username);        
         if (!user) {
             throw new NotFoundException();
         }

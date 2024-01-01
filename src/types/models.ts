@@ -2,13 +2,15 @@ import { ObjectId, Document } from 'mongoose';
 
 export type BaseDocument<T> = T & Document;
 
+type Id = {_id: ObjectId}
+
 export type BookArgs = {
     title: string;
     authors: string[];
     yearPublished: number;    
 }
 
-export interface BookSchemaType extends BookArgs {
+export interface BookSchemaType extends BookArgs, Id {
     dateAdded: number;
 }
 
@@ -19,7 +21,7 @@ export type MemberArgs = {
     joinDate: number;
 }
 
-export interface MemberSchemaType extends MemberArgs {
+export interface MemberSchemaType extends MemberArgs, Id {
     approvedBy: ObjectId;
 }
 
@@ -30,7 +32,7 @@ export type BorrowArgs = {
     promisedReturnDate: number;
 }
 
-export interface BorrowSchemaType extends BorrowArgs {
+export interface BorrowSchemaType extends BorrowArgs, Id {
     approvedBy: ObjectId;
     date: number;
 }
@@ -44,7 +46,7 @@ export type InventoryArgs = {
     borrowed: number;
 }
 
-export interface InventorySchemaType extends InventoryArgs {}
+export interface InventorySchemaType extends InventoryArgs, Id {}
 
 export type EmployeeArgs = {
     name: string;
@@ -53,7 +55,7 @@ export type EmployeeArgs = {
     password: string;
 }
 
-export interface EmployeeSchemaType extends EmployeeArgs {
+export interface EmployeeSchemaType extends EmployeeArgs, Id {
     joinDate: number;
 }
 
@@ -64,7 +66,7 @@ export type ReturnArgs =  {
     borrowDate: number;    
 }
 
-export interface ReturnSchemaType extends ReturnArgs {
+export interface ReturnSchemaType extends ReturnArgs, Id {
     returnDate: number;
     approvedBy: ObjectId
 }
@@ -75,6 +77,6 @@ export type PenaltyArgs = {
     penalty: number;    
 }
 
-export interface PenaltySchemaType extends PenaltyArgs {
+export interface PenaltySchemaType extends PenaltyArgs, Id {
     approvedBy: ObjectId;
 }

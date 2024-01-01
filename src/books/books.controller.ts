@@ -41,7 +41,7 @@ export class BooksController {
         @Body() update: Partial<BookArgs>,
         @Res() res: Response,
     ) : Promise<Response<BookSchemaType|404>> {
-        const updatedBook = await this.bookService.update(id, update);
+        const updatedBook = await this.bookService.update(id, update);        
         if (updatedBook) {
             return res.send(updatedBook);
         }
