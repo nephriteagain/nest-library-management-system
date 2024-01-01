@@ -1,21 +1,22 @@
-import * as mongoose from 'mongoose';
+import { Schema, model, SchemaTypes } from 'mongoose';
+import { BookSchemaType } from 'src/types/models';
 
-const BookSchema = new mongoose.Schema({
+const BookSchema = new Schema<BookSchemaType>({
     title: {
         type: String,
         required: true,
     },
     authors: {
-        type: [mongoose.SchemaTypes.String],
+        type: [SchemaTypes.String],
         required: true,
     },
     yearPublished: {
         type: Number,
     },
     dateAdded: {
-        type: mongoose.SchemaTypes.Number,
+        type: SchemaTypes.Number,
         default: Date.now(),
     },
 });
 
-export default mongoose.model('BOOK', BookSchema);
+export default model('BOOK', BookSchema);

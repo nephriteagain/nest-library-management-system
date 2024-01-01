@@ -10,7 +10,7 @@ import {
     HttpStatus,
 } from '@nestjs/common';
 import { BooksService } from './books.service';
-import type { Book } from 'src/types/models';
+import type { BookArgs } from 'src/types/models';
 import { Document, ObjectId } from 'mongoose';
 import { Response } from 'express';
 import { UseGuards } from '@nestjs/common';
@@ -21,7 +21,7 @@ export class BooksController {
     constructor(private bookService: BooksService) {}
 
     @Post('')
-    async addBook(@Body() book: Book) {
+    async addBook(@Body() book: BookArgs) {
         const newBook = await this.bookService.add(book);
         return newBook;
     }
@@ -38,7 +38,7 @@ export class BooksController {
     @Patch(':id')
     async updateBook(
         @Param('id') id: ObjectId,
-        @Body() update: Partial<Book>,
+        @Body() update: Partial<BookArgs>,
         @Res() res: Response,
     ) {
         const updatedBook = await this.bookService.update(id, update);

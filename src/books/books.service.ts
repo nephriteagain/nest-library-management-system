@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Book, BaseDocument } from 'src/types/models';
+import { BookArgs, BaseDocument } from 'src/types/models';
 import BookSchema from 'src/db/schemas/book.schema';
 import { Document, ObjectId } from 'mongoose';
 
@@ -8,7 +8,7 @@ import { Document, ObjectId } from 'mongoose';
 
 @Injectable()
 export class BooksService {
-    async add(book: Book): Promise<Document> {
+    async add(book: BookArgs): Promise<Document> {
         const newBook = await BookSchema.create(book);
         return newBook;
     }
@@ -26,7 +26,7 @@ export class BooksService {
     }
     async update(
         id: ObjectId,
-        update: Partial<Book>,
+        update: Partial<BookArgs>,
     ): Promise<Document | null> {
         const updatedBook = await BookSchema.findByIdAndUpdate(id, update, {
             new: true,

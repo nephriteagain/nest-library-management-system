@@ -2,12 +2,16 @@ import { ObjectId, Document } from 'mongoose';
 
 export type BaseDocument<T> = T & Document;
 
-export interface Book {
+export type BookArgs = {
     title: string;
     authors: string[];
-    yearPublished: number;
-    totalPages: number;
+    yearPublished: number;    
 }
+
+export interface BookSchemaType extends BookArgs {
+    dateAdded: number;
+}
+
 
 export interface Member {
     name: string;
@@ -42,11 +46,7 @@ export type  ReturnArgs =  {
     borrowDate: number;    
 }
 
-export interface ReturnSchemaType {
-    title: string;
-    borrower: ObjectId;
+export interface ReturnSchemaType extends ReturnArgs {
     returnDate: number;
-    borrowDate: number;
     approvedBy: ObjectId
-
 }
