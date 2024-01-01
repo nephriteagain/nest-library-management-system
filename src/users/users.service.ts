@@ -7,7 +7,6 @@ import { genSaltSync, compareSync, hashSync } from 'bcrypt';
 @Injectable()
 export class UsersService {
     async findUser(email: string): Promise<BaseDocument<Employee> | null> {
-        console.log('finding user');
         const user = await EmployeeSchema.findOne({ email });
         return user;
     }

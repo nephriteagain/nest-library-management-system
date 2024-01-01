@@ -6,15 +6,23 @@ import {
     HttpStatus,
     Post,
     Body,
+    Req
 } from '@nestjs/common';
 import { BorrowService } from './borrow.service';
 import { Document, ObjectId } from 'mongoose';
 import { Borrow } from 'src/types/models';
-import { Response } from 'express';
+import { Response, Request } from 'express';
+import { AuthGuard } from 'src/auth/auth.guard';
+import { JwtService } from '@nestjs/jwt';
+// import {  } from '@nestjs/jwt'
 
 @Controller('borrow')
 export class BorrowController {
-    constructor(private borrowService: BorrowService) {}
+    constructor(
+        private borrowService: BorrowService,
+        private authGuard: AuthGuard,
+        private jwtService: JwtService
+        ) {}
 
     @Get('')
     async getBorrowList(): Promise<Document[]> {
@@ -34,8 +42,15 @@ export class BorrowController {
     }
 
     @Post('')
-    // todo create a jwt session token for employeeid
-    async addNewEntry(@Body() body: Borrow) {
-        // return this.borrowService.add(body, ObjectId('adsd') as ObjectId)
+    // TODO: add a pipe validation to check if all property is all there and removed excess properties
+    async addNewEntry(@Body() body: Borrow, @Req() req: Request, @Res() res: Response) {
+        const accessToken = this.authGuard.extractTokenFromHeader(req)        
+        if (!accessToken) {
+            return res.sendStatus(HttpStatus.UNAUTHORIZED)
+        }
+        const { sub: aprrovedBy } = this.jwtService.decode(accessToken)
+        // console.log({approvedBy})
+        await this.borrowService.add(body, aprrovedBy)
+        return res.sendStatus(HttpStatus.CREATED)
     }
 }

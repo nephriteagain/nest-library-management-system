@@ -15,7 +15,7 @@ export class AuthService {
 
     async signIn(username: string, pass: string): Promise<any> {
         const user = await this.usersService.findUser(username);
-        console.log(user);
+        // console.log(user);
         if (!user) {
             throw new NotFoundException();
         }
@@ -23,8 +23,7 @@ export class AuthService {
         if (!isOk) {
             throw new UnauthorizedException();
         }
-        const { password, ...result } = user;
-        const payload = { sub: result._id, email: result.email };
+        const payload = { sub: user._id, email: user.email };
 
         return {
             access_token: await this.jwtService.signAsync(payload),
