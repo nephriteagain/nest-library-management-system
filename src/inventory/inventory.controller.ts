@@ -9,16 +9,16 @@ import {
     Patch,
 } from '@nestjs/common';
 import { InventoryService } from './inventory.service';
-import { Document, isValidObjectId, ObjectId } from 'mongoose';
+import { isValidObjectId, ObjectId } from 'mongoose';
 import { Response } from 'express';
-import { InventoryArgs } from 'src/types/models';
+import { InventoryArgs, InventorySchemaType } from 'src/types/models';
 
 @Controller('inventory')
 export class InventoryController {
     constructor(private inventoryService: InventoryService) {}
 
     @Get('')
-    async getInventory(): Promise<Document[]> {
+    async getInventory(): Promise<InventorySchemaType[]> {
         return await this.inventoryService.getInventory();
     }
 
@@ -26,7 +26,7 @@ export class InventoryController {
     async getInventoryItem(
         @Param('id') id: ObjectId,
         @Res() res: Response,
-    ): Promise<Response<Document>> {
+    ): Promise<Response<InventorySchemaType|400|404>> {
         if (!isValidObjectId(id)) {
             return res.sendStatus(HttpStatus.BAD_REQUEST);
         }
@@ -38,7 +38,7 @@ export class InventoryController {
     }
 
     @Post('')
-    async addInventory(@Body() body: InventoryArgs): Promise<Document> {
+    async addInventory(@Body() body: InventoryArgs): Promise<InventorySchemaType> {
         return await this.inventoryService.addInventory(body);
     }
 
@@ -47,7 +47,7 @@ export class InventoryController {
         @Param('id') id: ObjectId,
         @Body() changes: Partial<InventoryArgs>,
         @Res() res: Response,
-    ): Promise<Response<Document>> {
+    ): Promise<Response<InventorySchemaType|400>> {
         if (isValidObjectId(id)) {
             return res.sendStatus(HttpStatus.BAD_REQUEST);
         }

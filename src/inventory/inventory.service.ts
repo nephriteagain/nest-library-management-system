@@ -1,19 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import { Document, ObjectId } from 'mongoose';
+import { ObjectId } from 'mongoose';
 import InventorySchema from 'src/db/schemas/inventory.schema';
-import { InventoryArgs } from 'src/types/models';
+import { InventoryArgs, InventorySchemaType } from 'src/types/models';
 
 @Injectable()
 export class InventoryService {
-    async getInventory(): Promise<Document[]> {
+    async getInventory(): Promise<InventorySchemaType[]> {
         return await InventorySchema.find({}).limit(20);
     }
 
-    async getInventoryItem(id: ObjectId): Promise<Document | null> {
+    async getInventoryItem(id: ObjectId): Promise<InventorySchemaType | null> {
         return await InventorySchema.findById(id);
     }
 
-    async addInventory(entry: InventoryArgs): Promise<Document> {
+    async addInventory(entry: InventoryArgs): Promise<InventorySchemaType> {
         const newEntry = await InventorySchema.create(entry);
         return newEntry;
     }
@@ -21,7 +21,7 @@ export class InventoryService {
     async updateInventoryItem(
         id: ObjectId,
         changes: Partial<InventoryArgs>,
-    ): Promise<Document | null> {
+    ): Promise<InventorySchemaType | null> {
         const updatedEntry = await InventorySchema.findByIdAndUpdate(
             id,
             changes,
