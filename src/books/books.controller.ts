@@ -10,8 +10,8 @@ import {
     HttpStatus,
 } from '@nestjs/common';
 import { BooksService } from './books.service';
-import type { BookArgs } from 'src/types/models';
-import { Document, ObjectId } from 'mongoose';
+import type { BookArgs, BookSchemaType } from 'src/types/models';
+import { ObjectId } from 'mongoose';
 import { Response } from 'express';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
@@ -21,13 +21,13 @@ export class BooksController {
     constructor(private bookService: BooksService) {}
 
     @Post('')
-    async addBook(@Body() book: BookArgs) {
+    async addBook(@Body() book: BookArgs) : Promise<BookSchemaType> {
         const newBook = await this.bookService.add(book);
         return newBook;
     }
 
     @Delete(':id')
-    async deleteBook(@Param('id') id: ObjectId, @Res() res: Response) {
+    async deleteBook(@Param('id') id: ObjectId, @Res() res: Response) : Promise<Response<200|404>> {
         const deleteStatus = await this.bookService.delete(id);
         if (deleteStatus) {
             return res.sendStatus(HttpStatus.OK);
@@ -40,7 +40,7 @@ export class BooksController {
         @Param('id') id: ObjectId,
         @Body() update: Partial<BookArgs>,
         @Res() res: Response,
-    ) {
+    ) : Promise<Response<BookSchemaType|404>> {
         const updatedBook = await this.bookService.update(id, update);
         if (updatedBook) {
             return res.send(updatedBook);
@@ -52,7 +52,7 @@ export class BooksController {
     async getBook(
         @Param('id') id: ObjectId,
         @Res() res: Response,
-    ): Promise<Response<Document | { message: string }>> {
+    ): Promise<Response<BookSchemaType | 404>> {
         const book = await this.bookService.getBook(id);
         if (book) {
             return res.send(book);
@@ -62,7 +62,7 @@ export class BooksController {
 
     @UseGuards(AuthGuard)
     @Get('')
-    async getBooks() : Promise<Document[]> {
+    async getBooks() : Promise<BookSchemaType[]> {
         const books = await this.bookService.getBooks()
         return books
     }
