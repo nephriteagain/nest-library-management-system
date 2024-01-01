@@ -10,9 +10,9 @@ import {
     Req
 } from '@nestjs/common';
 import { MembersService } from './members.service';
-import { ObjectId, Document } from 'mongoose';
+import { ObjectId } from 'mongoose';
 import { Response, Request } from 'express';
-import { MemberArgs } from 'src/types/models';
+import { MemberArgs, MemberSchemaType } from 'src/types/models';
 import { AuthService } from 'src/auth/auth.service';
 
 @Controller('members')
@@ -23,7 +23,7 @@ export class MembersController {
     ) {}
 
     @Get('')
-    async getMembers(): Promise<Document[]> {
+    async getMembers(): Promise<MemberSchemaType[]> {
         const members = await this.membersService.getAllMembers();
         return members;
     }
@@ -32,7 +32,7 @@ export class MembersController {
     async getMember(
         @Param('id') id: ObjectId,
         @Res() res: Response,
-    ): Promise<Response<Document>> {
+    ): Promise<Response<MemberSchemaType|404>> {
         const member = await this.membersService.getMember(id);
         if (member) {
             return res.send(member);
@@ -47,7 +47,7 @@ export class MembersController {
     }
 
     @Post('')
-    async addMember(@Body() body: MemberArgs, @Req() req: Request, @Res() res: Response): Promise<Response<Document>> {        
+    async addMember(@Body() body: MemberArgs, @Req() req: Request, @Res() res: Response): Promise<Response<MemberSchemaType|401>> {        
         const accessToken = this.authService.extractTokenFromHeader(req)
         if (!accessToken) {
             return res.sendStatus(HttpStatus.UNAUTHORIZED)

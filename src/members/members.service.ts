@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { MemberArgs } from 'src/types/models';
+import { MemberArgs, MemberSchemaType } from 'src/types/models';
 import MembersShema from 'src/db/schemas/members.shema';
-import { Document, ObjectId } from 'mongoose';
+import { ObjectId } from 'mongoose';
 
 @Injectable()
 export class MembersService {
-    async getAllMembers(): Promise<Document[]> {
+    async getAllMembers(): Promise<MemberSchemaType[]> {
         const members = await MembersShema.find({});
         return members;
     }
 
-    async getMember(id: ObjectId): Promise<Document | null> {
+    async getMember(id: ObjectId): Promise<MemberSchemaType | null> {
         const member = await MembersShema.findById(id);
         return member;
     }
@@ -20,7 +20,7 @@ export class MembersService {
         return Boolean(removedStatus);
     }
 
-    async addMember(member: MemberArgs, approvedBy: ObjectId): Promise<Document> {
+    async addMember(member: MemberArgs, approvedBy: ObjectId): Promise<MemberSchemaType> {
         const newMember = await MembersShema.create({...member, approvedBy});
         return newMember;
     }
