@@ -19,12 +19,19 @@ export interface Member {
     joinDate: number;
 }
 
-export interface Borrow {
+export type BorrowArgs = {
+    bookId: ObjectId;
     title: string;
     borrower: ObjectId;
-    date: number;
-    returnDate: number;
+    promisedReturnDate: number;
 }
+
+export interface BorrowSchemaType extends BorrowArgs {
+    approvedBy: ObjectId;
+    date: number;
+}
+
+
 
 export interface Inventory {
     title: string;

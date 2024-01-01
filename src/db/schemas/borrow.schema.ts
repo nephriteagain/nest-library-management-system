@@ -1,6 +1,7 @@
 import * as mongoose from 'mongoose';
+import { BorrowSchemaType } from 'src/types/models';
 
-const BorrowSchema = new mongoose.Schema({
+const BorrowSchema = new mongoose.Schema<BorrowSchemaType>({
     bookId: {
         type: mongoose.SchemaTypes.ObjectId,
         required: true,        
