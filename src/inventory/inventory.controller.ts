@@ -11,7 +11,7 @@ import {
 import { InventoryService } from './inventory.service';
 import { Document, isValidObjectId, ObjectId } from 'mongoose';
 import { Response } from 'express';
-import { Inventory } from 'src/types/models';
+import { InventoryArgs } from 'src/types/models';
 
 @Controller('inventory')
 export class InventoryController {
@@ -38,14 +38,14 @@ export class InventoryController {
     }
 
     @Post('')
-    async addInventory(@Body() body: Inventory): Promise<Document> {
+    async addInventory(@Body() body: InventoryArgs): Promise<Document> {
         return await this.inventoryService.addInventory(body);
     }
 
     @Patch(':id')
     async updateInventoryItem(
         @Param('id') id: ObjectId,
-        @Body() changes: Partial<Inventory>,
+        @Body() changes: Partial<InventoryArgs>,
         @Res() res: Response,
     ): Promise<Response<Document>> {
         if (isValidObjectId(id)) {

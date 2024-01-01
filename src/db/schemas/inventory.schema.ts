@@ -1,6 +1,7 @@
-import * as mongoose from 'mongoose';
+import { Schema, model,  } from 'mongoose'
+import { InventorySchemaType } from 'src/types/models';
 
-const INVENTORY = new mongoose.Schema({
+const INVENTORY = new Schema<InventorySchemaType>({
     title: {
         type: String,
         required: true,
@@ -19,4 +20,4 @@ const INVENTORY = new mongoose.Schema({
     },
 });
 
-export default mongoose.model('INVENTORY', INVENTORY);
+export default model('INVENTORY', INVENTORY);

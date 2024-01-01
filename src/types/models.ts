@@ -33,12 +33,14 @@ export interface BorrowSchemaType extends BorrowArgs {
 
 
 
-export interface Inventory {
+export type InventoryArgs = {
     title: string;
     total: number;
     available: number;
     borrowed: number;
 }
+
+export interface InventorySchemaType extends InventoryArgs {}
 
 export type EmployeeArgs = {
     name: string;
