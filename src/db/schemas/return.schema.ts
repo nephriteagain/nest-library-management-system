@@ -1,7 +1,7 @@
-import * as mongoose from 'mongoose';
+import { Schema, SchemaTypes, model } from 'mongoose'
 import { ReturnSchemaType } from 'src/types/models';
 
-const ReturnSchema = new mongoose.Schema<ReturnSchemaType>({
+const ReturnSchema = new Schema<ReturnSchemaType>({
     title: {
         type: String,
         required: true,
@@ -11,17 +11,17 @@ const ReturnSchema = new mongoose.Schema<ReturnSchemaType>({
         required: true,
     },
     returnDate: {
-        type: mongoose.SchemaTypes.Number,
+        type: SchemaTypes.Number,
         default: Date.now(),
     },
     borrowDate: {
-        type: mongoose.SchemaTypes.Number,
+        type: SchemaTypes.Number,
         required: true,
     },
     approvedBy: {
-        type: mongoose.SchemaTypes.ObjectId,
+        type: SchemaTypes.ObjectId,
         required: true,
     },
 });
 
-export default mongoose.model('RETURN', ReturnSchema);
+export default model('RETURN', ReturnSchema);
