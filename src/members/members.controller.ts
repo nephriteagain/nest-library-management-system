@@ -52,7 +52,10 @@ export class MembersController {
         if (!accessToken) {
             return res.sendStatus(HttpStatus.UNAUTHORIZED)
         }
-        const {sub: approvedBy} = this.authService.getTokenData(accessToken)                
+        const {sub: approvedBy} = this.authService.getTokenData(accessToken)
+        if (!approvedBy) {
+            return res.sendStatus(HttpStatus.UNAUTHORIZED)
+        }
         const newMember = await this.membersService.addMember(body, approvedBy);
         return res.send(newMember);
     }

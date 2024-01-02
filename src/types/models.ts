@@ -20,10 +20,10 @@ export interface BookSchemaType extends BookArgs, Id {
 export type MemberArgs = {
     name: string;
     age: number;
-    joinDate: number;
 }
 
 export interface MemberSchemaType extends MemberArgs, Id {
+    joinDate: number;
     approvedBy: ObjectId;
 }
 
@@ -63,7 +63,7 @@ export interface EmployeeSchemaType extends EmployeeArgs, Id {
 
 
 export type ReturnArgs =  {
-    title: string;
+    bookId: ObjectId;
     borrower: ObjectId;
     borrowDate: number;    
 }

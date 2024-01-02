@@ -7,7 +7,7 @@ const PenaltySchema = new Schema<PenaltySchemaType>({
         required: true,
     },
     borrower: {
-        type: String,
+        type: SchemaTypes.ObjectId,
         required: true,
     },
     penalty: {
@@ -15,7 +15,7 @@ const PenaltySchema = new Schema<PenaltySchemaType>({
         required: true,
     },
     approvedBy: {
-        type: String,
+        type: SchemaTypes.ObjectId,
         required: true,
     },
 });

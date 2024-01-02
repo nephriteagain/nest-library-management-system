@@ -48,11 +48,11 @@ export class InventoryController {
         @Body() changes: Partial<InventoryArgs>,
         @Res() res: Response,
     ): Promise<Response<InventorySchemaType|400>> {
-        if (isValidObjectId(id)) {
+        if (!isValidObjectId(id)) {
             return res.sendStatus(HttpStatus.BAD_REQUEST);
         }
         const updatedEntry = await this.inventoryService.updateInventoryItem(
-            id,
+            id, 
             changes,
         );
         return res.send(updatedEntry);

@@ -16,7 +16,7 @@ export class MembersService {
     }
 
     async removeMember(id: ObjectId): Promise<Boolean> {
-        const removedStatus = await MembersShema.findByIdAndDelete(id);
+        const removedStatus  = await MembersShema.findByIdAndDelete(id);
         return Boolean(removedStatus);
     }
 

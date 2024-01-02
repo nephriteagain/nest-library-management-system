@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Res, Req, Body, HttpStatus, Param } from '@nestjs/common';
+import { Controller, Get, Post, Res, Req, Body, HttpStatus, Param, Query } from '@nestjs/common';
 import { ReturnService } from './return.service';
 import { AuthService } from 'src/auth/auth.service';
 import { ObjectId } from 'mongoose';
@@ -19,8 +19,8 @@ export class ReturnController {
         return list;
     }
 
-    @Get(':id')
-    async getReturnItem(@Param() id : ObjectId) : Promise<ReturnSchemaType|404> {        
+    @Get('query')
+    async getReturnItem(@Query("id") id : ObjectId) : Promise<ReturnSchemaType|404> {        
         const returnItem = await this.returnService.getReturnItem(id)
         if (!returnItem) {
             return HttpStatus.NOT_FOUND

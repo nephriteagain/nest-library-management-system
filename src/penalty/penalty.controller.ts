@@ -1,4 +1,4 @@
-import { Controller, Get, HttpStatus, Param, Res, Post, Body, Req } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Param, Res, Post, Body, Req, Query } from '@nestjs/common';
 import { PenaltyService } from './penalty.service';
 import { P, PenaltyArgs, PenaltySchemaType } from 'src/types/models';
 import { ObjectId } from 'mongoose';
@@ -17,15 +17,16 @@ export class PenaltyController {
         return this.penaltyService.getEntries()
     }
 
-    @Get(':id')
-    async getEntry(@Param() id: ObjectId, @Res() res: Response) : P<Response<PenaltySchemaType|404>> {
-        const entry = this.penaltyService.getEntry(id)
+    // i am using Query here because for some reason Param doesnt work!
+    @Get('query')
+    async getEntry(@Query('id') id: ObjectId ) : P<PenaltySchemaType|404> {
+        const entry = await this.penaltyService.getEntry(id)
         if (!entry) {
-            return res.sendStatus(HttpStatus.NOT_FOUND)
+            return HttpStatus.NOT_FOUND
         }
-        return res.send(entry)
+        return entry
     }
-
+//
     @Post('')
     async addEntry(@Body() penaltyEntry: PenaltyArgs, @Req() req: Request, @Res() res: Response) : P<Response<PenaltySchemaType|401>>{
         const accessToken = this.authService.extractTokenFromHeader(req)
@@ -34,7 +35,7 @@ export class PenaltyController {
         }
         const {sub: approvedBy} = this.authService.getTokenData(accessToken)
         const newEntry = await this.penaltyService.addEntry(penaltyEntry, approvedBy)
-        return res.end(newEntry)
+        return res.send(newEntry)
     }
     
 }

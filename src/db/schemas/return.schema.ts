@@ -2,12 +2,12 @@ import { Schema, SchemaTypes, model } from 'mongoose'
 import { ReturnSchemaType } from 'src/types/models';
 
 const ReturnSchema = new Schema<ReturnSchemaType>({
-    title: {
-        type: String,
-        required: true,
+    bookId: {
+        type: SchemaTypes.ObjectId,
+        required: true
     },
     borrower: {
-        type: String,
+        type: SchemaTypes.ObjectId,
         required: true,
     },
     returnDate: {

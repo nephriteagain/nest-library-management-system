@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import PenaltySchema from 'src/db/schemas/penalty.schema';
 import { P, PenaltyArgs, PenaltySchemaType } from 'src/types/models';
-import { ObjectId } from 'mongoose';
+import { ObjectId, isValidObjectId } from 'mongoose';
 
 @Injectable()
 export class PenaltyService {
@@ -12,9 +12,11 @@ export class PenaltyService {
     }
 
     async getEntry(id: ObjectId) : P<PenaltySchemaType|null> {
+        if (!isValidObjectId(id)) {
+            throw new HttpException('invalid id', HttpStatus.BAD_REQUEST)
+        }
         const doc = await PenaltySchema.findById(id)
         return doc
-
     }
     
     async getEntries() : P<PenaltySchemaType[]> {
