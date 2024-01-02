@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { ReturnModule } from './return/return.module';
+import { PenaltyModule } from './penalty/penalty.module';
 
 @Module({
     imports: [
@@ -22,6 +23,7 @@ import { ReturnModule } from './return/return.module';
         UsersModule,
         ConfigModule.forRoot(),
         ReturnModule,
+        PenaltyModule,
     ],
     controllers: [AppController],
     providers: [AppService],

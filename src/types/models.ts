@@ -2,6 +2,8 @@ import { ObjectId, Document } from 'mongoose';
 
 export type BaseDocument<T> = T & Document;
 
+export type P<T> = Promise<T>
+
 type Id = {_id: ObjectId}
 
 export type BookArgs = {
