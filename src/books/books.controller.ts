@@ -8,25 +8,31 @@ import {
     Patch,
     Res,
     HttpStatus,
+    UsePipes,
+    Req
 } from '@nestjs/common';
 import { BooksService } from './books.service';
 import type { BookArgs, BookSchemaType } from 'src/types/models';
 import { ObjectId } from 'mongoose';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { bookArgsSchema, zodOIDValidator, partialBookArgsSchema } from 'src/types/models';
+import { ZodValidationPipe } from 'src/db/validation/schema.pipe';
 
 @Controller('books')
 export class BooksController {
     constructor(private bookService: BooksService) {}
 
     @Post('')
+    @UsePipes(new ZodValidationPipe(bookArgsSchema))
     async addBook(@Body() book: BookArgs) : Promise<BookSchemaType> {
         const newBook = await this.bookService.add(book);
         return newBook;
     }
 
     @Delete(':id')
+    @UsePipes(new ZodValidationPipe(zodOIDValidator))
     async deleteBook(@Param('id') id: ObjectId, @Res() res: Response) : Promise<Response<200|404>> {
         const deleteStatus = await this.bookService.delete(id);
         if (deleteStatus) {
@@ -35,12 +41,13 @@ export class BooksController {
         return res.sendStatus(HttpStatus.NOT_FOUND);
     }
 
-    @Patch(':id')
+    @Patch(':id')    
     async updateBook(
-        @Param('id') id: ObjectId,
-        @Body() update: Partial<BookArgs>,
+        @Body(new ZodValidationPipe(partialBookArgsSchema)) update: Partial<BookArgs>,
+        @Param('id', new ZodValidationPipe(zodOIDValidator)) id: ObjectId,
         @Res() res: Response,
-    ) : Promise<Response<BookSchemaType|404>> {
+    ) : Promise<Response<BookSchemaType|404>> {        
+        console.log(update)
         const updatedBook = await this.bookService.update(id, update);        
         if (updatedBook) {
             return res.send(updatedBook);
@@ -49,10 +56,12 @@ export class BooksController {
     }
     
     @Get(':id')
+    @UsePipes(new ZodValidationPipe(zodOIDValidator))
     async getBook(
         @Param('id') id: ObjectId,
         @Res() res: Response,
     ): Promise<Response<BookSchemaType | 404>> {
+        console.log({id})
         const book = await this.bookService.getBook(id);
         if (book) {
             return res.send(book);

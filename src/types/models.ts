@@ -8,11 +8,15 @@ export type P<T> = Promise<T>
 type Id = {_id: ObjectId}
 
 function objectIdValidator(value:unknown) {
-    return isValidObjectId(value)
+    if (!isValidObjectId(value)) {
+        console.log('invalid ObjectId')
+        throw new Error('invalid id')
+    }
+    return true
 }
 
-const zodOIDValidator = z.custom<ObjectId>(objectIdValidator)
-const positiveIntNumber = z.number().int().positive()
+export const zodOIDValidator = z.custom<ObjectId>(objectIdValidator)
+export const positiveIntNumber = z.number().int().positive()
     
 
 export const bookArgsSchema = z.object({
@@ -20,10 +24,17 @@ export const bookArgsSchema = z.object({
     authors: z.array(z.string()),
     yearPublished: positiveIntNumber
 }).required()
+export const partialBookArgsSchema = z.object({
+    title: z.string().optional(),
+    authors: z.array(z.string()).optional(),
+    yearPublished: positiveIntNumber.optional()
+})
 export type BookArgs = z.infer<typeof bookArgsSchema>
 export interface BookSchemaType extends BookArgs, Id {
     dateAdded: number;
 }
+
+
 
 export const membersArgsSchema = z.object({
     name: z.string(),
@@ -85,7 +96,7 @@ export const PenaltyArgsSchema = z.object({
     bookId: zodOIDValidator,
     borrower: zodOIDValidator,
     penalty: positiveIntNumber,
-})
+}).required()
 export type PenaltyArgs = z.infer<typeof PenaltyArgsSchema>
 
 export interface PenaltySchemaType extends PenaltyArgs, Id {
