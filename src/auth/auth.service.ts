@@ -15,12 +15,13 @@ export class AuthService {
         private jwtService: JwtService,
     ) {}
 
-    async signIn(username: string, pass: string): Promise<{access_token:string}> {
-        const user = await this.usersService.findUser(username);        
+    // TODO: i am getting a access token even with incorrect password!
+    async signIn(email: string, pass: string): Promise<{access_token:string}> {
+        const user = await this.usersService.findUser(email);        
         if (!user) {
             throw new NotFoundException();
         }
-        const isOk = this.usersService.loginUser(user.password, pass);
+        const isOk = this.usersService.loginUser(pass, user.password);
         if (!isOk) {
             throw new UnauthorizedException();
         }

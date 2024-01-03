@@ -17,6 +17,12 @@ function objectIdValidator(value:unknown) {
 
 export const zodOIDValidator = z.custom<ObjectId>(objectIdValidator)
 export const positiveIntNumber = z.number().int().positive()
+
+export const signInSchema = z.object({
+    email: z.string().email(),
+    password: z.string()
+}).required()
+export type SignInArgs = z.infer<typeof signInSchema>
     
 
 export const bookArgsSchema = z.object({
@@ -25,10 +31,10 @@ export const bookArgsSchema = z.object({
     yearPublished: positiveIntNumber
 }).required()
 export const partialBookArgsSchema = z.object({
-    title: z.string().optional(),
-    authors: z.array(z.string()).optional(),
-    yearPublished: positiveIntNumber.optional()
-})
+    title: z.string(),
+    authors: z.array(z.string()),
+    yearPublished: positiveIntNumber,
+}).partial()
 export type BookArgs = z.infer<typeof bookArgsSchema>
 export interface BookSchemaType extends BookArgs, Id {
     dateAdded: number;
