@@ -16,7 +16,7 @@ function objectIdValidator(value:unknown) {
 }
 
 export const zodOIDValidator = z.custom<ObjectId>(objectIdValidator)
-export const positiveIntNumber = z.number().int().positive()
+export const nonNegativeIntNumber = z.number().int().nonnegative()
 
 export const signInSchema = z.object({
     email: z.string().email(),
@@ -28,12 +28,12 @@ export type SignInArgs = z.infer<typeof signInSchema>
 export const bookArgsSchema = z.object({
     title: z.string(),
     authors: z.array(z.string()),
-    yearPublished: positiveIntNumber
+    yearPublished: nonNegativeIntNumber
 }).required()
 export const partialBookArgsSchema = z.object({
     title: z.string(),
     authors: z.array(z.string()),
-    yearPublished: positiveIntNumber,
+    yearPublished: nonNegativeIntNumber,
 }).partial()
 export type BookArgs = z.infer<typeof bookArgsSchema>
 export interface BookSchemaType extends BookArgs, Id {
@@ -44,7 +44,7 @@ export interface BookSchemaType extends BookArgs, Id {
 
 export const membersArgsSchema = z.object({
     name: z.string(),
-    age: positiveIntNumber
+    age: nonNegativeIntNumber
 }).required()
 export type MemberArgs = z.infer<typeof membersArgsSchema>
 export interface MemberSchemaType extends MemberArgs, Id {
@@ -56,7 +56,7 @@ export const BorrowArgsSchema = z.object({
     bookId: zodOIDValidator,
     title: z.string(),
     borrower: zodOIDValidator,
-    promisedReturnDate: positiveIntNumber
+    promisedReturnDate: nonNegativeIntNumber
 }).required()
 export type BorrowArgs = z.infer<typeof BorrowArgsSchema>
 export interface BorrowSchemaType extends BorrowArgs, Id {
@@ -67,9 +67,9 @@ export interface BorrowSchemaType extends BorrowArgs, Id {
 
 export const InventoryArgsSchema = z.object({
     title: z.string(),
-    total: positiveIntNumber,
-    available: positiveIntNumber,
-    borrowed: positiveIntNumber
+    total: nonNegativeIntNumber,
+    available: nonNegativeIntNumber,
+    borrowed: nonNegativeIntNumber
 }).required()
 export type InventoryArgs = z.infer<typeof InventoryArgsSchema>
 export interface InventorySchemaType extends InventoryArgs, Id {}
@@ -77,7 +77,7 @@ export interface InventorySchemaType extends InventoryArgs, Id {}
 
 export const EmployeeArgsSchema = z.object({
     name: z.string(),
-    age: positiveIntNumber,
+    age: nonNegativeIntNumber,
     email: z.string().email(),
     password: z.string()
 }).required()
@@ -90,7 +90,7 @@ export interface EmployeeSchemaType extends EmployeeArgs, Id {
 export const ReturnArgsSchema = z.object({
     bookId: zodOIDValidator,
     borrower: zodOIDValidator,
-    borrowDate: positiveIntNumber    
+    borrowDate: nonNegativeIntNumber    
 }).required()
 export type ReturnArgs = z.infer<typeof ReturnArgsSchema>
 export interface ReturnSchemaType extends ReturnArgs, Id {
@@ -101,7 +101,7 @@ export interface ReturnSchemaType extends ReturnArgs, Id {
 export const PenaltyArgsSchema = z.object({
     bookId: zodOIDValidator,
     borrower: zodOIDValidator,
-    penalty: positiveIntNumber,
+    penalty: nonNegativeIntNumber,
 }).required()
 export type PenaltyArgs = z.infer<typeof PenaltyArgsSchema>
 
