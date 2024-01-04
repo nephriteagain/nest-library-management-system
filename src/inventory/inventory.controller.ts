@@ -7,12 +7,15 @@ import {
     HttpStatus,
     Body,
     Patch,
+    UsePipes
 } from '@nestjs/common';
 import { InventoryService } from './inventory.service';
 import { isValidObjectId, ObjectId } from 'mongoose';
 import { Response } from 'express';
-import { InventoryArgs, InventorySchemaType } from 'src/types/models';
+import { InventoryArgs, InventorySchemaType, InventoryArgsSchema, zodOIDValidator, PartialInventoryArgsSchema  } from 'src/types/models';
+import { ZodValidationPipe } from 'src/db/validation/schema.pipe';
 
+// TODO: add another pipe that checks if (borrow + available === total)
 @Controller('inventory')
 export class InventoryController {
     constructor(private inventoryService: InventoryService) {}
@@ -23,6 +26,7 @@ export class InventoryController {
     }
 
     @Get(':id')
+    @UsePipes(new ZodValidationPipe(zodOIDValidator))
     async getInventoryItem(
         @Param('id') id: ObjectId,
         @Res() res: Response,
@@ -38,14 +42,16 @@ export class InventoryController {
     }
 
     @Post('')
+    @UsePipes(new ZodValidationPipe(InventoryArgsSchema))
     async addInventory(@Body() body: InventoryArgs): Promise<InventorySchemaType> {
         return await this.inventoryService.addInventory(body);
     }
 
+    
     @Patch(':id')
     async updateInventoryItem(
-        @Param('id') id: ObjectId,
-        @Body() changes: Partial<InventoryArgs>,
+        @Param('id', new ZodValidationPipe(zodOIDValidator)) id: ObjectId,
+        @Body(new ZodValidationPipe(PartialInventoryArgsSchema)) changes: Partial<InventoryArgs>,
         @Res() res: Response,
     ): Promise<Response<InventorySchemaType|400>> {
         if (!isValidObjectId(id)) {

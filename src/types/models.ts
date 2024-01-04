@@ -73,6 +73,12 @@ export const InventoryArgsSchema = z.object({
 }).required()
 export type InventoryArgs = z.infer<typeof InventoryArgsSchema>
 export interface InventorySchemaType extends InventoryArgs, Id {}
+export const PartialInventoryArgsSchema = z.object({
+    title: z.string(),
+    total: nonNegativeIntNumber,
+    available: nonNegativeIntNumber,
+    borrowed: nonNegativeIntNumber
+}).partial()
 
 
 export const EmployeeArgsSchema = z.object({
