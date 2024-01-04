@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Res, Req, Body, HttpStatus, Param, Query } from '@nestjs/common';
+import { Controller, Get, Post, Res, Req, Body, HttpStatus, Query, UsePipes } from '@nestjs/common';
 import { ReturnService } from './return.service';
 import { AuthService } from 'src/auth/auth.service';
 import { ObjectId } from 'mongoose';
-import { ReturnArgs, ReturnSchemaType } from 'src/types/models';
+import { ReturnArgs, ReturnSchemaType, ReturnArgsSchema, zodOIDValidator } from 'src/types/models';
 import { Request, Response } from 'express';
+import { ZodValidationPipe } from 'src/db/validation/schema.pipe';
 
 
 @Controller('return')
@@ -20,6 +21,7 @@ export class ReturnController {
     }
 
     @Get('query')
+    @UsePipes(new ZodValidationPipe(zodOIDValidator))
     async getReturnItem(@Query("id") id : ObjectId) : Promise<ReturnSchemaType|404> {        
         const returnItem = await this.returnService.getReturnItem(id)
         if (!returnItem) {
@@ -29,6 +31,7 @@ export class ReturnController {
     }
 
     @Post('')
+    @UsePipes(new ZodValidationPipe(ReturnArgsSchema))
     async addReturnEntry(@Body() body: ReturnArgs, @Req() req: Request, @Res() res: Response) : Promise<Response<401|201>> { 
         const accessToken = this.authService.extractTokenFromHeader(req)
         if (!accessToken) {
