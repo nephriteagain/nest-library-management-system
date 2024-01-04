@@ -7,13 +7,15 @@ import {
     Post,
     Param,
     Body,
-    Req
+    Req,
+    UsePipes
 } from '@nestjs/common';
 import { MembersService } from './members.service';
 import { ObjectId } from 'mongoose';
 import { Response, Request } from 'express';
-import { MemberArgs, MemberSchemaType } from 'src/types/models';
+import { MemberArgs, MemberSchemaType, membersArgsSchema, zodOIDValidator } from 'src/types/models';
 import { AuthService } from 'src/auth/auth.service';
+import { ZodValidationPipe } from 'src/db/validation/schema.pipe';
 
 @Controller('members')
 export class MembersController {
@@ -29,6 +31,7 @@ export class MembersController {
     }
 
     @Get(':id')
+    @UsePipes(new ZodValidationPipe(zodOIDValidator))
     async getMember(
         @Param('id') id: ObjectId,
         @Res() res: Response,
@@ -41,13 +44,14 @@ export class MembersController {
     }
 
     @Delete(':id')
+    @UsePipes(new ZodValidationPipe(zodOIDValidator))
     async removeMember(@Param('id') id: ObjectId): Promise<Boolean> {
         const removedStatus = await this.membersService.removeMember(id);
         return removedStatus;
     }
 
     @Post('')
-    async addMember(@Body() body: MemberArgs, @Req() req: Request, @Res() res: Response): Promise<Response<MemberSchemaType|401>> {        
+    async addMember(@Body(new ZodValidationPipe(membersArgsSchema)) body: MemberArgs, @Req() req: Request, @Res() res: Response): Promise<Response<MemberSchemaType|401>> {        
         const accessToken = this.authService.extractTokenFromHeader(req)
         if (!accessToken) {
             return res.sendStatus(HttpStatus.UNAUTHORIZED)
