@@ -1,6 +1,7 @@
 import * as dotenv from 'dotenv'
 dotenv.config()
 
-export const jwtConstants = {
-    secret: `${process.env.SECRET_KEY}`,
-}  as const satisfies Record<string,string>
+export const envConstants = {
+    secret: `${process.env.SECRET_KEY}`,    
+    env: `${process.env.ENV}`
+}  satisfies Record<string,string>
