@@ -1,9 +1,10 @@
-import { Controller, Get, HttpStatus, Param, Res, Post, Body, Req, Query } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Param, Res, Post, Body, Req, Query, UsePipes } from '@nestjs/common';
 import { PenaltyService } from './penalty.service';
-import { P, PenaltyArgs, PenaltySchemaType } from 'src/types/models';
+import { P, PenaltyArgs, PenaltySchemaType, PenaltyArgsSchema, zodOIDValidator } from 'src/types/models';
 import { ObjectId } from 'mongoose';
 import { Request, Response } from 'express';
 import { AuthService } from 'src/auth/auth.service';
+import { ZodValidationPipe } from 'src/db/validation/schema.pipe';
 
 @Controller('penalty')
 export class PenaltyController {
@@ -19,6 +20,7 @@ export class PenaltyController {
 
     // i am using Query here because for some reason Param doesnt work!
     @Get('query')
+    @UsePipes(new ZodValidationPipe(zodOIDValidator))
     async getEntry(@Query('id') id: ObjectId ) : P<PenaltySchemaType|404> {
         const entry = await this.penaltyService.getEntry(id)
         if (!entry) {
@@ -26,8 +28,9 @@ export class PenaltyController {
         }
         return entry
     }
-//
+
     @Post('')
+    @UsePipes(new ZodValidationPipe(PenaltyArgsSchema))
     async addEntry(@Body() penaltyEntry: PenaltyArgs, @Req() req: Request, @Res() res: Response) : P<Response<PenaltySchemaType|401>>{
         const accessToken = this.authService.extractTokenFromHeader(req)
         if (!accessToken) {
