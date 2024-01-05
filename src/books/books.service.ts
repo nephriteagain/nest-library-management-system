@@ -32,4 +32,19 @@ export class BooksService {
         });
         return updatedBook;
     }
+
+    async search(type:'title'|'authors', string: string) : Promise<BookSchemaType[]> {
+        const regex = new RegExp(`${string}`, 'gi')
+        if (type === 'title') {
+            const query = await BookSchema.find({title: {
+                '$regex': regex
+            }})
+            return query
+        } else {
+            const query = await BookSchema.find({authors: {
+                '$elemMatch': { '$regex': regex }
+            }})
+            return query
+        }        
+    }
 }

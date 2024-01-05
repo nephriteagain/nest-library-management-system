@@ -9,7 +9,9 @@ import {
     Res,
     HttpStatus,
     UsePipes,
-    Req
+    Req,
+    Query,
+    HttpException
 } from '@nestjs/common';
 import { BooksService } from './books.service';
 import type { BookArgs, BookSchemaType } from 'src/types/models';
@@ -54,6 +56,7 @@ export class BooksController {
         }
         return res.status(HttpStatus.NOT_FOUND);
     }
+
     
     @Get(':id')
     @UsePipes(new ZodValidationPipe(zodOIDValidator))
@@ -71,8 +74,22 @@ export class BooksController {
 
     @UseGuards(AuthGuard)
     @Get('')
-    async getBooks() : Promise<BookSchemaType[]> {
+    async getBooks(@Query('title') title?: string, @Query('authors') authors?: string) : Promise<BookSchemaType[]> {
+        if (title && authors) {
+            throw new HttpException('cannot query both title and quthor at the same time', HttpStatus.BAD_REQUEST)
+        }
+        if (title) {
+            const books = await this.bookService.search('title', title)            
+            return books;
+        }
+        if (authors) {
+            const books = await this.bookService.search('authors', authors)
+            return books;
+        }
+
         const books = await this.bookService.getBooks()
         return books
     }
+
+    
 }
