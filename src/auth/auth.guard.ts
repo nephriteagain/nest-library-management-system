@@ -23,7 +23,7 @@ export class AuthGuard implements CanActivate {
         const response: Response = context.switchToHttp().getResponse();
         const token = this.authService.extractTokenFromHeader(request);
         if (!token) {
-            response.redirect(HttpStatus.PERMANENT_REDIRECT, '/signin');
+            response.redirect(HttpStatus.PERMANENT_REDIRECT, '/login');
             return false;
         }
         try {

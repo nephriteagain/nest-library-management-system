@@ -41,11 +41,6 @@ export class InventoryController {
         return res.send(entry);
     }
 
-    @Post('')
-    @UsePipes(new ZodValidationPipe(InventoryArgsSchema))
-    async addInventory(@Body() body: InventoryArgs): Promise<InventorySchemaType> {
-        return await this.inventoryService.addInventory(body);
-    }
 
     
     @Patch(':id')

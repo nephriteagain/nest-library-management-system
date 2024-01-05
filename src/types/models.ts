@@ -28,7 +28,9 @@ export type SignInArgs = z.infer<typeof signInSchema>
 export const bookArgsSchema = z.object({
     title: z.string(),
     authors: z.array(z.string()),
-    yearPublished: nonNegativeIntNumber
+    yearPublished: nonNegativeIntNumber,
+    // this total props is for inventory service
+    total: nonNegativeIntNumber
 }).required()
 export const partialBookArgsSchema = z.object({
     title: z.string(),
@@ -36,7 +38,7 @@ export const partialBookArgsSchema = z.object({
     yearPublished: nonNegativeIntNumber,
 }).partial()
 export type BookArgs = z.infer<typeof bookArgsSchema>
-export interface BookSchemaType extends BookArgs, Id {
+export interface BookSchemaType extends Omit<BookArgs, 'total'>, Id {
     dateAdded: number;
 }
 
@@ -66,13 +68,16 @@ export interface BorrowSchemaType extends BorrowArgs, Id {
 
 
 export const InventoryArgsSchema = z.object({
+    bookId: zodOIDValidator,
     title: z.string(),
     total: nonNegativeIntNumber,
-    available: nonNegativeIntNumber,
-    borrowed: nonNegativeIntNumber
+    
 }).required()
 export type InventoryArgs = z.infer<typeof InventoryArgsSchema>
-export interface InventorySchemaType extends InventoryArgs, Id {}
+export interface InventorySchemaType extends InventoryArgs, Id {
+    available: number,
+    borrowed: number
+}
 export const PartialInventoryArgsSchema = z.object({
     title: z.string(),
     total: nonNegativeIntNumber,
