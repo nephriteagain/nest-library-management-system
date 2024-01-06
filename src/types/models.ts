@@ -68,13 +68,13 @@ export interface BorrowSchemaType extends BorrowArgs, Id {
 
 
 export const InventoryArgsSchema = z.object({
-    bookId: zodOIDValidator,
+    _id: zodOIDValidator,
     title: z.string(),
-    total: nonNegativeIntNumber,
+    total: nonNegativeIntNumber,    
     
 }).required()
 export type InventoryArgs = z.infer<typeof InventoryArgsSchema>
-export interface InventorySchemaType extends InventoryArgs, Id {
+export interface InventorySchemaType extends InventoryArgs {
     available: number,
     borrowed: number
 }

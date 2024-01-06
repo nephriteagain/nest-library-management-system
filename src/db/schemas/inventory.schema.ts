@@ -2,6 +2,10 @@ import { Schema, model,  } from 'mongoose'
 import { InventorySchemaType } from 'src/types/models';
 
 const INVENTORY = new Schema<InventorySchemaType>({
+    _id: {
+        type: Schema.Types.ObjectId,
+        required: true
+    },
     title: {
         type: String,
         required: true,

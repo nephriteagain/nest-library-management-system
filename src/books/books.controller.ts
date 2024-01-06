@@ -27,22 +27,13 @@ import { ZodValidationPipe } from 'src/db/validation/schema.pipe';
 export class BooksController {
     constructor(
         private bookService: BooksService,
-        private inventoryService: InventoryService
     ) {}
 
     @Post('')
     @UsePipes(new ZodValidationPipe(bookArgsSchema))
     async addBook(@Body() book: BookArgs) : Promise<BookSchemaType|500> {
         const newBook = await this.bookService.add(book);
-        const { title, total } = book
-        const { _id : bookId } = newBook
-        // if newBook failed, undo newBook write
-        // looks ugly test refactor, maybe just send to the service side
-        try {
-            await this.inventoryService.addInventory({bookId, title, total })            
-        } catch (error) {
-            console.error(error)
-            this.bookService.delete(bookId)
+        if (!newBook) {
             return HttpStatus.INTERNAL_SERVER_ERROR
         }
         return newBook;

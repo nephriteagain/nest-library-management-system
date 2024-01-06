@@ -1,16 +1,29 @@
 import { Injectable } from '@nestjs/common';
-import { BookArgs, BookSchemaType } from 'src/types/models';
+import { BookArgs, BookSchemaType, InventoryArgs } from 'src/types/models';
 import BookSchema from 'src/db/schemas/book.schema';
+import InventorySchema from 'src/db/schemas/inventory.schema';
 import { ObjectId } from 'mongoose';
 
 
 
 @Injectable()
 export class BooksService {
-    async add(book: BookArgs): Promise<BookSchemaType> {
+
+    async add(book: BookArgs): Promise<BookSchemaType|null> {
         const newBook = await BookSchema.create(book);
+        const { _id } = newBook
+        const { title, total } = book
+        const newEntry : InventoryArgs = {_id, title, total}
+        try {            
+            await InventorySchema.create(newEntry)
+        } catch (error) {
+            console.error(error)
+            BookSchema.findByIdAndDelete(_id)
+            return null;
+        }
         return newBook;
     }
+
     async getBook(id: ObjectId): Promise<BookSchemaType | null> {
         console.log(id, 'service');
         const book = await BookSchema.findById(id);
