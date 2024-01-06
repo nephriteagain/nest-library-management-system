@@ -5,8 +5,8 @@ import { AuthService } from 'src/auth/auth.service';
 import { UsersModule } from 'src/users/users.module';
 
 @Module({
-  controllers: [ReturnController],
-  providers: [ReturnService, AuthService],
-  imports: [UsersModule]
+    controllers: [ReturnController],
+    providers: [ReturnService, AuthService],
+    imports: [UsersModule],
 })
 export class ReturnModule {}

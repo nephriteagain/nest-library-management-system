@@ -16,12 +16,15 @@ export class MembersService {
     }
 
     async removeMember(id: ObjectId): Promise<Boolean> {
-        const removedStatus  = await MembersShema.findByIdAndDelete(id);
+        const removedStatus = await MembersShema.findByIdAndDelete(id);
         return Boolean(removedStatus);
     }
 
-    async addMember(member: MemberArgs, approvedBy: ObjectId): Promise<MemberSchemaType> {
-        const newMember = await MembersShema.create({...member, approvedBy});
+    async addMember(
+        member: MemberArgs,
+        approvedBy: ObjectId,
+    ): Promise<MemberSchemaType> {
+        const newMember = await MembersShema.create({ ...member, approvedBy });
         return newMember;
     }
 }

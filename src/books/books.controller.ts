@@ -11,37 +11,41 @@ import {
     UsePipes,
     Req,
     Query,
-    HttpException
+    HttpException,
 } from '@nestjs/common';
 import { BooksService } from './books.service';
-import { InventoryService } from 'src/inventory/inventory.service';
 import type { BookArgs, BookSchemaType } from 'src/types/models';
 import { ObjectId } from 'mongoose';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { bookArgsSchema, zodOIDValidator, partialBookArgsSchema } from 'src/types/models';
+import {
+    bookArgsSchema,
+    zodOIDValidator,
+    partialBookArgsSchema,
+} from 'src/types/models';
 import { ZodValidationPipe } from 'src/db/validation/schema.pipe';
 
 @Controller('books')
 export class BooksController {
-    constructor(
-        private bookService: BooksService,
-    ) {}
+    constructor(private bookService: BooksService) {}
 
     @Post('')
     @UsePipes(new ZodValidationPipe(bookArgsSchema))
-    async addBook(@Body() book: BookArgs) : Promise<BookSchemaType|500> {
+    async addBook(@Body() book: BookArgs): Promise<BookSchemaType | 500> {
         const newBook = await this.bookService.add(book);
         if (!newBook) {
-            return HttpStatus.INTERNAL_SERVER_ERROR
+            return HttpStatus.INTERNAL_SERVER_ERROR;
         }
         return newBook;
     }
 
     @Delete(':id')
     @UsePipes(new ZodValidationPipe(zodOIDValidator))
-    async deleteBook(@Param('id') id: ObjectId, @Res() res: Response) : Promise<Response<200|404>> {
+    async deleteBook(
+        @Param('id') id: ObjectId,
+        @Res() res: Response,
+    ): Promise<Response<200 | 404>> {
         const deleteStatus = await this.bookService.delete(id);
         if (deleteStatus) {
             return res.sendStatus(HttpStatus.OK);
@@ -49,28 +53,28 @@ export class BooksController {
         return res.sendStatus(HttpStatus.NOT_FOUND);
     }
 
-    @Patch(':id')    
+    @Patch(':id')
     async updateBook(
-        @Body(new ZodValidationPipe(partialBookArgsSchema)) update: Partial<BookArgs>,
+        @Body(new ZodValidationPipe(partialBookArgsSchema))
+        update: Partial<BookArgs>,
         @Param('id', new ZodValidationPipe(zodOIDValidator)) id: ObjectId,
         @Res() res: Response,
-    ) : Promise<Response<BookSchemaType|404>> {        
-        console.log(update)
-        const updatedBook = await this.bookService.update(id, update);        
+    ): Promise<Response<BookSchemaType | 404>> {
+        console.log(update);
+        const updatedBook = await this.bookService.update(id, update);
         if (updatedBook) {
             return res.send(updatedBook);
         }
         return res.status(HttpStatus.NOT_FOUND);
     }
 
-    
     @Get(':id')
     @UsePipes(new ZodValidationPipe(zodOIDValidator))
     async getBook(
         @Param('id') id: ObjectId,
         @Res() res: Response,
     ): Promise<Response<BookSchemaType | 404>> {
-        console.log({id})
+        console.log({ id });
         const book = await this.bookService.getBook(id);
         if (book) {
             return res.send(book);
@@ -80,22 +84,26 @@ export class BooksController {
 
     @UseGuards(AuthGuard)
     @Get('')
-    async getBooks(@Query('title') title?: string, @Query('authors') authors?: string) : Promise<BookSchemaType[]> {
+    async getBooks(
+        @Query('title') title?: string,
+        @Query('authors') authors?: string,
+    ): Promise<BookSchemaType[]> {
         if (title && authors) {
-            throw new HttpException('cannot query both title and quthor at the same time', HttpStatus.BAD_REQUEST)
+            throw new HttpException(
+                'cannot query both title and quthor at the same time',
+                HttpStatus.BAD_REQUEST,
+            );
         }
         if (title) {
-            const books = await this.bookService.search('title', title)            
+            const books = await this.bookService.search('title', title);
             return books;
         }
         if (authors) {
-            const books = await this.bookService.search('authors', authors)
+            const books = await this.bookService.search('authors', authors);
             return books;
         }
 
-        const books = await this.bookService.getBooks()
-        return books
+        const books = await this.bookService.getBooks();
+        return books;
     }
-
-    
 }

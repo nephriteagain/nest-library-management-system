@@ -7,12 +7,18 @@ import {
     HttpStatus,
     Body,
     Patch,
-    UsePipes
+    UsePipes,
 } from '@nestjs/common';
 import { InventoryService } from './inventory.service';
 import { isValidObjectId, ObjectId } from 'mongoose';
 import { Response } from 'express';
-import { InventoryArgs, InventorySchemaType, InventoryArgsSchema, zodOIDValidator, PartialInventoryArgsSchema  } from 'src/types/models';
+import {
+    InventoryArgs,
+    InventorySchemaType,
+    InventoryArgsSchema,
+    zodOIDValidator,
+    PartialInventoryArgsSchema,
+} from 'src/types/models';
 import { ZodValidationPipe } from 'src/db/validation/schema.pipe';
 
 // TODO: add another pipe that checks if (borrow + available === total)
@@ -30,7 +36,7 @@ export class InventoryController {
     async getInventoryItem(
         @Param('id') id: ObjectId,
         @Res() res: Response,
-    ): Promise<Response<InventorySchemaType|400|404>> {
+    ): Promise<Response<InventorySchemaType | 400 | 404>> {
         if (!isValidObjectId(id)) {
             return res.sendStatus(HttpStatus.BAD_REQUEST);
         }
@@ -41,19 +47,18 @@ export class InventoryController {
         return res.send(entry);
     }
 
-
-    
     @Patch(':id')
     async updateInventoryItem(
         @Param('id', new ZodValidationPipe(zodOIDValidator)) id: ObjectId,
-        @Body(new ZodValidationPipe(PartialInventoryArgsSchema)) changes: Partial<InventoryArgs>,
+        @Body(new ZodValidationPipe(PartialInventoryArgsSchema))
+        changes: Partial<InventoryArgs>,
         @Res() res: Response,
-    ): Promise<Response<InventorySchemaType|400>> {
+    ): Promise<Response<InventorySchemaType | 400>> {
         if (!isValidObjectId(id)) {
             return res.sendStatus(HttpStatus.BAD_REQUEST);
         }
         const updatedEntry = await this.inventoryService.updateInventoryItem(
-            id, 
+            id,
             changes,
         );
         return res.send(updatedEntry);

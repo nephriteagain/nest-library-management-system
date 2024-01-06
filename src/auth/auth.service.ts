@@ -16,8 +16,11 @@ export class AuthService {
     ) {}
 
     // TODO: i am getting a access token even with incorrect password!
-    async signIn(email: string, pass: string): Promise<{access_token:string}> {
-        const user = await this.usersService.findUser(email);        
+    async signIn(
+        email: string,
+        pass: string,
+    ): Promise<{ access_token: string }> {
+        const user = await this.usersService.findUser(email);
         if (!user) {
             throw new NotFoundException();
         }
@@ -37,7 +40,11 @@ export class AuthService {
         return type === 'Bearer' ? token : undefined;
     }
 
-    getTokenData(accessToken: string) : {sub: ObjectId; email: string}{
-        return this.jwtService.decode<{sub:ObjectId; email:string; [key:string]: any;}>(accessToken)
+    getTokenData(accessToken: string): { sub: ObjectId; email: string } {
+        return this.jwtService.decode<{
+            sub: ObjectId;
+            email: string;
+            [key: string]: any;
+        }>(accessToken);
     }
 }

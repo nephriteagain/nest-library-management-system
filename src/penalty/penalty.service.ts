@@ -5,22 +5,27 @@ import { ObjectId, isValidObjectId } from 'mongoose';
 
 @Injectable()
 export class PenaltyService {
-    
-    async addEntry(penaltyEntry : PenaltyArgs, approvedBy: ObjectId) : P<PenaltySchemaType> {
-        const newEntry =  await PenaltySchema.create({...penaltyEntry, approvedBy})
-        return newEntry
+    async addEntry(
+        penaltyEntry: PenaltyArgs,
+        approvedBy: ObjectId,
+    ): P<PenaltySchemaType> {
+        const newEntry = await PenaltySchema.create({
+            ...penaltyEntry,
+            approvedBy,
+        });
+        return newEntry;
     }
 
-    async getEntry(id: ObjectId) : P<PenaltySchemaType|null> {
+    async getEntry(id: ObjectId): P<PenaltySchemaType | null> {
         if (!isValidObjectId(id)) {
-            throw new HttpException('invalid id', HttpStatus.BAD_REQUEST)
+            throw new HttpException('invalid id', HttpStatus.BAD_REQUEST);
         }
-        const doc = await PenaltySchema.findById(id)
-        return doc
+        const doc = await PenaltySchema.findById(id);
+        return doc;
     }
-    
-    async getEntries() : P<PenaltySchemaType[]> {
-        const docs = await PenaltySchema.find({}).limit(20)
-        return docs
+
+    async getEntries(): P<PenaltySchemaType[]> {
+        const docs = await PenaltySchema.find({}).limit(20);
+        return docs;
     }
 }

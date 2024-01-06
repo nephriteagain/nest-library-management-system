@@ -1,10 +1,10 @@
-import { Schema, model, SchemaTypes } from 'mongoose'
+import { Schema, model, SchemaTypes } from 'mongoose';
 import { BorrowSchemaType } from 'src/types/models';
 
 const BorrowSchema = new Schema<BorrowSchemaType>({
     bookId: {
         type: SchemaTypes.ObjectId,
-        required: true,        
+        required: true,
     },
     title: {
         type: String,

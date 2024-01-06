@@ -1,10 +1,10 @@
-import { Schema, model,  } from 'mongoose'
+import { Schema, model } from 'mongoose';
 import { InventorySchemaType } from 'src/types/models';
 
 const INVENTORY = new Schema<InventorySchemaType>({
     _id: {
         type: Schema.Types.ObjectId,
-        required: true
+        required: true,
     },
     title: {
         type: String,
@@ -16,11 +16,11 @@ const INVENTORY = new Schema<InventorySchemaType>({
     },
     available: {
         type: Number,
-        default: 0
+        default: 0,
     },
     borrowed: {
         type: Number,
-        default: 0
+        default: 0,
     },
 });
 

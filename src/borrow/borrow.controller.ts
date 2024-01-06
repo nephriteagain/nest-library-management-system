@@ -7,7 +7,7 @@ import {
     Post,
     Body,
     Req,
-    UsePipes
+    UsePipes,
 } from '@nestjs/common';
 import { BorrowService } from './borrow.service';
 import { ObjectId } from 'mongoose';
@@ -22,7 +22,7 @@ export class BorrowController {
     constructor(
         private borrowService: BorrowService,
         private authService: AuthService,
-        ) {}
+    ) {}
 
     @Get('')
     async getBorrowList(): Promise<BorrowSchemaType[]> {
@@ -34,7 +34,7 @@ export class BorrowController {
     async getBorrowItem(
         @Param('id') id: ObjectId,
         @Res() res: Response,
-    ): Promise<Response<BorrowSchemaType|404>> {
+    ): Promise<Response<BorrowSchemaType | 404>> {
         const borrowItem = await this.borrowService.getBorrowData(id);
         if (borrowItem) {
             return res.send(borrowItem);
@@ -43,15 +43,19 @@ export class BorrowController {
     }
 
     @Post('')
-    // TODO: add a pipe validation to check if all property is all there and removed excess properties    
-    async addNewEntry(@Body(new ZodValidationPipe(BorrowArgsSchema)) body: BorrowArgs, @Req() req: Request, @Res() res: Response) : Promise<Response<404|201>> {
-        const accessToken = this.authService.extractTokenFromHeader(req)        
+    // TODO: add a pipe validation to check if all property is all there and removed excess properties
+    async addNewEntry(
+        @Body(new ZodValidationPipe(BorrowArgsSchema)) body: BorrowArgs,
+        @Req() req: Request,
+        @Res() res: Response,
+    ): Promise<Response<404 | 201>> {
+        const accessToken = this.authService.extractTokenFromHeader(req);
         if (!accessToken) {
-            return res.sendStatus(HttpStatus.UNAUTHORIZED)
+            return res.sendStatus(HttpStatus.UNAUTHORIZED);
         }
-        const { sub: aprrovedBy } = this.authService.getTokenData(accessToken)
+        const { sub: aprrovedBy } = this.authService.getTokenData(accessToken);
         // console.log({approvedBy})
-        await this.borrowService.add(body, aprrovedBy)
-        return res.sendStatus(HttpStatus.CREATED)
+        await this.borrowService.add(body, aprrovedBy);
+        return res.sendStatus(HttpStatus.CREATED);
     }
 }

@@ -6,7 +6,7 @@ import { InventoryService } from 'src/inventory/inventory.service';
 import { UsersModule } from 'src/users/users.module';
 
 @Module({
-    providers: [BooksService, AuthService, InventoryService ],
+    providers: [BooksService, AuthService, InventoryService],
     controllers: [BooksController],
     imports: [UsersModule],
 })

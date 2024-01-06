@@ -7,6 +7,6 @@ import { UsersModule } from 'src/users/users.module';
 @Module({
     providers: [MembersService],
     controllers: [MembersController],
-    imports: [AuthModule, UsersModule]
+    imports: [AuthModule, UsersModule],
 })
 export class MembersModule {}

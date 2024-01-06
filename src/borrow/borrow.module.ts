@@ -8,6 +8,6 @@ import { UsersModule } from 'src/users/users.module';
 @Module({
     controllers: [BorrowController],
     providers: [BorrowService, AuthGuard, AuthService],
-    imports: [UsersModule]
+    imports: [UsersModule],
 })
 export class BorrowModule {}

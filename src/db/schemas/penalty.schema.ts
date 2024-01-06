@@ -1,4 +1,4 @@
-import { Schema, SchemaTypes, model } from 'mongoose'
+import { Schema, SchemaTypes, model } from 'mongoose';
 import { PenaltySchemaType } from 'src/types/models';
 
 const PenaltySchema = new Schema<PenaltySchemaType>({

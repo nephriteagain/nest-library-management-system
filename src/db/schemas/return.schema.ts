@@ -1,10 +1,10 @@
-import { Schema, SchemaTypes, model } from 'mongoose'
+import { Schema, SchemaTypes, model } from 'mongoose';
 import { ReturnSchemaType } from 'src/types/models';
 
 const ReturnSchema = new Schema<ReturnSchemaType>({
     bookId: {
         type: SchemaTypes.ObjectId,
-        required: true
+        required: true,
     },
     borrower: {
         type: SchemaTypes.ObjectId,

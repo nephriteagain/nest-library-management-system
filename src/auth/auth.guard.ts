@@ -10,12 +10,11 @@ import { Request, Response } from 'express';
 import { envConstants } from './constants';
 import { AuthService } from './auth.service';
 
-
 @Injectable()
 export class AuthGuard implements CanActivate {
     constructor(
         private jwtService: JwtService,
-        private authService: AuthService
+        private authService: AuthService,
     ) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -39,5 +38,4 @@ export class AuthGuard implements CanActivate {
         }
         return true;
     }
-
 }

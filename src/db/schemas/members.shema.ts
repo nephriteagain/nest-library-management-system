@@ -1,4 +1,4 @@
-import { SchemaTypes, model, Schema } from 'mongoose'
+import { SchemaTypes, model, Schema } from 'mongoose';
 import { MemberSchemaType } from 'src/types/models';
 
 const MemberSchema = new Schema<MemberSchemaType>({
@@ -18,6 +18,6 @@ const MemberSchema = new Schema<MemberSchemaType>({
         type: SchemaTypes.ObjectId,
         required: true,
     },
-})
+});
 
 export default model('MEMBERS', MemberSchema);

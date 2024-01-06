@@ -1,11 +1,11 @@
-import { Schema, model, } from 'mongoose'
+import { Schema, model } from 'mongoose';
 import { EmployeeSchemaType } from 'src/types/models';
 
 const EmployeeSchema = new Schema<EmployeeSchemaType>({
     email: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
     },
     password: {
         type: String,

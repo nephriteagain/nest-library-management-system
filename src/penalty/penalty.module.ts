@@ -4,8 +4,8 @@ import { PenaltyService } from './penalty.service';
 import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
-  controllers: [PenaltyController],
-  providers: [PenaltyService],
-  imports: [AuthModule]
+    controllers: [PenaltyController],
+    providers: [PenaltyService],
+    imports: [AuthModule],
 })
 export class PenaltyModule {}

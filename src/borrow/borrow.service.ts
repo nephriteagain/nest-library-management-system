@@ -5,7 +5,10 @@ import { ObjectId } from 'mongoose';
 
 @Injectable()
 export class BorrowService {
-    async add(newBorrowData: BorrowArgs, employeeId: ObjectId): Promise<BorrowSchemaType> {
+    async add(
+        newBorrowData: BorrowArgs,
+        employeeId: ObjectId,
+    ): Promise<BorrowSchemaType> {
         const borrow = await BorrowSchema.create({
             ...newBorrowData,
             approvedBy: employeeId,
