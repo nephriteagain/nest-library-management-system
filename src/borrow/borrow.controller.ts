@@ -32,10 +32,11 @@ export class BorrowController {
     async getBorrowList(
         @Query('title') title : string,
         @Query('bookId') bookId : ObjectId,
-        @Query('id') id : ObjectId,
-        @Query('borrower') borrower : ObjectId
+        @Query('_id') _id : ObjectId,
+        @Query('borrower') borrower : ObjectId,
+        @Query('approvedBy') approvedBy : ObjectId,
     ): Promise<BorrowSchemaType[]> {
-        return this.borrowService.getBorrowList({title, bookId, id, borrower});
+        return this.borrowService.getBorrowList({title, bookId, _id, borrower, approvedBy});
     }
 
     @Get(':id')
