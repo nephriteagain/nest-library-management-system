@@ -13,8 +13,12 @@ export class InventoryService {
         return await InventorySchema.findById(id);
     }
 
+    // NOTE: this endpoint is currently not being used
     async addInventory(entry: InventoryArgs): Promise<InventorySchemaType> {
-        const newEntry = await InventorySchema.create(entry);
+        const newEntry = await InventorySchema.create({
+            ...entry,
+            available: entry.total,
+        });
         return newEntry;
     }
 

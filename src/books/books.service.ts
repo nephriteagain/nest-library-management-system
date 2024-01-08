@@ -10,7 +10,7 @@ export class BooksService {
         const newBook = await BookSchema.create(book);
         const { _id } = newBook;
         const { title, total } = book;
-        const newEntry: InventoryArgs = { _id, title, total };
+        const newEntry = { _id, title, total, available: total };
         try {
             await InventorySchema.create(newEntry);
         } catch (error) {

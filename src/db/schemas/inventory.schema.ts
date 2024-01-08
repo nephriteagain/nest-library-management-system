@@ -16,7 +16,7 @@ const INVENTORY = new Schema<InventorySchemaType>({
     },
     available: {
         type: Number,
-        default: 0,
+        required: true,
     },
     borrowed: {
         type: Number,
