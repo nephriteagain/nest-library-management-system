@@ -132,3 +132,10 @@ export type PenaltyArgs = z.infer<typeof PenaltyArgsSchema>;
 export interface PenaltySchemaType extends PenaltyArgs, Id {
     approvedBy: ObjectId;
 }
+
+/**
+ * for query params of get search filters
+ */
+export type Query<T> = Partial<{
+    [Key in keyof T]: Key extends 'authors' ? string : T[Key];
+}>;

@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { BookArgs, BookSchemaType, InventoryArgs } from 'src/types/models';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { BookArgs, BookSchemaType, Query } from 'src/types/models';
 import BookSchema from 'src/db/schemas/book.schema';
 import InventorySchema from 'src/db/schemas/inventory.schema';
 import { ObjectId } from 'mongoose';
@@ -26,8 +26,44 @@ export class BooksService {
         const book = await BookSchema.findById(id);
         return book;
     }
-    async getBooks(): Promise<BookSchemaType[]> {
-        return BookSchema.find({}).limit(20);
+    async getBooks(query: Query<BookSchemaType>): Promise<BookSchemaType[]> {
+        const { title, authors, yearPublished } = query
+        
+        let queryLength = 0;
+        for (const v of Object.values(query)){
+            if (v !== undefined) queryLength++
+        }
+        if (queryLength > 1) {
+            throw new HttpException('only one query param allowed!', HttpStatus.BAD_REQUEST)
+        }
+        if (title) {
+            const regex = new RegExp(`${title}`, 'gi');
+            return await BookSchema.find({
+                title: {
+                    $regex: regex,
+                },
+            }).limit(20).exec();
+        }
+
+        if (authors) {
+            const regex = new RegExp(`${authors}`, 'gi');
+            return await BookSchema.find({
+                authors: {
+                    $elemMatch: { $regex: regex },
+                },
+            }).limit(20).exec();
+        }
+
+        if (yearPublished !== undefined) {
+            const year = Number(yearPublished)
+            if (isNaN(year)) {
+                throw new HttpException('year must be a number', HttpStatus.BAD_REQUEST)
+            }
+
+            return await BookSchema.find({yearPublished: {$eq: year}}).limit(20).exec()
+        }
+
+        return BookSchema.find({}).limit(20).exec();
     }
     async delete(id: ObjectId) {
         const deleteStatus = await BookSchema.findByIdAndDelete(id);
@@ -43,6 +79,7 @@ export class BooksService {
         return updatedBook;
     }
 
+    // TODO: on frontend merge it to the getBooks loader
     async search(
         type: 'title' | 'authors',
         string: string,

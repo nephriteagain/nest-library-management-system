@@ -12,6 +12,7 @@ import {
     Req,
     Query,
     HttpException,
+    ParseIntPipe
 } from '@nestjs/common';
 import { BooksService } from './books.service';
 import type { BookArgs, BookSchemaType } from 'src/types/models';
@@ -85,15 +86,11 @@ export class BooksController {
     @UseGuards(AuthGuard)
     @Get('')
     async getBooks(
-        @Query('title') title?: string,
-        @Query('authors') authors?: string,
+        @Query('title') title: string,
+        @Query('authors') authors: string,
+        @Query('yearPublished') yearPublished?: number,
     ): Promise<BookSchemaType[]> {
-        if (title && authors) {
-            throw new HttpException(
-                'cannot query both title and quthor at the same time',
-                HttpStatus.BAD_REQUEST,
-            );
-        }
+        console.log(title, authors, yearPublished)
         if (title) {
             const books = await this.bookService.search('title', title);
             return books;
@@ -103,7 +100,7 @@ export class BooksController {
             return books;
         }
 
-        const books = await this.bookService.getBooks();
+        const books = await this.bookService.getBooks({title,authors,yearPublished});
         return books;
     }
 }

@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import {  BorrowArgs, BorrowSchemaType } from 'src/types/models';
+import {  BorrowArgs, BorrowSchemaType, Query } from 'src/types/models';
 import BorrowSchema from 'src/db/schemas/borrow.schema';
 import { ObjectId } from 'mongoose';
 
@@ -20,12 +20,12 @@ export class BorrowService {
     }
 
     // TODO : add schema validation here
-    async getBorrowList(query: Partial<BorrowSchemaType>): Promise<BorrowSchemaType[]> {
+    async getBorrowList(query: Query<BorrowSchemaType>): Promise<BorrowSchemaType[]> {
         const { title, _id, bookId, borrower, approvedBy } = query
         
         let queryLength = 0;
         for (const v of Object.values(query)){
-            if (v) queryLength++
+            if (v !== undefined) queryLength++
         }
         if (queryLength > 1) {
             throw new HttpException('only one query param allowed!', HttpStatus.BAD_REQUEST)
