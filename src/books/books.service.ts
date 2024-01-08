@@ -53,14 +53,14 @@ export class BooksService {
                 title: {
                     $regex: regex,
                 },
-            });
+            }).limit(20).exec();
             return query;
         } else {
             const query = await BookSchema.find({
                 authors: {
                     $elemMatch: { $regex: regex },
                 },
-            });
+            }).limit(20).exec();
             return query;
         }
     }

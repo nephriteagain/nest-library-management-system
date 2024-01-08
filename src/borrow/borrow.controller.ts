@@ -8,6 +8,7 @@ import {
     Body,
     Req,
     UsePipes,
+    Query,
 } from '@nestjs/common';
 import { BorrowService } from './borrow.service';
 import { ObjectId } from 'mongoose';
@@ -17,6 +18,8 @@ import { AuthService } from 'src/auth/auth.service';
 import { ZodValidationPipe } from 'src/db/validation/schema.pipe';
 import { BorrowArgsSchema, zodOIDValidator } from 'src/types/models';
 
+
+
 @Controller('borrow')
 export class BorrowController {
     constructor(
@@ -24,9 +27,15 @@ export class BorrowController {
         private authService: AuthService,
     ) {}
 
+
     @Get('')
-    async getBorrowList(): Promise<BorrowSchemaType[]> {
-        return this.borrowService.getBorrowList();
+    async getBorrowList(
+        @Query('title') title : string,
+        @Query('bookId') bookId : ObjectId,
+        @Query('id') id : ObjectId,
+        @Query('borrower') borrower : ObjectId
+    ): Promise<BorrowSchemaType[]> {
+        return this.borrowService.getBorrowList({title, bookId, id, borrower});
     }
 
     @Get(':id')
