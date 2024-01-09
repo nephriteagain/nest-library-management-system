@@ -17,6 +17,7 @@ import {
     PenaltySchemaType,
     PenaltyArgsSchema,
     zodOIDValidator,
+    zodOIDValidatorOptional,
 } from 'src/types/models';
 import { ObjectId } from 'mongoose';
 import { Request, Response } from 'express';
@@ -31,8 +32,12 @@ export class PenaltyController {
     ) {}
 
     @Get('')
-    async getEntries(): P<PenaltySchemaType[]> {
-        return this.penaltyService.getEntries();
+    async getEntries(
+        @Query('_id', new ZodValidationPipe(zodOIDValidatorOptional)) _id: ObjectId,
+        @Query('bookId', new ZodValidationPipe(zodOIDValidatorOptional)) bookId: ObjectId,
+        @Query('approvedBy', new ZodValidationPipe(zodOIDValidatorOptional)) approvedBy: ObjectId
+    ): P<PenaltySchemaType[]> {
+        return this.penaltyService.getEntries({_id, bookId, approvedBy});
     }
 
     // i am using Query here because for some reason Param doesnt work!
