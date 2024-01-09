@@ -3,6 +3,7 @@ import { BookArgs, BookSchemaType, Query } from 'src/types/models';
 import BookSchema from 'src/db/schemas/book.schema';
 import InventorySchema from 'src/db/schemas/inventory.schema';
 import { ObjectId } from 'mongoose';
+import { queryLengthChecker } from 'src/utils';
 
 @Injectable()
 export class BooksService {
@@ -29,13 +30,7 @@ export class BooksService {
     async getBooks(query: Query<BookSchemaType>): Promise<BookSchemaType[]> {
         const { title, authors, yearPublished } = query
         
-        let queryLength = 0;
-        for (const v of Object.values(query)){
-            if (v !== undefined) queryLength++
-        }
-        if (queryLength > 1) {
-            throw new HttpException('only one query param allowed!', HttpStatus.BAD_REQUEST)
-        }
+        queryLengthChecker(query)
         if (title) {
             const regex = new RegExp(`${title}`, 'gi');
             return await BookSchema.find({

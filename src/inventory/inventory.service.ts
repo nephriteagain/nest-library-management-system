@@ -2,19 +2,14 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { ObjectId } from 'mongoose';
 import InventorySchema from 'src/db/schemas/inventory.schema';
 import { InventoryArgs, InventorySchemaType, Query } from 'src/types/models';
+import { queryLengthChecker } from 'src/utils';
 
 @Injectable()
 export class InventoryService {
     async getInventory(query: Query<InventorySchemaType>): Promise<InventorySchemaType[]> {
         const { _id, title } = query
 
-        let queryLength = 0;
-        for (const v of Object.values(query)){
-            if (v !== undefined) queryLength++
-        }
-        if (queryLength > 1) {
-            throw new HttpException('only one query param allowed!', HttpStatus.BAD_REQUEST)
-        }
+        queryLengthChecker(query)
 
         if (_id) {
             return await InventorySchema.find({_id}).limit(1).exec()

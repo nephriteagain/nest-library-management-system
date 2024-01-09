@@ -9,6 +9,7 @@ import {
     Body,
     Req,
     UsePipes,
+    Query
 } from '@nestjs/common';
 import { MembersService } from './members.service';
 import { ObjectId } from 'mongoose';
@@ -31,7 +32,7 @@ export class MembersController {
 
     @Get('')
     async getMembers(): Promise<MemberSchemaType[]> {
-        const members = await this.membersService.getAllMembers();
+        const members = await this.membersService.getAllMembers({});
         return members;
     }
 

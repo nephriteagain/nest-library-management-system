@@ -1,11 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { MemberArgs, MemberSchemaType } from 'src/types/models';
+import { MemberArgs, MemberSchemaType, Query } from 'src/types/models';
 import MembersShema from 'src/db/schemas/members.shema';
 import { ObjectId } from 'mongoose';
+import { queryLengthChecker } from 'src/utils';
+
 
 @Injectable()
 export class MembersService {
-    async getAllMembers(): Promise<MemberSchemaType[]> {
+    async getAllMembers(query: Query<MemberSchemaType>): Promise<MemberSchemaType[]> {
+        const {_id, name} = query
+
+        queryLengthChecker(query)
+
         const members = await MembersShema.find({});
         return members;
     }

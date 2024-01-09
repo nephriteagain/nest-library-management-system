@@ -19,6 +19,7 @@ import {
     InventoryArgsSchema,
     zodOIDValidator,
     PartialInventoryArgsSchema,
+    zodOIDValidatorOptional,
 } from 'src/types/models';
 import { ZodValidationPipe } from 'src/db/validation/schema.pipe';
 
@@ -29,7 +30,8 @@ export class InventoryController {
 
     @Get('')
     async getInventory(
-        @Query('_id', new ZodValidationPipe(zodOIDValidator)) _id:ObjectId, @Query('title') title: string
+        @Query('_id', new ZodValidationPipe(zodOIDValidatorOptional)) 
+        _id:ObjectId, @Query('title') title: string
     ): Promise<InventorySchemaType[]> {
         return await this.inventoryService.getInventory({_id, title});
     }

@@ -14,9 +14,11 @@ function objectIdValidator(value: unknown) {
     }
     return true;
 }
-
+// for route params, body and schema
 export const zodOIDValidator = z.custom<ObjectId>(objectIdValidator);
+// optional used for query params
 export const zodOIDValidatorOptional = z.custom<ObjectId>(objectIdValidator).optional()
+
 export const nonNegativeIntNumber = z.number().int().nonnegative();
 
 export const signInSchema = z
