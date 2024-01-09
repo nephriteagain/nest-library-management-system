@@ -1,12 +1,36 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { ObjectId } from 'mongoose';
 import InventorySchema from 'src/db/schemas/inventory.schema';
-import { InventoryArgs, InventorySchemaType } from 'src/types/models';
+import { InventoryArgs, InventorySchemaType, Query } from 'src/types/models';
 
 @Injectable()
 export class InventoryService {
-    async getInventory(): Promise<InventorySchemaType[]> {
-        return await InventorySchema.find({}).limit(20);
+    async getInventory(query: Query<InventorySchemaType>): Promise<InventorySchemaType[]> {
+        const { _id, title } = query
+
+        let queryLength = 0;
+        for (const v of Object.values(query)){
+            if (v !== undefined) queryLength++
+        }
+        if (queryLength > 1) {
+            throw new HttpException('only one query param allowed!', HttpStatus.BAD_REQUEST)
+        }
+
+        if (_id) {
+            return await InventorySchema.find({_id}).limit(1).exec()
+        }
+
+        if (title) {
+            const regex = new RegExp(`${title}`, 'gi')
+            return await InventorySchema.find({
+                title: {
+                    $regex: regex
+                }
+            }).limit(20).exec()
+        }
+
+
+        return await InventorySchema.find({}).limit(20).exec();
     }
 
     async getInventoryItem(id: ObjectId): Promise<InventorySchemaType | null> {

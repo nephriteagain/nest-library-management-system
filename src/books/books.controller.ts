@@ -24,6 +24,7 @@ import {
     bookArgsSchema,
     zodOIDValidator,
     partialBookArgsSchema,
+    zodOIDValidatorOptional,
 } from 'src/types/models';
 import { ZodValidationPipe } from 'src/db/validation/schema.pipe';
 import { optional } from 'zod';
@@ -89,7 +90,8 @@ export class BooksController {
     async getBooks(
         @Query('title') title: string,
         @Query('authors') authors: string,
-        @Query('yearPublished',new ParseIntPipe({optional:true})) yearPublished?: number ,
+        @Query('_id', new ZodValidationPipe(zodOIDValidatorOptional)) _id : ObjectId,
+        @Query('yearPublished',new ParseIntPipe({optional:true})) yearPublished?: number,
     ): Promise<BookSchemaType[]> {
         console.log(title, authors, yearPublished)
         if (title) {

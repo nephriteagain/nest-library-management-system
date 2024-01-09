@@ -16,6 +16,7 @@ function objectIdValidator(value: unknown) {
 }
 
 export const zodOIDValidator = z.custom<ObjectId>(objectIdValidator);
+export const zodOIDValidatorOptional = z.custom<ObjectId>(objectIdValidator).optional()
 export const nonNegativeIntNumber = z.number().int().nonnegative();
 
 export const signInSchema = z

@@ -8,6 +8,7 @@ import {
     Body,
     Patch,
     UsePipes,
+    Query
 } from '@nestjs/common';
 import { InventoryService } from './inventory.service';
 import { isValidObjectId, ObjectId } from 'mongoose';
@@ -27,8 +28,10 @@ export class InventoryController {
     constructor(private inventoryService: InventoryService) {}
 
     @Get('')
-    async getInventory(): Promise<InventorySchemaType[]> {
-        return await this.inventoryService.getInventory();
+    async getInventory(
+        @Query('_id', new ZodValidationPipe(zodOIDValidator)) _id:ObjectId, @Query('title') title: string
+    ): Promise<InventorySchemaType[]> {
+        return await this.inventoryService.getInventory({_id, title});
     }
 
     @Get(':id')
