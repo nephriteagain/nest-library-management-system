@@ -26,7 +26,7 @@ export class PenaltyService {
     }
 
     async getEntries(query: Query<PenaltySchemaType>): P<PenaltySchemaType[]> {
-        const { bookId, borrower, _id } = query
+        const { bookId, borrower, _id, approvedBy } = query
         queryLengthChecker(query)
 
         if (_id) {
@@ -39,6 +39,10 @@ export class PenaltyService {
         
         if (borrower) {
             return await PenaltySchema.find({borrower}).limit(1).exec()
+        }
+
+        if (approvedBy) {
+            return await PenaltySchema.find({approvedBy}).limit(1).exec()
         }
 
 
