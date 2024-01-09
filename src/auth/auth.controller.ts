@@ -12,6 +12,7 @@ import { AuthService } from './auth.service';
 import { Response, Request } from 'express';
 import { ZodValidationPipe } from 'src/db/validation/schema.pipe';
 import { EmployeeSchemaType, signInSchema } from 'src/types/models';
+import { ObjectId } from 'mongoose'
 
 @Controller('auth')
 export class AuthController {
@@ -36,4 +37,18 @@ export class AuthController {
         this.authService.signOut(res)
         return res.sendStatus(200)
     }
+    
+    @HttpCode(HttpStatus.OK)
+    @Post('credentials')
+    async autoSignin(
+        @Req() req: Request,
+        @Res() res: Response,
+    ) : Promise<Response<204|Omit<EmployeeSchemaType, "password"> & {sub: ObjectId}>> {
+        const userData = await this.authService.autoSignin(req, res)
+        if (!userData) {
+            return res.sendStatus(204)
+        }
+        return res.send(userData)
+    }
+
 }

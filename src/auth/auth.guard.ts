@@ -27,7 +27,6 @@ export class AuthGuard implements CanActivate {
         const jwt = request.cookies.jwt
         if (!jwt) {
             console.error('no jwt found')
-            response.redirect(HttpStatus.PERMANENT_REDIRECT, '/login');
             return false;
         }
         try {

@@ -7,7 +7,7 @@ import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response } from 'express';
 import { ObjectId } from 'mongoose';
-import { EmployeeSchemaType } from 'src/types/models';
+import { EmployeeSchemaType, P } from 'src/types/models';
 import { envConstants } from './constants';
 
 @Injectable()
@@ -41,8 +41,7 @@ export class AuthService {
         const payload = { sub: user._id, email: user.email, name: user.name, age: user.age, joinDate: user.joinDate, _id: user._id };
         const jwt = await this.jwtService.signAsync(payload)
         // created token saved as http-only cookie
-        res.cookie('jwt', jwt, {httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000})
-        
+        res.cookie('jwt', jwt, {httpOnly: true, maxAge: 604_800_000, path: '/', sameSite:'none', secure: true,})
         // returns the passwordless data to user
         // NOTE: const { password, ...userData } = user
         // this does not work, mongodb will send you a bounch of data
@@ -50,19 +49,37 @@ export class AuthService {
         return {email, name,age, joinDate, _id};
     }
 
+    async autoSignin(req:Request,res:Response) : P<null|Omit<EmployeeSchemaType, "password"> & {sub: ObjectId;
+    }> {
+        try {
+            const jwt = this.extractTokenFromHeader(req)
+            if (!jwt) {
+                console.log('no jwt token')
+                return null
+            }        
+            await this.jwtService.verifyAsync(jwt, {
+                secret: envConstants.secret
+            })
+            
+            const data = this.getTokenData(jwt)
+            console.log('valid token, signing in')
+            return data
+        } catch (error) {
+            console.error('invalid jwt token')
+            res.clearCookie('jwt')
+            return null
+        }
+    }
+
     signOut(res:Response) {
-        res.clearCookie("jwt")
+        res.clearCookie("jwt")        
     }
 
     extractTokenFromHeader(request: Request): string | undefined {
         return request.cookies.jwt
     }
 
-    getTokenData(accessToken: string): { sub: ObjectId; email: string } {
-        return this.jwtService.decode<{
-            sub: ObjectId;
-            email: string;
-            [key: string]: any;
-        }>(accessToken);
+    getTokenData(accessToken: string) : Omit<EmployeeSchemaType,'password'> & {sub:ObjectId} {
+        return this.jwtService.decode(accessToken);
     }
 }
