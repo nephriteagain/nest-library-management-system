@@ -34,11 +34,11 @@ export class PenaltyService {
         }
 
         if (bookId) {
-            return await PenaltySchema.find({bookId}).limit(1).exec()
+            return await PenaltySchema.find({bookId}).limit(20).exec()
         }
         
         if (borrower) {
-            return await PenaltySchema.find({borrower}).limit(1).exec()
+            return await PenaltySchema.find({borrower}).limit(20).exec()
         }
 
         if (approvedBy) {

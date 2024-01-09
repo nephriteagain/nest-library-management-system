@@ -17,6 +17,7 @@ import {
     ReturnSchemaType,
     ReturnArgsSchema,
     zodOIDValidator,
+    zodOIDValidatorOptional,
 } from 'src/types/models';
 import { Request, Response } from 'express';
 import { ZodValidationPipe } from 'src/db/validation/schema.pipe';
@@ -29,8 +30,13 @@ export class ReturnController {
     ) {}
 
     @Get('')
-    async getReturnList(): Promise<ReturnSchemaType[]> {
-        const list = await this.returnService.getReturnList();
+    async getReturnList(
+        @Query('_id', new ZodValidationPipe(zodOIDValidatorOptional)) _id: ObjectId,
+        @Query('bookId', new ZodValidationPipe(zodOIDValidatorOptional)) bookId: ObjectId,
+        @Query('borrower', new ZodValidationPipe(zodOIDValidatorOptional)) borrower : ObjectId,
+        @Query('approvedBy', new ZodValidationPipe(zodOIDValidatorOptional)) approvedBy: ObjectId
+    ): Promise<ReturnSchemaType[]> {
+        const list = await this.returnService.getReturnList({_id, bookId, borrower, approvedBy});
         return list;
     }
 
