@@ -4,11 +4,14 @@ import {
     Post,
     HttpCode,
     HttpStatus,
-    UsePipes,
+    UsePipes,        
+    Res,
+    Req
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { Response, Request } from 'express';
 import { ZodValidationPipe } from 'src/db/validation/schema.pipe';
-import { signInSchema } from 'src/types/models';
+import { EmployeeSchemaType, signInSchema } from 'src/types/models';
 
 @Controller('auth')
 export class AuthController {
@@ -17,10 +20,13 @@ export class AuthController {
     @HttpCode(HttpStatus.OK)
     @Post('login')
     @UsePipes(new ZodValidationPipe(signInSchema))
-    async signIn(
+    async signIn (
         @Body() { email, password }: { email: string; password: string },
-    ): Promise<{ access_token: string }> {
-        const token = this.authService.signIn(email, password);
-        return token;
+        @Res() res: Response,
+        @Req() req: Request
+    ) : Promise<Response<Omit<EmployeeSchemaType,'password'>>>
+    {
+        const userData = await this.authService.signIn(email, password, res, req);
+        return res.send(userData);
     }
 }
