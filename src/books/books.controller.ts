@@ -18,8 +18,6 @@ import { BooksService } from './books.service';
 import type { BookArgs, BookSchemaType } from 'src/types/models';
 import { ObjectId } from 'mongoose';
 import { Response } from 'express';
-import { UseGuards } from '@nestjs/common';
-import { AuthGuard } from 'src/auth/auth.guard';
 import {
     bookArgsSchema,
     zodOIDValidator,
@@ -27,7 +25,6 @@ import {
     zodOIDValidatorOptional,
 } from 'src/types/models';
 import { ZodValidationPipe } from 'src/db/validation/schema.pipe';
-import { optional } from 'zod';
 
 @Controller('books')
 export class BooksController {
@@ -63,7 +60,6 @@ export class BooksController {
         @Param('id', new ZodValidationPipe(zodOIDValidator)) id: ObjectId,
         @Res() res: Response,
     ): Promise<Response<BookSchemaType | 404>> {
-        console.log(update);
         const updatedBook = await this.bookService.update(id, update);
         if (updatedBook) {
             return res.send(updatedBook);
@@ -77,15 +73,13 @@ export class BooksController {
         @Param('id') id: ObjectId,
         @Res() res: Response,
     ): Promise<Response<BookSchemaType | 404>> {
-        console.log({ id });
         const book = await this.bookService.getBook(id);
         if (book) {
             return res.send(book);
         }
-        return res.status(HttpStatus.NOT_FOUND);
+        return res.sendStatus(HttpStatus.NOT_FOUND);
     }
 
-    @UseGuards(AuthGuard)
     @Get('')
     async getBooks(
         @Query('title') title: string,
@@ -93,7 +87,6 @@ export class BooksController {
         @Query('_id', new ZodValidationPipe(zodOIDValidatorOptional)) _id : ObjectId,
         @Query('yearPublished',new ParseIntPipe({optional:true})) yearPublished?: number,
     ): Promise<BookSchemaType[]> {
-        console.log(title, authors, yearPublished)
         if (title) {
             const books = await this.bookService.search('title', title);
             return books;

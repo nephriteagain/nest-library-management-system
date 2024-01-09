@@ -9,6 +9,7 @@ import {
     Req,
     UsePipes,
     Query,
+    UseGuards
 } from '@nestjs/common';
 import { BorrowService } from './borrow.service';
 import { ObjectId } from 'mongoose';
@@ -17,6 +18,7 @@ import { Response, Request } from 'express';
 import { AuthService } from 'src/auth/auth.service';
 import { ZodValidationPipe } from 'src/db/validation/schema.pipe';
 import { BorrowArgsSchema, zodOIDValidator } from 'src/types/models';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 
 
@@ -64,7 +66,6 @@ export class BorrowController {
             return res.sendStatus(HttpStatus.UNAUTHORIZED);
         }
         const { sub: aprrovedBy } = this.authService.getTokenData(accessToken);
-        // console.log({approvedBy})
         await this.borrowService.add(body, aprrovedBy);
         return res.sendStatus(HttpStatus.CREATED);
     }

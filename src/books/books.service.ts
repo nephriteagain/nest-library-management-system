@@ -23,7 +23,6 @@ export class BooksService {
     }
 
     async getBook(id: ObjectId): Promise<BookSchemaType | null> {
-        console.log(id, 'service');
         const book = await BookSchema.findById(id);
         return book;
     }

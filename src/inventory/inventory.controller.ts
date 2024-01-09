@@ -8,7 +8,8 @@ import {
     Body,
     Patch,
     UsePipes,
-    Query
+    Query,
+    UseGuards
 } from '@nestjs/common';
 import { InventoryService } from './inventory.service';
 import { isValidObjectId, ObjectId } from 'mongoose';

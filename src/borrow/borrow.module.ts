@@ -7,7 +7,7 @@ import { UsersModule } from 'src/users/users.module';
 
 @Module({
     controllers: [BorrowController],
-    providers: [BorrowService, AuthGuard, AuthService],
+    providers: [BorrowService, AuthService],
     imports: [UsersModule],
 })
 export class BorrowModule {}
