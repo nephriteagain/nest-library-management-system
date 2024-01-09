@@ -12,6 +12,19 @@ export class MembersService {
 
         queryLengthChecker(query)
 
+        if (_id) {
+            return await MembersShema.find({_id}).limit(1).exec()
+        }
+
+        if (name) {
+            const regex = new RegExp(`${name}`, 'gi')
+            return await MembersShema.find({
+                name: {
+                    $regex: regex
+                }
+            }).limit(20).exec()
+        }
+
         const members = await MembersShema.find({});
         return members;
     }

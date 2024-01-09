@@ -19,6 +19,7 @@ import {
     MemberSchemaType,
     membersArgsSchema,
     zodOIDValidator,
+    zodOIDValidatorOptional,
 } from 'src/types/models';
 import { AuthService } from 'src/auth/auth.service';
 import { ZodValidationPipe } from 'src/db/validation/schema.pipe';
@@ -31,8 +32,11 @@ export class MembersController {
     ) {}
 
     @Get('')
-    async getMembers(): Promise<MemberSchemaType[]> {
-        const members = await this.membersService.getAllMembers({});
+    async getMembers(
+        @Query('name') name: string,
+        @Query('_id', new ZodValidationPipe(zodOIDValidatorOptional)) _id: ObjectId
+    ): Promise<MemberSchemaType[]> {
+        const members = await this.membersService.getAllMembers({name,_id});
         return members;
     }
 
