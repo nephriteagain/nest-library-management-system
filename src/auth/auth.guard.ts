@@ -19,7 +19,7 @@ export class AuthGuard implements CanActivate {
         const request : Request = context.switchToHttp().getRequest();
         const response: Response = context.switchToHttp().getResponse();
         
-        if (request.path === '/auth/login') {
+        if (request.path.startsWith('/auth')) {
             console.log('auth guard skipped')
             return true
         }

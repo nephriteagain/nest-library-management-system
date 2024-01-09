@@ -2,7 +2,6 @@ import {
     Injectable,
     UnauthorizedException,
     NotFoundException,
-    Res
 } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
@@ -49,6 +48,10 @@ export class AuthService {
         // this does not work, mongodb will send you a bounch of data
         const { email, name, age, joinDate, _id } = user
         return {email, name,age, joinDate, _id};
+    }
+
+    signOut(res:Response) {
+        res.clearCookie("jwt")
     }
 
     extractTokenFromHeader(request: Request): string | undefined {

@@ -29,4 +29,11 @@ export class AuthController {
         const userData = await this.authService.signIn(email, password, res, req);
         return res.send(userData);
     }
+
+    @HttpCode(HttpStatus.OK)
+    @Post('logout')
+    logout(@Res() res : Response) {
+        this.authService.signOut(res)
+        return res.sendStatus(200)
+    }
 }
