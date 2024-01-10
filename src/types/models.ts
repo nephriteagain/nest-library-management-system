@@ -65,13 +65,13 @@ export interface MemberSchemaType extends MemberArgs, Id {
 export const BorrowArgsSchema = z
     .object({
         bookId: zodOIDValidator,
-        title: z.string(),
         borrower: zodOIDValidator,
         promisedReturnDate: nonNegativeIntNumber,
     })
     .required();
 export type BorrowArgs = z.infer<typeof BorrowArgsSchema>;
 export interface BorrowSchemaType extends BorrowArgs, Id {
+    title: string;
     approvedBy: ObjectId;
     date: number;
 }

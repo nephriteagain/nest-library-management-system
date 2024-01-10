@@ -14,15 +14,22 @@ export class UsersService {
         return user;
     }
 
-    async createUser(userData: EmployeeArgs): Promise<EmployeeSchemaType> {
+    async createUser(userData: EmployeeArgs) {
         const salt = genSaltSync();
         const hashedPassword = hashSync(userData.password, salt);
 
-        const newUser = EmployeeSchema.create({
+        const newUser = await EmployeeSchema.create({
             ...userData,
             password: hashedPassword,
         });
-        return newUser;
+        const withoutPassword = {
+            email: newUser.email,
+            id : newUser._id,
+            name: newUser.name,
+            age: newUser.age,
+            joinData: newUser.joinDate,            
+        }
+        return withoutPassword;
     }
 
     async loginUser(

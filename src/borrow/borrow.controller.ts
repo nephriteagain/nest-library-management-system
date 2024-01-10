@@ -66,7 +66,10 @@ export class BorrowController {
             return res.sendStatus(HttpStatus.UNAUTHORIZED);
         }
         const { sub: aprrovedBy } = this.authService.getTokenData(accessToken);
-        await this.borrowService.add(body, aprrovedBy);
+        const borrowStatus = await this.borrowService.add(body, aprrovedBy);
+        if (!borrowStatus) {
+            return res.sendStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+        }
         return res.sendStatus(HttpStatus.CREATED);
     }
 }

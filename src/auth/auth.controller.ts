@@ -11,12 +11,22 @@ import {
 import { AuthService } from './auth.service';
 import { Response, Request } from 'express';
 import { ZodValidationPipe } from 'src/db/validation/schema.pipe';
-import { EmployeeSchemaType, signInSchema } from 'src/types/models';
+import { EmployeeArgs, EmployeeSchemaType, signInSchema } from 'src/types/models';
 import { ObjectId } from 'mongoose'
 
 @Controller('auth')
 export class AuthController {
     constructor(private authService: AuthService) {}
+
+    @Post('register')
+    async register(@Body() {user,secret}: {user: EmployeeArgs, secret: string}) : Promise<any> {
+        const newEmployee = await this.authService.newEmployee(user,secret)
+        if (!newEmployee) {
+            return HttpStatus.BAD_REQUEST        
+        }
+        return newEmployee
+
+    }
 
     @HttpCode(HttpStatus.OK)
     @Post('login')

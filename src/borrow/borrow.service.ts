@@ -1,7 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import {  BorrowArgs, BorrowSchemaType, Query } from 'src/types/models';
 import BorrowSchema from 'src/db/schemas/borrow.schema';
-import { ObjectId } from 'mongoose';
+import InventorySchema from 'src/db/schemas/inventory.schema';
+import { ObjectId, startSession } from 'mongoose';
 import { queryLengthChecker } from 'src/utils';
 
 
@@ -10,12 +11,46 @@ export class BorrowService {
     async add(
         newBorrowData: BorrowArgs,
         employeeId: ObjectId,
-    ): Promise<BorrowSchemaType> {
-        const borrow = await BorrowSchema.create({
-            ...newBorrowData,
-            approvedBy: employeeId,
-        });
-        return borrow;
+    ): Promise<boolean> {
+        let session = null
+        try {
+            const borrowSession = await startSession()            
+            session = borrowSession;
+            borrowSession.startTransaction()
+            const book = await InventorySchema.findById(newBorrowData.bookId)
+            if (book && book.available < 1) {
+                throw new Error('no more available books!')
+            }
+            if (!book) {
+                throw new Error('missing book')
+            }
+            await BorrowSchema.create({
+                ...newBorrowData,
+                title: book.title,
+                approvedBy: employeeId,
+            });
+            await InventorySchema.findByIdAndUpdate(newBorrowData.bookId, {
+                $inc: {
+                    borrowed: 1,
+                    available: -1
+                }
+            })
+            await borrowSession.commitTransaction()            
+
+
+        } catch (error) {
+            console.error('transaction failed', error)
+            if (session) {
+                session.abortTransaction()                
+                session.endSession()
+                return false
+            }
+        }
+
+        if (session) {
+            session.endSession()
+        }
+        return true
     }
     async getBorrowData(id: ObjectId): Promise<BorrowSchemaType | null> {
         return await BorrowSchema.findById(id);

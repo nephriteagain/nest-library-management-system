@@ -2,12 +2,14 @@ import {
     Injectable,
     UnauthorizedException,
     NotFoundException,
+    HttpStatus,
+    HttpException,
 } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response } from 'express';
 import { ObjectId } from 'mongoose';
-import { EmployeeSchemaType, P } from 'src/types/models';
+import { EmployeeArgs, EmployeeArgsSchema, EmployeeSchemaType, P } from 'src/types/models';
 import { envConstants } from './constants';
 
 @Injectable()
@@ -16,6 +18,19 @@ export class AuthService {
         private usersService: UsersService,
         private jwtService: JwtService,
     ) {}
+
+    async newEmployee (user: EmployeeArgs, secret:string) {        
+        if (secret !== envConstants.secret) {
+            throw new HttpException('unauthorzed', HttpStatus.UNAUTHORIZED)
+        }
+        EmployeeArgsSchema.parse(user)
+        try {
+            const newEmployee = await this.usersService.createUser(user)            
+            return newEmployee;
+        } catch (error) {
+            throw new HttpException('email already in used', HttpStatus.CONFLICT)
+        }
+    }
 
     // TODO: i am getting a access token even with incorrect password!
     async signIn(
