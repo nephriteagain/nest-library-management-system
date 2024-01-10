@@ -10,26 +10,26 @@ export class BooksService {
     async add(book: BookArgs): Promise<BookSchemaType | null> {
         let session = null;
         try {
-            const bookSession = await startSession()
-            session = bookSession
-            bookSession.startTransaction()
+            const bookSession = await startSession();
+            session = bookSession;
+            bookSession.startTransaction();
             const newBook = await BookSchema.create(book);
             const { _id } = newBook;
             const { title, total } = book;
             const newEntry = { _id, title, total, available: total };
-            await InventorySchema.create(newEntry)
-            await bookSession.commitTransaction()            
-            bookSession.endSession()
-            return newBook
+            await InventorySchema.create(newEntry);
+            await bookSession.commitTransaction();
+            bookSession.endSession();
+            return newBook;
         } catch (error) {
-            console.error(error)
+            console.error(error);
             if (session) {
-                session.abortTransaction()
-                session.endSession()
+                session.abortTransaction();
+                session.endSession();
                 return null;
             }
         }
-        return null
+        return null;
     }
 
     async getBook(id: ObjectId): Promise<BookSchemaType | null> {
@@ -37,11 +37,11 @@ export class BooksService {
         return book;
     }
     async getBooks(query: Query<BookSchemaType>): Promise<BookSchemaType[]> {
-        const { title, authors, yearPublished, _id } = query
-        
-        queryLengthChecker(query)
+        const { title, authors, yearPublished, _id } = query;
+
+        queryLengthChecker(query);
         if (_id) {
-            return await BookSchema.find({_id}).limit(1).exec()
+            return await BookSchema.find({ _id }).limit(1).exec();
         }
 
         if (title) {
@@ -50,7 +50,9 @@ export class BooksService {
                 title: {
                     $regex: regex,
                 },
-            }).limit(20).exec();
+            })
+                .limit(20)
+                .exec();
         }
 
         if (authors) {
@@ -59,16 +61,23 @@ export class BooksService {
                 authors: {
                     $elemMatch: { $regex: regex },
                 },
-            }).limit(20).exec();
+            })
+                .limit(20)
+                .exec();
         }
 
         if (yearPublished !== undefined) {
-            const year = Number(yearPublished)
+            const year = Number(yearPublished);
             if (isNaN(year)) {
-                throw new HttpException('year must be a number', HttpStatus.BAD_REQUEST)
+                throw new HttpException(
+                    'year must be a number',
+                    HttpStatus.BAD_REQUEST,
+                );
             }
 
-            return await BookSchema.find({yearPublished: {$eq: year}}).limit(20).exec()
+            return await BookSchema.find({ yearPublished: { $eq: year } })
+                .limit(20)
+                .exec();
         }
 
         return BookSchema.find({}).limit(20).exec();
@@ -98,14 +107,18 @@ export class BooksService {
                 title: {
                     $regex: regex,
                 },
-            }).limit(20).exec();
+            })
+                .limit(20)
+                .exec();
             return query;
         } else {
             const query = await BookSchema.find({
                 authors: {
                     $elemMatch: { $regex: regex },
                 },
-            }).limit(20).exec();
+            })
+                .limit(20)
+                .exec();
             return query;
         }
     }

@@ -9,7 +9,7 @@ import {
     Body,
     Req,
     UsePipes,
-    Query
+    Query,
 } from '@nestjs/common';
 import { MembersService } from './members.service';
 import { ObjectId } from 'mongoose';
@@ -34,9 +34,10 @@ export class MembersController {
     @Get('')
     async getMembers(
         @Query('name') name: string,
-        @Query('_id', new ZodValidationPipe(zodOIDValidatorOptional)) _id: ObjectId
+        @Query('_id', new ZodValidationPipe(zodOIDValidatorOptional))
+        _id: ObjectId,
     ): Promise<MemberSchemaType[]> {
-        const members = await this.membersService.getAllMembers({name,_id});
+        const members = await this.membersService.getAllMembers({ name, _id });
         return members;
     }
 

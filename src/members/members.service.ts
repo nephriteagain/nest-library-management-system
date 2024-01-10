@@ -4,25 +4,28 @@ import MembersShema from 'src/db/schemas/members.shema';
 import { ObjectId } from 'mongoose';
 import { queryLengthChecker } from 'src/utils';
 
-
 @Injectable()
 export class MembersService {
-    async getAllMembers(query: Query<MemberSchemaType>): Promise<MemberSchemaType[]> {
-        const {_id, name} = query
+    async getAllMembers(
+        query: Query<MemberSchemaType>,
+    ): Promise<MemberSchemaType[]> {
+        const { _id, name } = query;
 
-        queryLengthChecker(query)
+        queryLengthChecker(query);
 
         if (_id) {
-            return await MembersShema.find({_id}).limit(1).exec()
+            return await MembersShema.find({ _id }).limit(1).exec();
         }
 
         if (name) {
-            const regex = new RegExp(`${name}`, 'gi')
+            const regex = new RegExp(`${name}`, 'gi');
             return await MembersShema.find({
                 name: {
-                    $regex: regex
-                }
-            }).limit(20).exec()
+                    $regex: regex,
+                },
+            })
+                .limit(20)
+                .exec();
         }
 
         const members = await MembersShema.find({});

@@ -5,7 +5,7 @@ import {
     BaseDocument,
     EmployeeSchemaType,
 } from 'src/types/models';
-import { genSaltSync, compareSync, hashSync, } from 'bcrypt';
+import { genSaltSync, compareSync, hashSync } from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -24,11 +24,11 @@ export class UsersService {
         });
         const withoutPassword = {
             email: newUser.email,
-            id : newUser._id,
+            id: newUser._id,
             name: newUser.name,
             age: newUser.age,
-            joinData: newUser.joinDate,            
-        }
+            joinData: newUser.joinDate,
+        };
         return withoutPassword;
     }
 

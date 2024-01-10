@@ -6,24 +6,27 @@ import { queryLengthChecker } from 'src/utils';
 
 @Injectable()
 export class InventoryService {
-    async getInventory(query: Query<InventorySchemaType>): Promise<InventorySchemaType[]> {
-        const { _id, title } = query
+    async getInventory(
+        query: Query<InventorySchemaType>,
+    ): Promise<InventorySchemaType[]> {
+        const { _id, title } = query;
 
-        queryLengthChecker(query)
+        queryLengthChecker(query);
 
         if (_id) {
-            return await InventorySchema.find({_id}).limit(1).exec()
+            return await InventorySchema.find({ _id }).limit(1).exec();
         }
 
         if (title) {
-            const regex = new RegExp(`${title}`, 'gi')
+            const regex = new RegExp(`${title}`, 'gi');
             return await InventorySchema.find({
                 title: {
-                    $regex: regex
-                }
-            }).limit(20).exec()
+                    $regex: regex,
+                },
+            })
+                .limit(20)
+                .exec();
         }
-
 
         return await InventorySchema.find({}).limit(20).exec();
     }

@@ -9,18 +9,20 @@ import {
     Req,
     UsePipes,
     Query,
-    UseGuards
+    UseGuards,
 } from '@nestjs/common';
 import { BorrowService } from './borrow.service';
 import { ObjectId } from 'mongoose';
-import { BorrowArgs, BorrowSchemaType, zodOIDValidatorOptional } from 'src/types/models';
+import {
+    BorrowArgs,
+    BorrowSchemaType,
+    zodOIDValidatorOptional,
+} from 'src/types/models';
 import { Response, Request } from 'express';
 import { AuthService } from 'src/auth/auth.service';
 import { ZodValidationPipe } from 'src/db/validation/schema.pipe';
 import { BorrowArgsSchema, zodOIDValidator } from 'src/types/models';
 import { AuthGuard } from 'src/auth/auth.guard';
-
-
 
 @Controller('borrow')
 export class BorrowController {
@@ -29,16 +31,25 @@ export class BorrowController {
         private authService: AuthService,
     ) {}
 
-
     @Get('')
     async getBorrowList(
-        @Query('title') title : string,
-        @Query('bookId', new ZodValidationPipe(zodOIDValidatorOptional)) bookId : ObjectId,
-        @Query('_id', new ZodValidationPipe(zodOIDValidatorOptional)) _id : ObjectId,
-        @Query('borrower', new ZodValidationPipe(zodOIDValidatorOptional)) borrower : ObjectId,
-        @Query('approvedBy', new ZodValidationPipe(zodOIDValidatorOptional)) approvedBy : ObjectId,
+        @Query('title') title: string,
+        @Query('bookId', new ZodValidationPipe(zodOIDValidatorOptional))
+        bookId: ObjectId,
+        @Query('_id', new ZodValidationPipe(zodOIDValidatorOptional))
+        _id: ObjectId,
+        @Query('borrower', new ZodValidationPipe(zodOIDValidatorOptional))
+        borrower: ObjectId,
+        @Query('approvedBy', new ZodValidationPipe(zodOIDValidatorOptional))
+        approvedBy: ObjectId,
     ): Promise<BorrowSchemaType[]> {
-        return this.borrowService.getBorrowList({title, bookId, _id, borrower, approvedBy});
+        return this.borrowService.getBorrowList({
+            title,
+            bookId,
+            _id,
+            borrower,
+            approvedBy,
+        });
     }
 
     @Get(':id')
@@ -68,7 +79,7 @@ export class BorrowController {
         const { sub: aprrovedBy } = this.authService.getTokenData(accessToken);
         const borrowStatus = await this.borrowService.add(body, aprrovedBy);
         if (!borrowStatus) {
-            return res.sendStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+            return res.sendStatus(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return res.sendStatus(HttpStatus.CREATED);
     }

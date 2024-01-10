@@ -8,6 +8,7 @@ import {
     HttpStatus,
     Query,
     UsePipes,
+    Param,
 } from '@nestjs/common';
 import { ReturnService } from './return.service';
 import { AuthService } from 'src/auth/auth.service';
@@ -31,12 +32,21 @@ export class ReturnController {
 
     @Get('')
     async getReturnList(
-        @Query('_id', new ZodValidationPipe(zodOIDValidatorOptional)) _id: ObjectId,
-        @Query('bookId', new ZodValidationPipe(zodOIDValidatorOptional)) bookId: ObjectId,
-        @Query('borrower', new ZodValidationPipe(zodOIDValidatorOptional)) borrower : ObjectId,
-        @Query('approvedBy', new ZodValidationPipe(zodOIDValidatorOptional)) approvedBy: ObjectId
+        @Query('_id', new ZodValidationPipe(zodOIDValidatorOptional))
+        _id: ObjectId,
+        @Query('bookId', new ZodValidationPipe(zodOIDValidatorOptional))
+        bookId: ObjectId,
+        @Query('borrower', new ZodValidationPipe(zodOIDValidatorOptional))
+        borrower: ObjectId,
+        @Query('approvedBy', new ZodValidationPipe(zodOIDValidatorOptional))
+        approvedBy: ObjectId,
     ): Promise<ReturnSchemaType[]> {
-        const list = await this.returnService.getReturnList({_id, bookId, borrower, approvedBy});
+        const list = await this.returnService.getReturnList({
+            _id,
+            bookId,
+            borrower,
+            approvedBy,
+        });
         return list;
     }
 
@@ -52,10 +62,10 @@ export class ReturnController {
         return returnItem;
     }
 
-    @Post('')
+    @Post(':id')
     @UsePipes(new ZodValidationPipe(ReturnArgsSchema))
     async addReturnEntry(
-        @Body() body: ReturnArgs,
+        @Param('id', new ZodValidationPipe(zodOIDValidator)) _id: ObjectId,
         @Req() req: Request,
         @Res() res: Response,
     ): Promise<Response<401 | 201>> {
@@ -64,7 +74,10 @@ export class ReturnController {
             return res.sendStatus(HttpStatus.UNAUTHORIZED);
         }
         const { sub: approvedBy } = this.authService.getTokenData(accessToken);
-        await this.returnService.addEntry(body, approvedBy);
+        const status = await this.returnService.addEntry(_id, approvedBy);
+        if (!status) {
+            return res.sendStatus(HttpStatus.BAD_REQUEST);
+        }
         return res.sendStatus(HttpStatus.CREATED);
     }
 }

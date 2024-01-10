@@ -11,38 +11,36 @@ import { envConstants } from './constants';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-    constructor(
-        private jwtService: JwtService,
-    ) {}
+    constructor(private jwtService: JwtService) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
-        const request : Request = context.switchToHttp().getRequest();
+        const request: Request = context.switchToHttp().getRequest();
         const response: Response = context.switchToHttp().getResponse();
-        
+
         if (request.path.startsWith('/auth')) {
-            console.log('auth guard skipped')
-            return true
+            console.log('auth guard skipped');
+            return true;
         }
 
-        const jwt = request.cookies.jwt
+        const jwt = request.cookies.jwt;
         if (!jwt) {
-            console.error('no jwt found')
+            console.error('no jwt found');
             return false;
         }
         try {
             const payload = await this.jwtService.verifyAsync(jwt, {
                 secret: `${envConstants.secret}`,
-            });            
-            console.log('jwt accepted')
+            });
+            console.log('jwt accepted');
             // 💡 We're assigning the payload to the request object here
             // so that we can access it in our route handlers
-            // request['user'] = payload;            
+            // request['user'] = payload;
         } catch {
-            console.error('invalid jwt')
+            console.error('invalid jwt');
             response.sendStatus(HttpStatus.UNAUTHORIZED);
             return false;
         }
-        console.log('auth guard passed')
+        console.log('auth guard passed');
         return true;
     }
 }

@@ -12,7 +12,7 @@ import {
     Req,
     Query,
     HttpException,
-    ParseIntPipe
+    ParseIntPipe,
 } from '@nestjs/common';
 import { BooksService } from './books.service';
 import type { BookArgs, BookSchemaType } from 'src/types/models';
@@ -84,9 +84,16 @@ export class BooksController {
     async getBooks(
         @Query('title') title: string,
         @Query('authors') authors: string,
-        @Query('_id', new ZodValidationPipe(zodOIDValidatorOptional)) _id : ObjectId,
-        @Query('yearPublished',new ParseIntPipe({optional:true})) yearPublished?: number,
+        @Query('_id', new ZodValidationPipe(zodOIDValidatorOptional))
+        _id: ObjectId,
+        @Query('yearPublished', new ParseIntPipe({ optional: true }))
+        yearPublished?: number,
     ): Promise<BookSchemaType[]> {
-        return await this.bookService.getBooks({title, authors, _id, yearPublished})
+        return await this.bookService.getBooks({
+            title,
+            authors,
+            _id,
+            yearPublished,
+        });
     }
 }

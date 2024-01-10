@@ -4,4 +4,9 @@ dotenv.config();
 export const envConstants = {
     secret: `${process.env.SECRET_KEY}`,
     env: `${process.env.ENV}`,
-} satisfies Record<string, string>;
+    penalty: 5,
+} satisfies {
+    secret: string;
+    env: string;
+    penalty: number;
+};

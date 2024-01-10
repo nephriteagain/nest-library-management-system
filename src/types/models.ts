@@ -17,7 +17,9 @@ function objectIdValidator(value: unknown) {
 // for route params, body and schema
 export const zodOIDValidator = z.custom<ObjectId>(objectIdValidator);
 // optional used for query params
-export const zodOIDValidatorOptional = z.custom<ObjectId>(objectIdValidator).optional()
+export const zodOIDValidatorOptional = z
+    .custom<ObjectId>(objectIdValidator)
+    .optional();
 
 export const nonNegativeIntNumber = z.number().int().nonnegative();
 
@@ -112,15 +114,16 @@ export interface EmployeeSchemaType extends EmployeeArgs, Id {
 
 export const ReturnArgsSchema = z
     .object({
-        bookId: zodOIDValidator,
-        borrower: zodOIDValidator,
-        borrowDate: nonNegativeIntNumber,
+        _id: zodOIDValidator,
     })
     .required();
 export type ReturnArgs = z.infer<typeof ReturnArgsSchema>;
-export interface ReturnSchemaType extends ReturnArgs, Id {
+export interface ReturnSchemaType extends ReturnArgs {
     returnDate: number;
     approvedBy: ObjectId;
+    bookId: ObjectId;
+    borrower: ObjectId;
+    borrowDate: number;
 }
 
 export const PenaltyArgsSchema = z

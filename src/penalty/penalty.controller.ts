@@ -33,12 +33,21 @@ export class PenaltyController {
 
     @Get('')
     async getEntries(
-        @Query('_id', new ZodValidationPipe(zodOIDValidatorOptional)) _id: ObjectId,
-        @Query('bookId', new ZodValidationPipe(zodOIDValidatorOptional)) bookId: ObjectId,
-        @Query('approvedBy', new ZodValidationPipe(zodOIDValidatorOptional)) approvedBy: ObjectId,
-        @Query('borrower', new ZodValidationPipe(zodOIDValidatorOptional)) borrower : ObjectId
+        @Query('_id', new ZodValidationPipe(zodOIDValidatorOptional))
+        _id: ObjectId,
+        @Query('bookId', new ZodValidationPipe(zodOIDValidatorOptional))
+        bookId: ObjectId,
+        @Query('approvedBy', new ZodValidationPipe(zodOIDValidatorOptional))
+        approvedBy: ObjectId,
+        @Query('borrower', new ZodValidationPipe(zodOIDValidatorOptional))
+        borrower: ObjectId,
     ): P<PenaltySchemaType[]> {
-        return this.penaltyService.getEntries({_id, bookId, approvedBy, borrower});
+        return this.penaltyService.getEntries({
+            _id,
+            bookId,
+            approvedBy,
+            borrower,
+        });
     }
 
     // i am using Query here because for some reason Param doesnt work!
