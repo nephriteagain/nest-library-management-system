@@ -8,20 +8,28 @@ import { queryLengthChecker } from 'src/utils';
 @Injectable()
 export class BooksService {
     async add(book: BookArgs): Promise<BookSchemaType | null> {
-        const newBook = await BookSchema.create(book);
-        const { _id } = newBook;
-        const { title, total } = book;
-        const newEntry = { _id, title, total, available: total };
-
-
+        let session = null;
         try {
-            await InventorySchema.create(newEntry);
+            const bookSession = await startSession()
+            session = bookSession
+            bookSession.startTransaction()
+            const newBook = await BookSchema.create(book);
+            const { _id } = newBook;
+            const { title, total } = book;
+            const newEntry = { _id, title, total, available: total };
+            await InventorySchema.create(newEntry)
+            await bookSession.commitTransaction()            
+            bookSession.endSession()
+            return newBook
         } catch (error) {
-            console.error(error);
-            BookSchema.findByIdAndDelete(_id);
-            return null;
+            console.error(error)
+            if (session) {
+                session.abortTransaction()
+                session.endSession()
+                return null;
+            }
         }
-        return newBook;
+        return null
     }
 
     async getBook(id: ObjectId): Promise<BookSchemaType | null> {
