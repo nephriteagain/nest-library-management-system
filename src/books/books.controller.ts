@@ -87,16 +87,6 @@ export class BooksController {
         @Query('_id', new ZodValidationPipe(zodOIDValidatorOptional)) _id : ObjectId,
         @Query('yearPublished',new ParseIntPipe({optional:true})) yearPublished?: number,
     ): Promise<BookSchemaType[]> {
-        if (title) {
-            const books = await this.bookService.search('title', title);
-            return books;
-        }
-        if (authors) {
-            const books = await this.bookService.search('authors', authors);
-            return books;
-        }
-
-        const books = await this.bookService.getBooks({title,authors,yearPublished});
-        return books;
+        return await this.bookService.getBooks({title, authors, _id, yearPublished})
     }
 }

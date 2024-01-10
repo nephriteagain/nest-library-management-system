@@ -27,9 +27,13 @@ export class BooksService {
         return book;
     }
     async getBooks(query: Query<BookSchemaType>): Promise<BookSchemaType[]> {
-        const { title, authors, yearPublished } = query
+        const { title, authors, yearPublished, _id } = query
         
         queryLengthChecker(query)
+        if (_id) {
+            return await BookSchema.find({_id}).limit(1).exec()
+        }
+
         if (title) {
             const regex = new RegExp(`${title}`, 'gi');
             return await BookSchema.find({
