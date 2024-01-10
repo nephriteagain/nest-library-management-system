@@ -19,10 +19,10 @@ export class BorrowService {
             borrowSession.startTransaction()
             const book = await InventorySchema.findById(newBorrowData.bookId)
             if (book && book.available < 1) {
-                throw new Error('no more available books!')
+                throw new HttpException('no more available books!', HttpStatus.BAD_REQUEST)
             }
             if (!book) {
-                throw new Error('missing book')
+                throw new HttpException('missing book', HttpStatus.BAD_REQUEST)
             }
             await BorrowSchema.create({
                 ...newBorrowData,

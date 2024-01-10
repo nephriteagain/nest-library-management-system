@@ -2,7 +2,7 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { BookArgs, BookSchemaType, Query } from 'src/types/models';
 import BookSchema from 'src/db/schemas/book.schema';
 import InventorySchema from 'src/db/schemas/inventory.schema';
-import { ObjectId } from 'mongoose';
+import { ObjectId, startSession } from 'mongoose';
 import { queryLengthChecker } from 'src/utils';
 
 @Injectable()
@@ -12,6 +12,8 @@ export class BooksService {
         const { _id } = newBook;
         const { title, total } = book;
         const newEntry = { _id, title, total, available: total };
+
+
         try {
             await InventorySchema.create(newEntry);
         } catch (error) {
