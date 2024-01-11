@@ -3,7 +3,7 @@ import { BookArgs, BookSchemaType, Query } from 'src/types/models';
 import BookSchema from 'src/db/schemas/book.schema';
 import InventorySchema from 'src/db/schemas/inventory.schema';
 import { ObjectId, startSession, isValidObjectId } from 'mongoose';
-import { queryLengthChecker } from 'src/utils';
+import { queryLengthChecker, booksMapper } from 'src/utils';
 
 @Injectable()
 export class BooksService {
@@ -99,18 +99,12 @@ export class BooksService {
     async search(text: string): Promise<{ _id: ObjectId; title: string }[]> {
         if (!text) {
             const books = await BookSchema.find({}).limit(20).exec()
-            return books
+            return booksMapper(books)
         }
 
         if (isValidObjectId(text)) {
             const books = await BookSchema.find({ _id: text }).limit(1).exec();
-            const bookArr = books.map((b) => {
-                return {
-                    _id: b._id,
-                    title: b.title,
-                };
-            });
-            return bookArr;
+            return booksMapper(books)
         }
 
         const regex = new RegExp(`${text}`, 'gi');
@@ -121,12 +115,6 @@ export class BooksService {
         })
             .limit(20)
             .exec();
-        const bookArr = books.map((b) => {
-            return {
-                _id: b._id,
-                title: b.title,
-            };
-        });
-        return bookArr;
+        return booksMapper(books)
     }
 }
