@@ -64,6 +64,11 @@ export class MembersService {
         text: string,
     ): Promise<{ _id: ObjectId; name: string; email: string }[]> {
         // text is an ObjectId
+        if (!text) {
+            const members = await MembersShema.find({}).limit(20).exec()
+            return members
+        }
+
         if (isValidObjectId(text)) {
             const members = await MembersShema.find({ _id: text })
                 .limit(1)

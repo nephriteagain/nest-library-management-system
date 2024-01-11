@@ -97,6 +97,11 @@ export class BooksService {
     }
 
     async search(text: string): Promise<{ _id: ObjectId; title: string }[]> {
+        if (!text) {
+            const books = await BookSchema.find({}).limit(20).exec()
+            return books
+        }
+
         if (isValidObjectId(text)) {
             const books = await BookSchema.find({ _id: text }).limit(1).exec();
             const bookArr = books.map((b) => {
