@@ -107,6 +107,7 @@ export class BooksService {
             });
             return bookArr;
         }
+
         const regex = new RegExp(`${text}`, 'gi');
         const books = await BookSchema.find({
             title: {

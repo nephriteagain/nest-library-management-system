@@ -48,15 +48,15 @@ export class BooksController {
     }
 
     /**
-     *
      * @param text : _id || title
      * @note works on eithere title or _id
      */
-    @Get('search/:text')
+    @Get('search')
     async searchBooks(
-        @Param('text') text: string,
+        @Query('q') q: string,
     ): Promise<{ title: string; _id: ObjectId }[]> {
-        const bookQuery = await this.bookService.search(text);
+        console.log('u hit this endpoint');
+        const bookQuery = await this.bookService.search(q);
         return bookQuery;
     }
 

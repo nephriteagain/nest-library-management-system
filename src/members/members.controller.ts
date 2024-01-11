@@ -48,11 +48,11 @@ export class MembersController {
         return members;
     }
 
-    @Get('search/:text')
+    @Get('search')
     async searchMembers(
-        @Param('text') text: string,
+        @Query('q') q: string,
     ): Promise<{ _id: ObjectId; name: string; email: string }[]> {
-        const memberQuery = await this.membersService.search(text);
+        const memberQuery = await this.membersService.search(q);
         return memberQuery;
     }
 
