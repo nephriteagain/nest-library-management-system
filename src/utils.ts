@@ -20,25 +20,28 @@ export function queryLengthChecker(query: Record<string, any>): void {
     }
 }
 
-
-export function booksMapper(books: BookSchemaType[]) : {_id:ObjectId; title:string}[] {
-    const bookMap = books.map(b => {
+export function booksMapper(
+    books: BookSchemaType[],
+): { _id: ObjectId; title: string }[] {
+    const bookMap = books.map((b) => {
         return {
             _id: b._id,
-            title: b.title
-        }
-    })
+            title: b.title,
+        };
+    });
 
-    return bookMap
+    return bookMap;
 }
 
-export function membersMapper(members: MemberSchemaType[]) : { _id: ObjectId; name: string; email: string }[] {
-    const memberMap = members.map(m => {
+export function membersMapper(
+    members: MemberSchemaType[],
+): { _id: ObjectId; name: string; email: string }[] {
+    const memberMap = members.map((m) => {
         return {
             _id: m._id,
             name: m.name,
-            email: m.email
-        }
-    })
-    return memberMap
+            email: m.email,
+        };
+    });
+    return memberMap;
 }

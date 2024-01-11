@@ -98,13 +98,13 @@ export class BooksService {
 
     async search(text: string): Promise<{ _id: ObjectId; title: string }[]> {
         if (!text) {
-            const books = await BookSchema.find({}).limit(20).exec()
-            return booksMapper(books)
+            const books = await BookSchema.find({}).limit(20).exec();
+            return booksMapper(books);
         }
 
         if (isValidObjectId(text)) {
             const books = await BookSchema.find({ _id: text }).limit(1).exec();
-            return booksMapper(books)
+            return booksMapper(books);
         }
 
         const regex = new RegExp(`${text}`, 'gi');
@@ -115,6 +115,6 @@ export class BooksService {
         })
             .limit(20)
             .exec();
-        return booksMapper(books)
+        return booksMapper(books);
     }
 }

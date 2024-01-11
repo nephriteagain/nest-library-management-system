@@ -66,15 +66,15 @@ export class MembersService {
     ): Promise<{ _id: ObjectId; name: string; email: string }[]> {
         // not text, give default send
         if (!text) {
-            const members = await MembersShema.find({}).limit(20).exec()
-            return membersMapper(members)
+            const members = await MembersShema.find({}).limit(20).exec();
+            return membersMapper(members);
         }
         // text is an ObjectId
         if (isValidObjectId(text)) {
             const members = await MembersShema.find({ _id: text })
                 .limit(1)
                 .exec();
-            return membersMapper(members)
+            return membersMapper(members);
         }
         const emailSchema = z.string().email();
         try {
@@ -83,7 +83,7 @@ export class MembersService {
             const members = await MembersShema.find({ email: text })
                 .limit(1)
                 .exec();
-                return membersMapper(members)
+            return membersMapper(members);
         } catch (error) {
             // text is a name
             const regex = new RegExp(`${text}`, 'gi');
@@ -92,7 +92,7 @@ export class MembersService {
                     $regex: regex,
                 },
             });
-            return membersMapper(members)
+            return membersMapper(members);
         }
     }
 }
