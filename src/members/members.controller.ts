@@ -41,6 +41,14 @@ export class MembersController {
         return members;
     }
 
+    @Get('search/:text')
+    async searchMembers(
+        @Param('text') text: string,
+    ): Promise<{ _id: ObjectId; name: string; email: string }[]> {
+        const memberQuery = await this.membersService.search(text);
+        return memberQuery;
+    }
+
     @Get(':id')
     @UsePipes(new ZodValidationPipe(zodOIDValidator))
     async getMember(

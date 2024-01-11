@@ -29,7 +29,6 @@ import { ZodValidationPipe } from 'src/db/validation/schema.pipe';
 @Controller('books')
 export class BooksController {
     constructor(private bookService: BooksService) {}
- 
 
     @Get('')
     async getBooks(
@@ -48,10 +47,17 @@ export class BooksController {
         });
     }
 
+    /**
+     *
+     * @param text : _id || title
+     * @note works on eithere title or _id
+     */
     @Get('search/:text')
-    async searchBooks(@Param('text') text: string) : Promise<{title:string;_id:ObjectId}[]> {
-        const bookQuery = await this.bookService.search(text)
-        return bookQuery
+    async searchBooks(
+        @Param('text') text: string,
+    ): Promise<{ title: string; _id: ObjectId }[]> {
+        const bookQuery = await this.bookService.search(text);
+        return bookQuery;
     }
 
     @Get(':id')
@@ -66,7 +72,6 @@ export class BooksController {
         }
         return res.sendStatus(HttpStatus.NOT_FOUND);
     }
-
 
     @Post('')
     @UsePipes(new ZodValidationPipe(bookArgsSchema))
@@ -104,7 +109,4 @@ export class BooksController {
         }
         return res.status(HttpStatus.NOT_FOUND);
     }
-    
-
-    
 }

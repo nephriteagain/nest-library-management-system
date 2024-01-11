@@ -1,8 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { MemberArgs, MemberSchemaType, Query } from 'src/types/models';
+import {
+    MemberArgs,
+    MemberSchemaType,
+    Query,
+    membersArgsSchema,
+} from 'src/types/models';
 import MembersShema from 'src/db/schemas/members.shema';
-import { ObjectId } from 'mongoose';
+import { ObjectId, isValidObjectId } from 'mongoose';
 import { queryLengthChecker } from 'src/utils';
+import { z } from 'zod';
 
 @Injectable()
 export class MembersService {
@@ -48,5 +54,42 @@ export class MembersService {
     ): Promise<MemberSchemaType> {
         const newMember = await MembersShema.create({ ...member, approvedBy });
         return newMember;
+    }
+
+    async search(
+        text: string,
+    ): Promise<{ _id: ObjectId; name: string; email: string }[]> {
+        // text is an ObjectId
+        if (isValidObjectId(text)) {
+            const members = await MembersShema.find({ _id: text })
+                .limit(1)
+                .exec();
+            const memberArr = members.map((m) => {
+                return {
+                    _id: m._id,
+                    name: m.name,
+                    email: m.email,
+                };
+            });
+            return memberArr;
+        }
+        const emailSchema = z.string().email();
+        try {
+            // text is a email
+            emailSchema.parse(text);
+            const members = await MembersShema.find({ email: text })
+                .limit(1)
+                .exec();
+            return members;
+        } catch (error) {
+            // text is a name
+            const regex = new RegExp(`${text}`, 'gi');
+            const members = await MembersShema.find({
+                name: {
+                    $regex: regex,
+                },
+            });
+            return members;
+        }
     }
 }

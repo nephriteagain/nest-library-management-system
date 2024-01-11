@@ -96,32 +96,31 @@ export class BooksService {
         return updatedBook;
     }
 
-
-    async search(text:string) : Promise<{_id:ObjectId;title:string}[]> {
+    async search(text: string): Promise<{ _id: ObjectId; title: string }[]> {
         if (isValidObjectId(text)) {
-            const books = await BookSchema.find({_id:text}).limit(1).exec()
-            if (books) {
-                const bookArr = books.map(b => {
-                    return {
-                        _id: b._id,
-                        title: b.title
-                    }
-                })
-                return bookArr
-            }
+            const books = await BookSchema.find({ _id: text }).limit(1).exec();
+            const bookArr = books.map((b) => {
+                return {
+                    _id: b._id,
+                    title: b.title,
+                };
+            });
+            return bookArr;
         }
-        const regex = new RegExp(`${text}`, 'gi')
+        const regex = new RegExp(`${text}`, 'gi');
         const books = await BookSchema.find({
-            title:{
-                $regex: regex
-            }
-        }).limit(20).exec()
-        const bookArr = books.map(b => {
+            title: {
+                $regex: regex,
+            },
+        })
+            .limit(20)
+            .exec();
+        const bookArr = books.map((b) => {
             return {
                 _id: b._id,
-                title: b.title
-            }
-        })
-        return bookArr
+                title: b.title,
+            };
+        });
+        return bookArr;
     }
 }

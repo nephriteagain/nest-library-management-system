@@ -24,6 +24,7 @@ export class AuthService {
         private jwtService: JwtService,
     ) {}
 
+    // TODO: make a transaction that will auto add employee as a member
     async newEmployee(user: EmployeeArgs, secret: string) {
         if (secret !== envConstants.secret) {
             throw new HttpException('unauthorzed', HttpStatus.UNAUTHORIZED);
