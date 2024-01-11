@@ -23,6 +23,8 @@ export const zodOIDValidatorOptional = z
 
 export const nonNegativeIntNumber = z.number().int().nonnegative();
 
+export const zodEmailValidatorOptional = z.string().email().optional();
+
 export const signInSchema = z
     .object({
         email: z.string().email(),

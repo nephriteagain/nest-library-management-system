@@ -15,12 +15,16 @@ export class MembersService {
     async getAllMembers(
         query: Query<MemberSchemaType>,
     ): Promise<MemberSchemaType[]> {
-        const { _id, name } = query;
+        const { _id, name, email } = query;
 
         queryLengthChecker(query);
 
         if (_id) {
             return await MembersShema.find({ _id }).limit(1).exec();
+        }
+
+        if (email) {
+            return await MembersShema.find({ email }).limit(1).exec();
         }
 
         if (name) {
