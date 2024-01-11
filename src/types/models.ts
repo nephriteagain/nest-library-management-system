@@ -56,6 +56,7 @@ export const membersArgsSchema = z
     .object({
         name: z.string(),
         age: nonNegativeIntNumber,
+        email: z.string().email(),
     })
     .required();
 export type MemberArgs = z.infer<typeof membersArgsSchema>;

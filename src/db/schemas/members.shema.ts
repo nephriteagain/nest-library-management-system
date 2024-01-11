@@ -10,6 +10,11 @@ const MemberSchema = new Schema<MemberSchemaType>({
         type: Number,
         required: true,
     },
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+    },
     joinDate: {
         type: Number,
         default: Date.now(),
