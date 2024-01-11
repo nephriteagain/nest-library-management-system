@@ -2,7 +2,7 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { BookArgs, BookSchemaType, Query } from 'src/types/models';
 import BookSchema from 'src/db/schemas/book.schema';
 import InventorySchema from 'src/db/schemas/inventory.schema';
-import { ObjectId, startSession } from 'mongoose';
+import { ObjectId, startSession, isValidObjectId } from 'mongoose';
 import { queryLengthChecker } from 'src/utils';
 
 @Injectable()
@@ -96,30 +96,32 @@ export class BooksService {
         return updatedBook;
     }
 
-    // TODO: on frontend merge it to the getBooks loader
-    async search(
-        type: 'title' | 'authors',
-        string: string,
-    ): Promise<BookSchemaType[]> {
-        const regex = new RegExp(`${string}`, 'gi');
-        if (type === 'title') {
-            const query = await BookSchema.find({
-                title: {
-                    $regex: regex,
-                },
-            })
-                .limit(20)
-                .exec();
-            return query;
-        } else {
-            const query = await BookSchema.find({
-                authors: {
-                    $elemMatch: { $regex: regex },
-                },
-            })
-                .limit(20)
-                .exec();
-            return query;
+
+    async search(text:string) : Promise<{_id:ObjectId;title:string}[]> {
+        if (isValidObjectId(text)) {
+            const books = await BookSchema.find({_id:text}).limit(1).exec()
+            if (books) {
+                const bookArr = books.map(b => {
+                    return {
+                        _id: b._id,
+                        title: b.title
+                    }
+                })
+                return bookArr
+            }
         }
+        const regex = new RegExp(`${text}`, 'gi')
+        const books = await BookSchema.find({
+            title:{
+                $regex: regex
+            }
+        }).limit(20).exec()
+        const bookArr = books.map(b => {
+            return {
+                _id: b._id,
+                title: b.title
+            }
+        })
+        return bookArr
     }
 }

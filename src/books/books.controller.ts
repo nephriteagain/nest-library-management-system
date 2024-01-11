@@ -29,6 +29,44 @@ import { ZodValidationPipe } from 'src/db/validation/schema.pipe';
 @Controller('books')
 export class BooksController {
     constructor(private bookService: BooksService) {}
+ 
+
+    @Get('')
+    async getBooks(
+        @Query('title') title: string,
+        @Query('authors') authors: string,
+        @Query('_id', new ZodValidationPipe(zodOIDValidatorOptional))
+        _id: ObjectId,
+        @Query('yearPublished', new ParseIntPipe({ optional: true }))
+        yearPublished?: number,
+    ): Promise<BookSchemaType[]> {
+        return await this.bookService.getBooks({
+            title,
+            authors,
+            _id,
+            yearPublished,
+        });
+    }
+
+    @Get('search/:text')
+    async searchBooks(@Param('text') text: string) : Promise<{title:string;_id:ObjectId}[]> {
+        const bookQuery = await this.bookService.search(text)
+        return bookQuery
+    }
+
+    @Get(':id')
+    @UsePipes(new ZodValidationPipe(zodOIDValidator))
+    async getBook(
+        @Param('id') id: ObjectId,
+        @Res() res: Response,
+    ): Promise<Response<BookSchemaType | 404>> {
+        const book = await this.bookService.getBook(id);
+        if (book) {
+            return res.send(book);
+        }
+        return res.sendStatus(HttpStatus.NOT_FOUND);
+    }
+
 
     @Post('')
     @UsePipes(new ZodValidationPipe(bookArgsSchema))
@@ -66,34 +104,7 @@ export class BooksController {
         }
         return res.status(HttpStatus.NOT_FOUND);
     }
+    
 
-    @Get(':id')
-    @UsePipes(new ZodValidationPipe(zodOIDValidator))
-    async getBook(
-        @Param('id') id: ObjectId,
-        @Res() res: Response,
-    ): Promise<Response<BookSchemaType | 404>> {
-        const book = await this.bookService.getBook(id);
-        if (book) {
-            return res.send(book);
-        }
-        return res.sendStatus(HttpStatus.NOT_FOUND);
-    }
-
-    @Get('')
-    async getBooks(
-        @Query('title') title: string,
-        @Query('authors') authors: string,
-        @Query('_id', new ZodValidationPipe(zodOIDValidatorOptional))
-        _id: ObjectId,
-        @Query('yearPublished', new ParseIntPipe({ optional: true }))
-        yearPublished?: number,
-    ): Promise<BookSchemaType[]> {
-        return await this.bookService.getBooks({
-            title,
-            authors,
-            _id,
-            yearPublished,
-        });
-    }
+    
 }
