@@ -69,6 +69,20 @@ export class MembersController {
         return res.sendStatus(HttpStatus.NOT_FOUND);
     }
 
+    @Get('find/:data')
+    async getData(
+        @Param('data') data: keyof MemberSchemaType,
+        @Query('_id', new ZodValidationPipe(zodOIDValidator)) _id: ObjectId,
+    ): Promise<404 | { data: MemberSchemaType[keyof MemberSchemaType] }> {
+        const borrow = await this.membersService.getMember(_id);
+        if (!borrow) {
+            return HttpStatus.NOT_FOUND;
+        }
+        return {
+            data: borrow[data],
+        };
+    }
+
     @Delete(':id')
     @UsePipes(new ZodValidationPipe(zodOIDValidator))
     async removeMember(@Param('id') id: ObjectId): Promise<Boolean> {

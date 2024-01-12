@@ -54,6 +54,20 @@ export class InventoryController {
         return res.send(entry);
     }
 
+    @Get('find/:data')
+    async getData(
+        @Param('data') data: keyof InventorySchemaType,
+        @Query('_id', new ZodValidationPipe(zodOIDValidator)) _id: ObjectId,
+    ): Promise<404 | { data: InventorySchemaType[keyof InventorySchemaType] }> {
+        const borrow = await this.inventoryService.getInventoryItem(_id);
+        if (!borrow) {
+            return HttpStatus.NOT_FOUND;
+        }
+        return {
+            data: borrow[data],
+        };
+    }
+
     @Patch(':id')
     async updateInventoryItem(
         @Param('id', new ZodValidationPipe(zodOIDValidator)) id: ObjectId,

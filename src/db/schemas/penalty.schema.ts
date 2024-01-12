@@ -20,7 +20,7 @@ const PenaltySchema = new Schema<PenaltySchemaType>({
     },
     title: {
         type: String,
-        required: true
+        required: true,
     },
 });
 

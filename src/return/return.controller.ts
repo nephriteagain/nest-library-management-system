@@ -62,6 +62,20 @@ export class ReturnController {
         return returnItem;
     }
 
+    @Get('find/:data')
+    async getData(
+        @Param('data') data: keyof ReturnSchemaType,
+        @Query('_id', new ZodValidationPipe(zodOIDValidator)) _id: ObjectId,
+    ): Promise<404 | { data: ReturnSchemaType[keyof ReturnSchemaType] }> {
+        const borrow = await this.returnService.getReturnItem(_id);
+        if (!borrow) {
+            return HttpStatus.NOT_FOUND;
+        }
+        return {
+            data: borrow[data],
+        };
+    }
+
     @Post(':id')
     async addReturnEntry(
         @Param('id', new ZodValidationPipe(zodOIDValidator)) _id: ObjectId,

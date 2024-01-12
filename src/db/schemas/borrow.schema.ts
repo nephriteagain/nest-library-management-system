@@ -27,8 +27,8 @@ const BorrowSchema = new Schema<BorrowSchemaType>({
         required: true,
     },
     isReturned: {
-        type: Boolean,        
-    }
+        type: Boolean,
+    },
 });
 
 export default model('BORROW', BorrowSchema);

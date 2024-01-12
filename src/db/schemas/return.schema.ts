@@ -24,8 +24,8 @@ const ReturnSchema = new Schema<ReturnSchemaType>({
     },
     title: {
         type: String,
-        required: true
-    }
+        required: true,
+    },
 });
 
 export default model('RETURN', ReturnSchema);

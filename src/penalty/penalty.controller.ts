@@ -50,6 +50,20 @@ export class PenaltyController {
         });
     }
 
+    @Get('find/:data')
+    async getData(
+        @Param('data') data: keyof PenaltySchemaType,
+        @Query('_id', new ZodValidationPipe(zodOIDValidator)) _id: ObjectId,
+    ): Promise<404 | { data: PenaltySchemaType[keyof PenaltySchemaType] }> {
+        const borrow = await this.penaltyService.getEntry(_id);
+        if (!borrow) {
+            return HttpStatus.NOT_FOUND;
+        }
+        return {
+            data: borrow[data],
+        };
+    }
+
     // i am using Query here because for some reason Param doesnt work!
     @Get('query')
     @UsePipes(new ZodValidationPipe(zodOIDValidator))

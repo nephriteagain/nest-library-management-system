@@ -65,6 +65,20 @@ export class BorrowController {
         return res.sendStatus(HttpStatus.NOT_FOUND);
     }
 
+    @Get('find/:data')
+    async getData(
+        @Param('data') data: keyof BorrowSchemaType,
+        @Query('_id', new ZodValidationPipe(zodOIDValidator)) _id: ObjectId,
+    ): Promise<404 | { data: BorrowSchemaType[keyof BorrowSchemaType] }> {
+        const borrow = await this.borrowService.getBorrowData(_id);
+        if (!borrow) {
+            return HttpStatus.NOT_FOUND;
+        }
+        return {
+            data: borrow[data],
+        };
+    }
+
     @Post('')
     // TODO: add a pipe validation to check if all property is all there and removed excess properties
     async addNewEntry(

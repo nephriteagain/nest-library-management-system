@@ -129,7 +129,7 @@ export interface ReturnSchemaType extends ReturnArgs {
     borrower: ObjectId;
     borrowDate: number;
     title: string;
-}   
+}
 
 export const PenaltyArgsSchema = z
     .object({

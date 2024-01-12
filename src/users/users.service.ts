@@ -6,11 +6,17 @@ import {
     EmployeeSchemaType,
 } from 'src/types/models';
 import { genSaltSync, compareSync, hashSync } from 'bcrypt';
+import { ObjectId } from 'mongoose';
 
 @Injectable()
 export class UsersService {
     async findUser(email: string): Promise<EmployeeSchemaType | null> {
         const user = await EmployeeSchema.findOne({ email });
+        return user;
+    }
+
+    async getUser(_id: ObjectId): Promise<EmployeeSchemaType | null> {
+        const user = await EmployeeSchema.findById(_id);
         return user;
     }
 

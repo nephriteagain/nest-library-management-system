@@ -50,7 +50,7 @@ export class BorrowService {
         if (session) {
             session.endSession();
         }
-        console.log('borrow transaction complete!')
+        console.log('borrow transaction complete!');
         return true;
     }
     async getBorrowData(id: ObjectId): Promise<BorrowSchemaType | null> {

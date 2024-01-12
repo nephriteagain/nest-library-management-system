@@ -60,6 +60,20 @@ export class BooksController {
         return bookQuery;
     }
 
+    @Get('find/:data')
+    async getData(
+        @Param('data') data: keyof BookSchemaType,
+        @Query('_id', new ZodValidationPipe(zodOIDValidator)) _id: ObjectId,
+    ): Promise<404 | { data: BookSchemaType[keyof BookSchemaType] }> {
+        const book = await this.bookService.getBook(_id);
+        if (!book) {
+            return HttpStatus.NOT_FOUND;
+        }
+        return {
+            data: book[data],
+        };
+    }
+
     @Get(':id')
     @UsePipes(new ZodValidationPipe(zodOIDValidator))
     async getBook(
