@@ -79,6 +79,7 @@ export interface BorrowSchemaType extends BorrowArgs, Id {
     title: string;
     approvedBy: ObjectId;
     date: number;
+    isReturned?: boolean;
 }
 
 export const InventoryArgsSchema = z
@@ -127,7 +128,8 @@ export interface ReturnSchemaType extends ReturnArgs {
     bookId: ObjectId;
     borrower: ObjectId;
     borrowDate: number;
-}
+    title: string;
+}   
 
 export const PenaltyArgsSchema = z
     .object({
@@ -140,6 +142,7 @@ export type PenaltyArgs = z.infer<typeof PenaltyArgsSchema>;
 
 export interface PenaltySchemaType extends PenaltyArgs, Id {
     approvedBy: ObjectId;
+    title: string;
 }
 
 /**

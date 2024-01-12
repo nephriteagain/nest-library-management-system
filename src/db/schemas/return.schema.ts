@@ -22,6 +22,10 @@ const ReturnSchema = new Schema<ReturnSchemaType>({
         type: SchemaTypes.ObjectId,
         required: true,
     },
+    title: {
+        type: String,
+        required: true
+    }
 });
 
 export default model('RETURN', ReturnSchema);

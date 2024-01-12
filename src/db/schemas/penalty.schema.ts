@@ -18,6 +18,10 @@ const PenaltySchema = new Schema<PenaltySchemaType>({
         type: SchemaTypes.ObjectId,
         required: true,
     },
+    title: {
+        type: String,
+        required: true
+    },
 });
 
 export default model('PENALTY', PenaltySchema);

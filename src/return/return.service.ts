@@ -56,8 +56,13 @@ export class ReturnService {
                     HttpStatus.NOT_FOUND,
                     );
                 }
-            const { bookId, borrower, date, promisedReturnDate } = borrowData;
+            const { bookId, borrower, date, promisedReturnDate, title } = borrowData;
             const returnDate = Date.now();
+
+            // add a isReturnedFlag to the borrow;
+            await BorrowSchema.findByIdAndUpdate(_id, {
+                isReturned: true
+            })
 
             // creates the return record
             await ReturnSchema.create({
@@ -66,6 +71,7 @@ export class ReturnService {
                 bookId,
                 borrowDate: date,
                 borrower,
+                title,
             });
 
             // update the inventory
@@ -89,6 +95,8 @@ export class ReturnService {
             if (returnDate <= promisedReturnDate) {
                 await returnSession.commitTransaction();
                 returnSession.endSession();
+                console.log('return transaction complete!')
+                return true
             }
 
             // the book is not returned on time, create a penalty record
@@ -105,6 +113,7 @@ export class ReturnService {
             await PenaltySchema.create({
                 _id,
                 bookId,
+                title,
                 borrower,
                 approvedBy,
                 penalty: totalPenalty,
