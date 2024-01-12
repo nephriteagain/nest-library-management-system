@@ -3,6 +3,7 @@ import PenaltySchema from 'src/db/schemas/penalty.schema';
 import { P, PenaltyArgs, PenaltySchemaType, Query } from 'src/types/models';
 import { ObjectId, isValidObjectId } from 'mongoose';
 import { queryLengthChecker } from 'src/utils';
+import { envConstants } from 'src/auth/constants';
 
 @Injectable()
 export class PenaltyService {
@@ -47,5 +48,10 @@ export class PenaltyService {
 
         const docs = await PenaltySchema.find({}).limit(20);
         return docs;
+    }
+
+    getPenalty() {
+        const penalty = envConstants.penalty
+        return penalty
     }
 }

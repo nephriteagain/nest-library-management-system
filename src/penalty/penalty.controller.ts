@@ -75,6 +75,12 @@ export class PenaltyController {
         return entry;
     }
 
+    @Get('penalty')
+    getPenalty() : { penalty:number }{
+        const penalty = this.penaltyService.getPenalty()
+        return { penalty }
+    }
+
     @Post('')
     @UsePipes(new ZodValidationPipe(PenaltyArgsSchema))
     async addEntry(
@@ -93,4 +99,6 @@ export class PenaltyController {
         );
         return res.send(newEntry);
     }
+
+
 }
