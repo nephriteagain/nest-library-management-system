@@ -75,7 +75,7 @@ export class PenaltyController {
         return entry;
     }
 
-    @Get('penalty')
+    @Get('value')
     getPenalty() : { penalty:number }{
         const penalty = this.penaltyService.getPenalty()
         return { penalty }
