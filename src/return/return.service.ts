@@ -54,8 +54,8 @@ export class ReturnService {
                 throw new HttpException(
                     'borrow document not found',
                     HttpStatus.NOT_FOUND,
-                );
-            }
+                    );
+                }
             const { bookId, borrower, date, promisedReturnDate } = borrowData;
             const returnDate = Date.now();
 
@@ -85,29 +85,34 @@ export class ReturnService {
                     HttpStatus.NOT_FOUND,
                 );
             }
+            // the book is returned on time
+            if (returnDate <= promisedReturnDate) {
+                await returnSession.commitTransaction();
+                returnSession.endSession();
+            }
 
             // the book is not returned on time, create a penalty record
-            if (returnDate > promisedReturnDate) {
-                const oneDay = 86_400_000;
-                const difference = returnDate - promisedReturnDate;
-                const totalPenalty =
-                    Math.ceil(difference / oneDay) * envConstants.penalty;
-                if (isNaN(totalPenalty)) {
-                    throw new HttpException(
-                        'penalty is NaN',
-                        HttpStatus.INTERNAL_SERVER_ERROR,
-                    );
-                }
-                await PenaltySchema.create({
-                    _id,
-                    borrower,
-                    approvedBy,
-                    penalty: totalPenalty,
-                });
+            const oneDay = 86_400_000;
+            const difference = returnDate - promisedReturnDate;
+            const totalPenalty =
+                Math.ceil(difference / oneDay) * envConstants.penalty;
+            if (isNaN(totalPenalty)) {
+                throw new HttpException(
+                    'penalty is NaN',
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                );
             }
+            await PenaltySchema.create({
+                _id,
+                bookId,
+                borrower,
+                approvedBy,
+                penalty: totalPenalty,
+            });
 
             await returnSession.commitTransaction();
             returnSession.endSession();
+            console.log('return transaction complete!')
             return true;
         } catch (error) {
             console.error('transaction failed', error);

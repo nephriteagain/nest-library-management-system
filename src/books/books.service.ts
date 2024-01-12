@@ -20,6 +20,7 @@ export class BooksService {
             await InventorySchema.create(newEntry);
             await bookSession.commitTransaction();
             bookSession.endSession();
+            console.log('book transaction complete!')
             return newBook;
         } catch (error) {
             console.error(error);

@@ -63,7 +63,6 @@ export class ReturnController {
     }
 
     @Post(':id')
-    @UsePipes(new ZodValidationPipe(ReturnArgsSchema))
     async addReturnEntry(
         @Param('id', new ZodValidationPipe(zodOIDValidator)) _id: ObjectId,
         @Req() req: Request,
