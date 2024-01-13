@@ -11,6 +11,8 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { ReturnModule } from './return/return.module';
 import { PenaltyModule } from './penalty/penalty.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
     imports: [
@@ -21,9 +23,12 @@ import { PenaltyModule } from './penalty/penalty.module';
         InventoryModule,
         AuthModule,
         UsersModule,
-        ConfigModule.forRoot(),
         ReturnModule,
         PenaltyModule,
+        ConfigModule.forRoot(),
+        ServeStaticModule.forRoot({
+            rootPath: join(__dirname, '..', 'clientBuild'),
+        }),
     ],
     controllers: [AppController],
     providers: [AppService],
