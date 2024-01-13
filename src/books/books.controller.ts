@@ -26,7 +26,7 @@ import {
 } from 'src/types/models';
 import { ZodValidationPipe } from 'src/db/validation/schema.pipe';
 
-@Controller('books')
+@Controller('api/books')
 export class BooksController {
     constructor(private bookService: BooksService) {}
 

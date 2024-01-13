@@ -25,7 +25,7 @@ import {
 import { AuthService } from 'src/auth/auth.service';
 import { ZodValidationPipe } from 'src/db/validation/schema.pipe';
 
-@Controller('members')
+@Controller('api/members')
 export class MembersController {
     constructor(
         private membersService: MembersService,

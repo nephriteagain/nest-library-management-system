@@ -24,7 +24,7 @@ import { Request, Response } from 'express';
 import { AuthService } from 'src/auth/auth.service';
 import { ZodValidationPipe } from 'src/db/validation/schema.pipe';
 
-@Controller('penalty')
+@Controller('api/penalty')
 export class PenaltyController {
     constructor(
         private penaltyService: PenaltyService,

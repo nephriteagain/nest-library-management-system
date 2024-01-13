@@ -5,6 +5,7 @@ import { logger } from './logger.middleware';
 import { envConstants } from './auth/constants';
 import * as cookieParser from 'cookie-parser';
 import { AuthGuard } from './auth/auth.guard';
+import { RedirectInterceptor } from './redirect.interceptor';
 import { JwtService } from '@nestjs/jwt';
 
 const cors = envConstants.env === 'dev' ? 'http://localhost:5173' : false;
@@ -18,6 +19,7 @@ async function bootstrap() {
     });
     app.use(logger);
     app.useGlobalGuards(new AuthGuard(new JwtService()));
+    app.useGlobalInterceptors(new RedirectInterceptor(envConstants.regexRoutes))
     await app.listen(3000);
 }
 bootstrap();

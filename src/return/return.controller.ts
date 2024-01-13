@@ -23,7 +23,7 @@ import {
 import { Request, Response } from 'express';
 import { ZodValidationPipe } from 'src/db/validation/schema.pipe';
 
-@Controller('return')
+@Controller('api/return')
 export class ReturnController {
     constructor(
         private returnService: ReturnService,

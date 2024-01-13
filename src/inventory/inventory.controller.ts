@@ -25,7 +25,7 @@ import {
 import { ZodValidationPipe } from 'src/db/validation/schema.pipe';
 
 // TODO: add another pipe that checks if (borrow + available === total)
-@Controller('inventory')
+@Controller('api/inventory')
 export class InventoryController {
     constructor(private inventoryService: InventoryService) {}
 

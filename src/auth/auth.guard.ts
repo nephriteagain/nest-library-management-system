@@ -22,7 +22,17 @@ export class AuthGuard implements CanActivate {
             return true;
         }
 
-        if (request.path.startsWith('/auth') && request.method !== 'GET') {
+        // NOTE: this is safe because there is a password required in the request body        
+        if (request.path === '/api/auth/register') {
+            return true;
+        }
+
+        if (envConstants.regexRoutes.some(item => item.regex.test(request.path))) {
+            console.log('spa routes matched, interceptor will handle it')
+            return true
+        }
+
+        if (request.path.startsWith('api/auth') && request.method !== 'GET') {
             console.log('auth guard skipped');
             return true;
         }

@@ -24,7 +24,7 @@ import { ZodValidationPipe } from 'src/db/validation/schema.pipe';
 import { BorrowArgsSchema, zodOIDValidator } from 'src/types/models';
 import { AuthGuard } from 'src/auth/auth.guard';
 
-@Controller('borrow')
+@Controller('api/borrow')
 export class BorrowController {
     constructor(
         private borrowService: BorrowService,

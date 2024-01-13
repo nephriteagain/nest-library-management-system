@@ -24,7 +24,7 @@ import {
 } from 'src/types/models';
 import { ObjectId } from 'mongoose';
 
-@Controller('auth')
+@Controller('api/auth')
 export class AuthController {
     constructor(
         private authService: AuthService,
