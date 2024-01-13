@@ -8,7 +8,7 @@ import {
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response } from 'express';
-import { ObjectId } from 'mongoose';
+import { ObjectId, startSession } from 'mongoose';
 import {
     EmployeeArgs,
     EmployeeArgsSchema,
@@ -16,6 +16,7 @@ import {
     P,
 } from 'src/types/models';
 import { envConstants } from './constants';
+import MembersShema from 'src/db/schemas/members.shema';
 
 @Injectable()
 export class AuthService {
@@ -30,10 +31,25 @@ export class AuthService {
             throw new HttpException('unauthorzed', HttpStatus.UNAUTHORIZED);
         }
         EmployeeArgsSchema.parse(user);
+        let session = null;
         try {
+            const userSession = await startSession();
+            session = userSession;
             const newEmployee = await this.usersService.createUser(user);
+            await MembersShema.create({
+                _id: newEmployee._id,
+                name: user.name,
+                age: user.age,
+                email: user.email,
+            });
+            userSession.commitTransaction();
+            userSession.endSession();
             return newEmployee;
         } catch (error) {
+            if (session) {
+                session.abortTransaction();
+                session.endSession();
+            }
             throw new HttpException(
                 'email already in used',
                 HttpStatus.CONFLICT,

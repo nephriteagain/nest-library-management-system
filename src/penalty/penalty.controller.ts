@@ -76,9 +76,9 @@ export class PenaltyController {
     }
 
     @Get('value')
-    getPenalty() : { penalty:number }{
-        const penalty = this.penaltyService.getPenalty()
-        return { penalty }
+    getPenalty(): { penalty: number } {
+        const penalty = this.penaltyService.getPenalty();
+        return { penalty };
     }
 
     @Post('')
@@ -99,6 +99,4 @@ export class PenaltyController {
         );
         return res.send(newEntry);
     }
-
-
 }

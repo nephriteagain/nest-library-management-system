@@ -51,7 +51,7 @@ export class PenaltyService {
     }
 
     getPenalty() {
-        const penalty = envConstants.penalty
-        return penalty
+        const penalty = envConstants.penalty;
+        return penalty;
     }
 }

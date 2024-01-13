@@ -30,7 +30,7 @@ export class UsersService {
         });
         const withoutPassword = {
             email: newUser.email,
-            id: newUser._id,
+            _id: newUser._id,
             name: newUser.name,
             age: newUser.age,
             joinData: newUser.joinDate,
