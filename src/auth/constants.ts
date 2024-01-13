@@ -2,6 +2,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 const routes = [
+    '/register',
     '/books',
     '/books/new',
     '/inventory',
@@ -21,12 +22,14 @@ const routes = [
     '/books/new/:id',
 ];
 
-const regexRoutes = routes.map(route => {
+const regexRoutes = routes.map((route) => {
     return {
-        regex: new RegExp('^' + route.replace(/:[a-zA-Z0-9]+/g, '[a-zA-Z0-9]+') + '$'),
-        route
-    }
-})
+        regex: new RegExp(
+            '^' + route.replace(/:[a-zA-Z0-9]+/g, '[a-zA-Z0-9]+') + '$',
+        ),
+        route,
+    };
+});
 
 export const envConstants = {
     secret: `${process.env.SECRET_KEY}`,
@@ -34,10 +37,5 @@ export const envConstants = {
     penalty: 5,
     mongo_local: `${process.env.MONGO_LOCAL}`,
     mongo_prod: `${process.env.MONGO_PROD}`,
-    regexRoutes
+    regexRoutes,
 } as const;
-
-
-
-
-

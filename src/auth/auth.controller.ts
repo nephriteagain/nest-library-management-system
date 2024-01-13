@@ -58,6 +58,7 @@ export class AuthController {
     ): Promise<any> {
         const newEmployee = await this.authService.newEmployee(user, secret);
         if (!newEmployee) {
+            console.log(newEmployee);
             return HttpStatus.BAD_REQUEST;
         }
         return newEmployee;

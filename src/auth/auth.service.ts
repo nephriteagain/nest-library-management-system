@@ -28,6 +28,7 @@ export class AuthService {
     // TODO: make a transaction that will auto add employee as a member
     async newEmployee(user: EmployeeArgs, secret: string) {
         if (secret !== envConstants.secret) {
+            console.log('secret incorrect');
             throw new HttpException('unauthorzed', HttpStatus.UNAUTHORIZED);
         }
         EmployeeArgsSchema.parse(user);
@@ -35,25 +36,25 @@ export class AuthService {
         try {
             const userSession = await startSession();
             session = userSession;
+            userSession.startTransaction();
             const newEmployee = await this.usersService.createUser(user);
-            await MembersShema.create({
+            const newMember = await MembersShema.create({
                 _id: newEmployee._id,
                 name: user.name,
                 age: user.age,
                 email: user.email,
+                approvedBy: newEmployee._id,
             });
             userSession.commitTransaction();
             userSession.endSession();
             return newEmployee;
         } catch (error) {
+            console.error(`session aborted, ${error}`);
             if (session) {
                 session.abortTransaction();
                 session.endSession();
+                return null;
             }
-            throw new HttpException(
-                'email already in used',
-                HttpStatus.CONFLICT,
-            );
         }
     }
 

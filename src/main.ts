@@ -19,7 +19,9 @@ async function bootstrap() {
     });
     app.use(logger);
     app.useGlobalGuards(new AuthGuard(new JwtService()));
-    app.useGlobalInterceptors(new RedirectInterceptor(envConstants.regexRoutes))
+    app.useGlobalInterceptors(
+        new RedirectInterceptor(envConstants.regexRoutes),
+    );
     await app.listen(3000);
 }
 bootstrap();
