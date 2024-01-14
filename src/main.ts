@@ -3,7 +3,8 @@ import { AppModule } from './app.module';
 import { logger } from './logger.middleware';
 
 import { envConstants } from './auth/constants';
-import * as cookieParser from 'cookie-parser';
+import  cookieParser from 'cookie-parser';
+
 import { AuthGuard } from './auth/auth.guard';
 import { RedirectInterceptor } from './redirect.interceptor';
 import { JwtService } from '@nestjs/jwt';
