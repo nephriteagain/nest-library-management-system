@@ -4,6 +4,7 @@ import {
     NotFoundException,
     HttpStatus,
     HttpException,
+    BadRequestException,
 } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
@@ -53,7 +54,7 @@ export class AuthService {
             if (session) {
                 session.abortTransaction();
                 session.endSession();
-                return null;
+                throw new BadRequestException()
             }
         }
     }

@@ -38,4 +38,8 @@ export const envConstants = {
     mongo_local: `${process.env.MONGO_LOCAL}`,
     mongo_prod: `${process.env.MONGO_PROD}`,
     regexRoutes,
+    user: {
+        email: process.env.EMAIL,
+        password: process.env.PASSWORD
+    }
 } as const;

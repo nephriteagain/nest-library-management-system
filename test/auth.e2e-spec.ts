@@ -8,7 +8,9 @@ import { JwtModule } from "@nestjs/jwt";
 import { DatabaseModule } from "../src/db/database.module";
 import { envConstants } from "../src/auth/constants";
 import { generateObjectId } from '../src/utils.spec';
-import { sampleEmployee } from "./test.helpers";
+import { sampleEmployee, cookie } from "./test.helpers";
+import { faker } from "@faker-js/faker";
+
 
 const req = request;
 
@@ -92,10 +94,153 @@ describe('AuthController (e2e)', () => {
             return req(app.getHttpServer())
                 .get('/api/auth/find/name?_id=fakeid')
                 .expect(400)
+        })        
+    })
+
+    describe('/signin POST', () => {
+        const cred = {
+            email: envConstants.user.email,
+            password: envConstants.user.password
+        }
+
+        it('returns ok, signs in the user, send jwt cookie', () => {
+            return req(app.getHttpServer())
+                .post('/api/auth/login')
+                .send(cred)
+                .expect(200)
+                // this callback checks if the jwt cookie do exist
+                .expect(res => {
+                    const setCookieHeader = res.headers['set-cookie'];
+                    if (!setCookieHeader) {
+                        throw new Error('Expected Set-Cookie header not found');
+                    }
+        
+                    const setCookieArray = Array.isArray(setCookieHeader)
+                        ? setCookieHeader
+                        : [setCookieHeader];
+        
+                    const httpOnlyCookieExists = setCookieArray.some((cookie) =>
+                        cookie.includes('jwt') && cookie.includes('HttpOnly')
+                    );
+        
+                    if (!httpOnlyCookieExists) {
+                        throw new Error('Expected HTTP-only cookie not found');
+                    }
+                })
         })
+
+        it('returns not found user does not exist', () => {
+            return req(app.getHttpServer())
+                .post('/api/auth/login')
+                .send({email: 'wrongemail@gmail.com', password: 'password'})
+                .expect(404)
+        })
+
+        it('returns unauthorized, due toincorrect password', () => {
+            return req(app.getHttpServer())
+                .post('/api/auth/login')
+                .send({...cred, password: 'wrongpassword'})
+                .expect(401)
+        })
+        
+    })
+
+    describe('/logout POST', () => {
+        const cred = {
+            email: envConstants.user.email,
+            password: envConstants.user.password
+        }
+        it ('succesfully logouts user', () => {
+
+            // logins the user first
+            return req(app.getHttpServer())
+                .post('/api/auth/login')
+                .send(cred)
+                .expect(200)
+                .expect(() => {
+                    return req(app.getHttpServer())
+                    .post('/api/auth/logout')
+                    .expect(200)
+                    // this callback checks if the jwt cookie is already removed
+                    .expect(res => {
+                        const setCookieHeader = res.headers['set-cookie'];
+                        if (!setCookieHeader) {
+                            throw new Error('Expected Set-Cookie header not found');
+                        }
+            
+                        const setCookieArray = Array.isArray(setCookieHeader)
+                            ? setCookieHeader
+                            : [setCookieHeader];
+            
+                        const httpOnlyCookieExists = setCookieArray.every((cookie) =>
+                            !cookie.includes('jwt') && !cookie.includes('HttpOnly')
+                        );
+            
+                        if (httpOnlyCookieExists) {
+                            throw new Error('Expected HTTP-only cookie not found');
+                        }
+                    })
+                })
+           
+        })
+    })
+
+    describe('/register POST', () => {
+        const email = faker.internet.email()
+        const newUser = {
+            "user": {
+                "name": faker.person.fullName,
+                "age": faker.number.int({min:14, max:100}),
+                "email": email,
+                "password": "password"
+            },
+            "secret":  envConstants.secret
+        }
+
+        it('successfully register a user', () => {
+            req(app.getHttpServer())
+                .post('/api/auth/register')
+                .send(newUser)
+                .expect(200)
+        })
+
+        it('register a already existing user', () => {
+            req(app.getHttpServer())
+                .post('/api/auth/register')
+                .send(newUser)
+                .expect(400)
+        })
+
+        it('returns 400 when sending invalid schema', () => {
+            req(app.getHttpServer())
+                .post('/api/auth/register')
+                .send({secret: newUser.secret})
+                .expect(400)
+        })
+
+        it('returns 401 when sending incorrect secret key', () => {
+            req(app.getHttpServer())
+                .post('/api/auth/register')
+                .send({...newUser, secret: 'wrong_password'})
+                .expect(401)
+        })
+
 
     })
 
-    
+    describe('/credential POST', () => {
+        it('successfully auto login using jwt cookie', () => {
+            req(app.getHttpServer())
+                .post('/api/auth/credentials')                
+                .set('Cookie', cookie)
+                .expect(200)
+        })
+
+        it('returns 204 since no jwt cookie found', () => {
+            req(app.getHttpServer())
+                .post('/api/auth/credentials')                
+                .expect(204)
+        })
+    })
     
 })
