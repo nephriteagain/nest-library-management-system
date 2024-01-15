@@ -10,6 +10,8 @@ import {
     Req,
     UsePipes,
     Query,
+    NotFoundException,
+    BadRequestException,
 } from '@nestjs/common';
 import { MembersService } from './members.service';
 import { ObjectId } from 'mongoose';
@@ -21,9 +23,9 @@ import {
     zodOIDValidator,
     zodOIDValidatorOptional,
     zodEmailValidatorOptional,
-} from 'src/types/models';
-import { AuthService } from 'src/auth/auth.service';
-import { ZodValidationPipe } from 'src/db/validation/schema.pipe';
+} from '../types/models';
+import { AuthService } from '../auth/auth.service';
+import { ZodValidationPipe } from '../db/validation/schema.pipe';
 
 @Controller('api/members')
 export class MembersController {
@@ -74,12 +76,18 @@ export class MembersController {
         @Param('data') data: keyof MemberSchemaType,
         @Query('_id', new ZodValidationPipe(zodOIDValidator)) _id: ObjectId,
     ): Promise<404 | { data: MemberSchemaType[keyof MemberSchemaType] }> {
-        const borrow = await this.membersService.getMember(_id);
-        if (!borrow) {
-            return HttpStatus.NOT_FOUND;
+        if (!_id) {
+            throw new BadRequestException('missing id!')
+        }
+        const member = await this.membersService.getMember(_id);
+        if (!member) {
+            throw new NotFoundException()
+        }
+        if (member[data] === undefined) {
+            throw new BadRequestException()
         }
         return {
-            data: borrow[data],
+            data: member[data],
         };
     }
 

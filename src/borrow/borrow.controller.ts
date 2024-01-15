@@ -10,6 +10,8 @@ import {
     UsePipes,
     Query,
     UseGuards,
+    NotFoundException,
+    BadRequestException,
 } from '@nestjs/common';
 import { BorrowService } from './borrow.service';
 import { ObjectId } from 'mongoose';
@@ -17,12 +19,11 @@ import {
     BorrowArgs,
     BorrowSchemaType,
     zodOIDValidatorOptional,
-} from 'src/types/models';
+} from '../types/models';
 import { Response, Request } from 'express';
-import { AuthService } from 'src/auth/auth.service';
-import { ZodValidationPipe } from 'src/db/validation/schema.pipe';
-import { BorrowArgsSchema, zodOIDValidator } from 'src/types/models';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthService } from '../auth/auth.service';
+import { ZodValidationPipe } from '../db/validation/schema.pipe';
+import { BorrowArgsSchema, zodOIDValidator } from '../types/models';
 
 @Controller('api/borrow')
 export class BorrowController {
@@ -70,9 +71,15 @@ export class BorrowController {
         @Param('data') data: keyof BorrowSchemaType,
         @Query('_id', new ZodValidationPipe(zodOIDValidator)) _id: ObjectId,
     ): Promise<404 | { data: BorrowSchemaType[keyof BorrowSchemaType] }> {
+        if (!_id) {
+            throw new BadRequestException('missing id!')
+        }
         const borrow = await this.borrowService.getBorrowData(_id);
         if (!borrow) {
-            return HttpStatus.NOT_FOUND;
+            throw new NotFoundException()
+        }
+        if (borrow[data] === undefined) {
+            throw new BadRequestException()
         }
         return {
             data: borrow[data],

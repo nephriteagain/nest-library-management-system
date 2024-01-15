@@ -1,19 +1,21 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { BookArgs, BookSchemaType, Query } from 'src/types/models';
-import BookSchema from 'src/db/schemas/book.schema';
-import InventorySchema from 'src/db/schemas/inventory.schema';
+import { BookArgs, BookSchemaType, Query } from '../types/models';
+import BookSchema from '../db/schemas/book.schema';
+import InventorySchema from '../db/schemas/inventory.schema';
 import { ObjectId, startSession, isValidObjectId } from 'mongoose';
-import { queryLengthChecker, booksMapper } from 'src/utils';
+import { queryLengthChecker, booksMapper } from '../utils';
 
 @Injectable()
 export class BooksService {
+    constructor(private readonly BookModel: typeof BookSchema) {}
+
     async add(book: BookArgs): Promise<BookSchemaType | null> {
         let session = null;
         try {
             const bookSession = await startSession();
             session = bookSession;
             bookSession.startTransaction();
-            const newBook = await BookSchema.create(book);
+            const newBook = await this.BookModel.create(book);
             const { _id } = newBook;
             const { title, total } = book;
             const newEntry = { _id, title, total, available: total };
@@ -34,7 +36,7 @@ export class BooksService {
     }
 
     async getBook(id: ObjectId): Promise<BookSchemaType | null> {
-        const book = await BookSchema.findById(id);
+        const book = await this.BookModel.findById(id);
         return book;
     }
     async getBooks(query: Query<BookSchemaType>): Promise<BookSchemaType[]> {
@@ -42,12 +44,12 @@ export class BooksService {
 
         queryLengthChecker(query);
         if (_id) {
-            return await BookSchema.find({ _id }).limit(1).exec();
+            return await this.BookModel.find({ _id }).limit(1).exec();
         }
 
         if (title) {
             const regex = new RegExp(`${title}`, 'gi');
-            return await BookSchema.find({
+            return await this.BookModel.find({
                 title: {
                     $regex: regex,
                 },
@@ -58,7 +60,7 @@ export class BooksService {
 
         if (authors) {
             const regex = new RegExp(`${authors}`, 'gi');
-            return await BookSchema.find({
+            return await this.BookModel.find({
                 authors: {
                     $elemMatch: { $regex: regex },
                 },
@@ -76,22 +78,22 @@ export class BooksService {
                 );
             }
 
-            return await BookSchema.find({ yearPublished: { $eq: year } })
+            return await this.BookModel.find({ yearPublished: { $eq: year } })
                 .limit(20)
                 .exec();
         }
 
-        return BookSchema.find({}).limit(20).exec();
+        return this.BookModel.find({}).limit(20).exec();
     }
     async delete(id: ObjectId) {
-        const deleteStatus = await BookSchema.findByIdAndDelete(id);
+        const deleteStatus = await this.BookModel.findByIdAndDelete(id);
         return Boolean(deleteStatus);
     }
     async update(
         id: ObjectId,
         update: Partial<BookArgs>,
     ): Promise<BookSchemaType | null> {
-        const updatedBook = await BookSchema.findByIdAndUpdate(id, update, {
+        const updatedBook = await this.BookModel.findByIdAndUpdate(id, update, {
             new: true,
         });
         return updatedBook;
@@ -99,17 +101,17 @@ export class BooksService {
 
     async search(text: string): Promise<{ _id: ObjectId; title: string }[]> {
         if (!text) {
-            const books = await BookSchema.find({}).limit(20).exec();
+            const books = await this.BookModel.find({}).limit(20).exec();
             return booksMapper(books);
         }
 
         if (isValidObjectId(text)) {
-            const books = await BookSchema.find({ _id: text }).limit(1).exec();
+            const books = await this.BookModel.find({ _id: text }).limit(1).exec();
             return booksMapper(books);
         }
 
         const regex = new RegExp(`${text}`, 'gi');
-        const books = await BookSchema.find({
+        const books = await this.BookModel.find({
             title: {
                 $regex: regex,
             },

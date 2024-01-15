@@ -9,9 +9,11 @@ import {
     Query,
     UsePipes,
     Param,
+    NotFoundException,
+    BadRequestException
 } from '@nestjs/common';
 import { ReturnService } from './return.service';
-import { AuthService } from 'src/auth/auth.service';
+import { AuthService } from '../auth/auth.service';
 import { ObjectId } from 'mongoose';
 import {
     ReturnArgs,
@@ -19,9 +21,9 @@ import {
     ReturnArgsSchema,
     zodOIDValidator,
     zodOIDValidatorOptional,
-} from 'src/types/models';
+} from '../types/models';
 import { Request, Response } from 'express';
-import { ZodValidationPipe } from 'src/db/validation/schema.pipe';
+import { ZodValidationPipe } from '../db/validation/schema.pipe';
 
 @Controller('api/return')
 export class ReturnController {
@@ -57,7 +59,7 @@ export class ReturnController {
     ): Promise<ReturnSchemaType | 404> {
         const returnItem = await this.returnService.getReturnItem(id);
         if (!returnItem) {
-            return HttpStatus.NOT_FOUND;
+            throw new NotFoundException()
         }
         return returnItem;
     }
@@ -67,12 +69,18 @@ export class ReturnController {
         @Param('data') data: keyof ReturnSchemaType,
         @Query('_id', new ZodValidationPipe(zodOIDValidator)) _id: ObjectId,
     ): Promise<404 | { data: ReturnSchemaType[keyof ReturnSchemaType] }> {
-        const borrow = await this.returnService.getReturnItem(_id);
-        if (!borrow) {
-            return HttpStatus.NOT_FOUND;
+        if (!_id) {
+            throw new BadRequestException('missing id!')
+        }
+        const returnItem = await this.returnService.getReturnItem(_id);
+        if (!returnItem) {
+            throw new NotFoundException()
+        }
+        if (returnItem[data] === undefined) {
+            throw new BadRequestException()
         }
         return {
-            data: borrow[data],
+            data: returnItem[data],
         };
     }
 

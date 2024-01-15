@@ -1,12 +1,20 @@
 import { Module } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { BooksController } from './books.controller';
-import { AuthService } from 'src/auth/auth.service';
-import { InventoryService } from 'src/inventory/inventory.service';
-import { UsersModule } from 'src/users/users.module';
+import { AuthService } from '../auth/auth.service';
+import { InventoryService } from '../inventory/inventory.service';
+import { UsersModule } from '../users/users.module';
+import bookSchema from '../db/schemas/book.schema';
 
 @Module({
-    providers: [BooksService, AuthService, InventoryService],
+    providers: [
+        AuthService, 
+        InventoryService,
+        {
+            provide: BooksService,
+            useValue: new BooksService(bookSchema),            
+        }
+    ],
     controllers: [BooksController],
     imports: [UsersModule],
 })

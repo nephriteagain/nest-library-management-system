@@ -1,9 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { BorrowArgs, BorrowSchemaType, Query } from 'src/types/models';
-import BorrowSchema from 'src/db/schemas/borrow.schema';
-import InventorySchema from 'src/db/schemas/inventory.schema';
+import { BorrowArgs, BorrowSchemaType, Query } from '../types/models';
+import BorrowSchema from '../db/schemas/borrow.schema';
+import InventorySchema from '../db/schemas/inventory.schema';
 import { ObjectId, startSession } from 'mongoose';
-import { queryLengthChecker } from 'src/utils';
+import { queryLengthChecker } from '../utils';
 
 @Injectable()
 export class BorrowService {

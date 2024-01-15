@@ -4,12 +4,12 @@ import {
     MemberSchemaType,
     Query,
     membersArgsSchema,
-} from 'src/types/models';
-import MembersShema from 'src/db/schemas/members.shema';
+} from '../types/models';
+import MembersShema from '../db/schemas/members.shema';
 import { ObjectId, isValidObjectId } from 'mongoose';
-import { queryLengthChecker } from 'src/utils';
+import { queryLengthChecker } from '../utils';
 import { z } from 'zod';
-import { membersMapper } from 'src/utils';
+import { membersMapper } from '../utils';
 
 @Injectable()
 export class MembersService {

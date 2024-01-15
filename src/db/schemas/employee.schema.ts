@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { EmployeeSchemaType } from 'src/types/models';
+import { EmployeeSchemaType } from '../../types/models';
 
 const EmployeeSchema = new Schema<EmployeeSchemaType>({
     email: {

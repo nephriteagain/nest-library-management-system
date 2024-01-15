@@ -1,9 +1,9 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import PenaltySchema from 'src/db/schemas/penalty.schema';
-import { P, PenaltyArgs, PenaltySchemaType, Query } from 'src/types/models';
+import PenaltySchema from '../db/schemas/penalty.schema';
+import { P, PenaltyArgs, PenaltySchemaType, Query } from '../types/models';
 import { ObjectId, isValidObjectId } from 'mongoose';
-import { queryLengthChecker } from 'src/utils';
-import { envConstants } from 'src/auth/constants';
+import { queryLengthChecker } from '../utils';
+import { envConstants } from '../auth/constants';
 
 @Injectable()
 export class PenaltyService {

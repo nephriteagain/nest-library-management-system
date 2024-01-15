@@ -13,9 +13,12 @@ import {
     Query,
     HttpException,
     ParseIntPipe,
+    NotFoundException,
+    InternalServerErrorException,
+    BadRequestException,
 } from '@nestjs/common';
 import { BooksService } from './books.service';
-import type { BookArgs, BookSchemaType } from 'src/types/models';
+import type { BookArgs, BookSchemaType } from '../types/models';
 import { ObjectId } from 'mongoose';
 import { Response } from 'express';
 import {
@@ -23,8 +26,8 @@ import {
     zodOIDValidator,
     partialBookArgsSchema,
     zodOIDValidatorOptional,
-} from 'src/types/models';
-import { ZodValidationPipe } from 'src/db/validation/schema.pipe';
+} from '../types/models';
+import { ZodValidationPipe } from '../db/validation/schema.pipe';
 
 @Controller('api/books')
 export class BooksController {
@@ -65,9 +68,15 @@ export class BooksController {
         @Param('data') data: keyof BookSchemaType,
         @Query('_id', new ZodValidationPipe(zodOIDValidator)) _id: ObjectId,
     ): Promise<404 | { data: BookSchemaType[keyof BookSchemaType] }> {
+        if (!_id) {
+            throw new BadRequestException('missing id!')
+        }
         const book = await this.bookService.getBook(_id);
         if (!book) {
-            return HttpStatus.NOT_FOUND;
+            throw new NotFoundException()
+        }
+        if (book[data] === undefined) {
+            throw new BadRequestException()
         }
         return {
             data: book[data],
@@ -92,7 +101,7 @@ export class BooksController {
     async addBook(@Body() book: BookArgs): Promise<BookSchemaType | 500> {
         const newBook = await this.bookService.add(book);
         if (!newBook) {
-            return HttpStatus.INTERNAL_SERVER_ERROR;
+            throw new InternalServerErrorException()
         }
         return newBook;
     }
@@ -121,6 +130,6 @@ export class BooksController {
         if (updatedBook) {
             return res.send(updatedBook);
         }
-        return res.status(HttpStatus.NOT_FOUND);
+        return res.sendStatus(HttpStatus.NOT_FOUND);
     }
 }

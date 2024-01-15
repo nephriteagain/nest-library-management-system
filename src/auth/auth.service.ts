@@ -14,9 +14,9 @@ import {
     EmployeeArgsSchema,
     EmployeeSchemaType,
     P,
-} from 'src/types/models';
+} from '../types/models';
 import { envConstants } from './constants';
-import MembersShema from 'src/db/schemas/members.shema';
+import MembersShema from '../db/schemas/members.shema';
 
 @Injectable()
 export class AuthService {

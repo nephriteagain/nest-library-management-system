@@ -11,17 +11,20 @@ import {
     Param,
     Get,
     HttpException,
+    NotFoundException,
+    BadRequestException,
+    UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '../users/users.service';
 import { Response, Request } from 'express';
-import { ZodValidationPipe } from 'src/db/validation/schema.pipe';
+import { ZodValidationPipe } from '../db/validation/schema.pipe';
 import {
     EmployeeArgs,
     EmployeeSchemaType,
     signInSchema,
     zodOIDValidator,
-} from 'src/types/models';
+} from '../types/models';
 import { ObjectId } from 'mongoose';
 
 @Controller('api/auth')
@@ -36,19 +39,24 @@ export class AuthController {
         @Param('data') data: keyof EmployeeSchemaType,
         @Query('_id', new ZodValidationPipe(zodOIDValidator)) _id: ObjectId,
     ): Promise<404 | { data: EmployeeSchemaType[keyof EmployeeSchemaType] }> {
-        if (data === 'password') {
-            throw new HttpException(
-                'cannot send password field to the client!',
-                HttpStatus.UNAUTHORIZED,
-            );
+        if (!_id) {
+            throw new BadRequestException('missing id!')
         }
 
-        const borrow = await this.userService.getUser(_id);
-        if (!borrow) {
-            return HttpStatus.NOT_FOUND;
+        if (data === 'password') {
+            throw new UnauthorizedException('cannot send password field to the client!')
         }
+
+        const auth = await this.userService.getUser(_id);
+        if (!auth) {
+            throw new NotFoundException()
+        }
+        if (auth[data] === undefined) {
+            throw new BadRequestException()
+        }
+
         return {
-            data: borrow[data],
+            data: auth[data],
         };
     }
 
@@ -59,7 +67,7 @@ export class AuthController {
         const newEmployee = await this.authService.newEmployee(user, secret);
         if (!newEmployee) {
             console.log(newEmployee);
-            return HttpStatus.BAD_REQUEST;
+            throw new BadRequestException()
         }
         return newEmployee;
     }

@@ -1,5 +1,5 @@
 import { Schema, model, SchemaTypes } from 'mongoose';
-import { BookSchemaType } from 'src/types/models';
+import { BookSchemaType } from '../../types/models';
 
 const BookSchema = new Schema<BookSchemaType>({
     title: {

@@ -1,12 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import ReturnSchema from 'src/db/schemas/return.schema';
-import BorrowSchema from 'src/db/schemas/borrow.schema';
-import InventorySchema from 'src/db/schemas/inventory.schema';
-import PenaltySchema from 'src/db/schemas/penalty.schema';
+import ReturnSchema from '../db/schemas/return.schema';
+import BorrowSchema from '../db/schemas/borrow.schema';
+import InventorySchema from '../db/schemas/inventory.schema';
+import PenaltySchema from '../db/schemas/penalty.schema';
 import { ObjectId, startSession } from 'mongoose';
-import { Query, ReturnSchemaType } from 'src/types/models';
-import { queryLengthChecker } from 'src/utils';
-import { envConstants } from 'src/auth/constants';
+import { Query, ReturnSchemaType } from '../types/models';
+import { queryLengthChecker } from '../utils';
+import { envConstants } from '../auth/constants';
 
 @Injectable()
 export class ReturnService {

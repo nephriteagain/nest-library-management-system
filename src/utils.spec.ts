@@ -29,7 +29,7 @@ describe('queryLengthChecker', () => {
 
 })
 
-function generateObjectId() {
+export function generateObjectId() {
     return new Types.ObjectId().toHexString() as string & ObjectId;
 }
 

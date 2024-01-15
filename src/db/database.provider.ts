@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import { envConstants } from 'src/auth/constants';
+import { envConstants } from '../auth/constants';
 
 const mongoDb =
     envConstants.env === 'dev'

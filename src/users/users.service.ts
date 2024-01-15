@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import EmployeeSchema from 'src/db/schemas/employee.schema';
+import EmployeeSchema from '../db/schemas/employee.schema';
 import {
     EmployeeArgs,
     BaseDocument,
     EmployeeSchemaType,
-} from 'src/types/models';
+} from '../types/models';
 import { genSaltSync, compareSync, hashSync } from 'bcrypt';
 import { ObjectId } from 'mongoose';
 

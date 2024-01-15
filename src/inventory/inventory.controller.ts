@@ -10,6 +10,8 @@ import {
     UsePipes,
     Query,
     UseGuards,
+    NotFoundException,
+    BadRequestException,
 } from '@nestjs/common';
 import { InventoryService } from './inventory.service';
 import { isValidObjectId, ObjectId } from 'mongoose';
@@ -21,8 +23,8 @@ import {
     zodOIDValidator,
     PartialInventoryArgsSchema,
     zodOIDValidatorOptional,
-} from 'src/types/models';
-import { ZodValidationPipe } from 'src/db/validation/schema.pipe';
+} from '../types/models';
+import { ZodValidationPipe } from '../db/validation/schema.pipe';
 
 // TODO: add another pipe that checks if (borrow + available === total)
 @Controller('api/inventory')
@@ -59,12 +61,18 @@ export class InventoryController {
         @Param('data') data: keyof InventorySchemaType,
         @Query('_id', new ZodValidationPipe(zodOIDValidator)) _id: ObjectId,
     ): Promise<404 | { data: InventorySchemaType[keyof InventorySchemaType] }> {
-        const borrow = await this.inventoryService.getInventoryItem(_id);
-        if (!borrow) {
-            return HttpStatus.NOT_FOUND;
+        if (!_id) {
+            throw new BadRequestException('missing id!')
+        }
+        const inventoryItem = await this.inventoryService.getInventoryItem(_id);
+        if (!inventoryItem) {
+            throw new NotFoundException()
+        }
+        if (inventoryItem[data] === undefined) {
+            throw new BadRequestException()
         }
         return {
-            data: borrow[data],
+            data: inventoryItem[data],
         };
     }
 

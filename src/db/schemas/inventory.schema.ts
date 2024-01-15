@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { InventorySchemaType } from 'src/types/models';
+import { InventorySchemaType } from '../../types/models';
 
 const INVENTORY = new Schema<InventorySchemaType>({
     _id: {

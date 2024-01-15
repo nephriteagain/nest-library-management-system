@@ -1,5 +1,5 @@
 import { Schema, SchemaTypes, model } from 'mongoose';
-import { ReturnSchemaType } from 'src/types/models';
+import { ReturnSchemaType } from '../../types/models';
 
 const ReturnSchema = new Schema<ReturnSchemaType>({
     bookId: {

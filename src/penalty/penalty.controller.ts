@@ -9,6 +9,8 @@ import {
     Req,
     Query,
     UsePipes,
+    NotFoundException,
+    BadRequestException,
 } from '@nestjs/common';
 import { PenaltyService } from './penalty.service';
 import {
@@ -18,11 +20,11 @@ import {
     PenaltyArgsSchema,
     zodOIDValidator,
     zodOIDValidatorOptional,
-} from 'src/types/models';
+} from '../types/models';
 import { ObjectId } from 'mongoose';
 import { Request, Response } from 'express';
-import { AuthService } from 'src/auth/auth.service';
-import { ZodValidationPipe } from 'src/db/validation/schema.pipe';
+import { AuthService } from '../auth/auth.service';
+import { ZodValidationPipe } from '../db/validation/schema.pipe';
 
 @Controller('api/penalty')
 export class PenaltyController {
@@ -55,12 +57,18 @@ export class PenaltyController {
         @Param('data') data: keyof PenaltySchemaType,
         @Query('_id', new ZodValidationPipe(zodOIDValidator)) _id: ObjectId,
     ): Promise<404 | { data: PenaltySchemaType[keyof PenaltySchemaType] }> {
-        const borrow = await this.penaltyService.getEntry(_id);
-        if (!borrow) {
-            return HttpStatus.NOT_FOUND;
+        if (!_id) {
+            throw new BadRequestException('missing id!')
+        }
+        const penalty = await this.penaltyService.getEntry(_id);
+        if (!penalty) {
+            throw new NotFoundException()
+        }
+        if (penalty[data] === undefined) {
+            throw new BadRequestException()
         }
         return {
-            data: borrow[data],
+            data: penalty[data],
         };
     }
 
@@ -70,7 +78,7 @@ export class PenaltyController {
     async getEntry(@Query('id') id: ObjectId): P<PenaltySchemaType | 404> {
         const entry = await this.penaltyService.getEntry(id);
         if (!entry) {
-            return HttpStatus.NOT_FOUND;
+            throw new NotFoundException()
         }
         return entry;
     }

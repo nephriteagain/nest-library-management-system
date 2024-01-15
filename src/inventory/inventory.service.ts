@@ -1,8 +1,8 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { ObjectId } from 'mongoose';
-import InventorySchema from 'src/db/schemas/inventory.schema';
-import { InventoryArgs, InventorySchemaType, Query } from 'src/types/models';
-import { queryLengthChecker } from 'src/utils';
+import InventorySchema from '../db/schemas/inventory.schema';
+import { InventoryArgs, InventorySchemaType, Query } from '../types/models';
+import { queryLengthChecker } from '../utils';
 
 @Injectable()
 export class InventoryService {

@@ -1,5 +1,5 @@
 import { SchemaTypes, model, Schema } from 'mongoose';
-import { MemberSchemaType } from 'src/types/models';
+import { MemberSchemaType } from '../../types/models';
 
 const MemberSchema = new Schema<MemberSchemaType>({
     name: {
