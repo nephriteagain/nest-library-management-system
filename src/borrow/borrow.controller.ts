@@ -54,26 +54,22 @@ export class BorrowController {
     }
 
     @Get(':id')
-    @UsePipes(new ZodValidationPipe(zodOIDValidator))
     async getBorrowItem(
-        @Param('id') id: ObjectId,
+        @Param('id', new ZodValidationPipe(zodOIDValidator)) id: ObjectId,
         @Res() res: Response,
-    ): Promise<Response<BorrowSchemaType | 404>> {
+    ): Promise<Response<BorrowSchemaType>> {
         const borrowItem = await this.borrowService.getBorrowData(id);
-        if (borrowItem) {
-            return res.send(borrowItem);
+        if (!borrowItem) {
+            throw new NotFoundException();
         }
-        return res.sendStatus(HttpStatus.NOT_FOUND);
+        return res.send(borrowItem);
     }
 
     @Get('find/:data')
     async getData(
         @Param('data') data: keyof BorrowSchemaType,
         @Query('_id', new ZodValidationPipe(zodOIDValidator)) _id: ObjectId,
-    ): Promise<404 | { data: BorrowSchemaType[keyof BorrowSchemaType] }> {
-        if (!_id) {
-            throw new BadRequestException('missing id!');
-        }
+    ): Promise<{ data: BorrowSchemaType[keyof BorrowSchemaType] }> {
         const borrow = await this.borrowService.getBorrowData(_id);
         if (!borrow) {
             throw new NotFoundException();

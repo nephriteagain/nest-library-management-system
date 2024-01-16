@@ -117,6 +117,14 @@ describe('Penalty Controller, (e2e)', () => {
                 .set('Cookie', cookie)
                 .expect(400);
         });
+        it('return a 400 when querying with using multiple props', () => {
+            return req(app.getHttpServer())
+                .get(
+                    `/api/penalty?borrower=${generateObjectId()}&bookId=${generateObjectId()}`,
+                )
+                .set('Cookie', cookie)
+                .expect(400);
+        });
     });
 
     describe('/ POST', () => {

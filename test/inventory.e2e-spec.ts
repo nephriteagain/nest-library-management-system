@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { ClientSession, startSession } from 'mongoose';
 import req from 'supertest';
-import cookieParser = require('cookie-parser');
+import cookieParser from 'cookie-parser';
 import { AuthGuard } from '../src/auth/auth.guard';
 import { JwtService, JwtModule } from '@nestjs/jwt';
 import { AuthModule } from '../src/auth/auth.module';
