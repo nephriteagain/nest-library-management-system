@@ -8,12 +8,12 @@ import bookSchema from '../db/schemas/book.schema';
 
 @Module({
     providers: [
-        AuthService, 
+        AuthService,
         InventoryService,
         {
             provide: BooksService,
-            useValue: new BooksService(bookSchema),            
-        }
+            useValue: new BooksService(bookSchema),
+        },
     ],
     controllers: [BooksController],
     imports: [UsersModule],

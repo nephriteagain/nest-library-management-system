@@ -67,7 +67,7 @@ export class MembersController {
     ): Promise<Response<MemberSchemaType>> {
         const member = await this.membersService.getMember(id);
         if (!member) {
-            throw new NotFoundException()
+            throw new NotFoundException();
         }
         return res.send(member);
     }
@@ -78,14 +78,14 @@ export class MembersController {
         @Query('_id', new ZodValidationPipe(zodOIDValidator)) _id: ObjectId,
     ): Promise<{ data: MemberSchemaType[keyof MemberSchemaType] }> {
         if (!_id) {
-            throw new BadRequestException('missing id!')
+            throw new BadRequestException('missing id!');
         }
         const member = await this.membersService.getMember(_id);
         if (!member) {
-            throw new NotFoundException()
+            throw new NotFoundException();
         }
         if (member[data] === undefined) {
-            throw new BadRequestException()
+            throw new BadRequestException();
         }
         return {
             data: member[data],
@@ -94,9 +94,12 @@ export class MembersController {
 
     @Delete(':id')
     @UsePipes(new ZodValidationPipe(zodOIDValidator))
-    async removeMember(@Param('id') id: ObjectId, @Res() res: Response): Promise<Response<200>> {
+    async removeMember(
+        @Param('id') id: ObjectId,
+        @Res() res: Response,
+    ): Promise<Response<200>> {
         await this.membersService.removeMember(id);
-        return res.sendStatus(200)
+        return res.sendStatus(200);
     }
 
     @Post('')
@@ -107,11 +110,11 @@ export class MembersController {
     ): Promise<Response<MemberSchemaType>> {
         const accessToken = this.authService.extractTokenFromHeader(req);
         if (!accessToken) {
-            throw new UnauthorizedException('missing jwt token')
+            throw new UnauthorizedException('missing jwt token');
         }
         const { sub: approvedBy } = this.authService.getTokenData(accessToken);
         if (!approvedBy) {
-            throw new UnauthorizedException('invalid jwt token')
+            throw new UnauthorizedException('invalid jwt token');
         }
         const newMember = await this.membersService.addMember(body, approvedBy);
         return res.send(newMember);

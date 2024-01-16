@@ -1,4 +1,9 @@
-import { Injectable, HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
+import {
+    Injectable,
+    HttpException,
+    HttpStatus,
+    NotFoundException,
+} from '@nestjs/common';
 import { ObjectId } from 'mongoose';
 import InventorySchema from '../db/schemas/inventory.schema';
 import { InventoryArgs, InventorySchemaType, Query } from '../types/models';
@@ -54,7 +59,7 @@ export class InventoryService {
             { new: true },
         );
         if (!updatedEntry) {
-            throw new NotFoundException('inventory item not found')
+            throw new NotFoundException('inventory item not found');
         }
         return updatedEntry;
     }

@@ -106,7 +106,9 @@ export class BooksService {
         }
 
         if (isValidObjectId(text)) {
-            const books = await this.BookModel.find({ _id: text }).limit(1).exec();
+            const books = await this.BookModel.find({ _id: text })
+                .limit(1)
+                .exec();
             return booksMapper(books);
         }
 

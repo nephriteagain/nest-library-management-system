@@ -62,14 +62,14 @@ export class InventoryController {
         @Query('_id', new ZodValidationPipe(zodOIDValidator)) _id: ObjectId,
     ): Promise<404 | { data: InventorySchemaType[keyof InventorySchemaType] }> {
         if (!_id) {
-            throw new BadRequestException('missing id!')
+            throw new BadRequestException('missing id!');
         }
         const inventoryItem = await this.inventoryService.getInventoryItem(_id);
         if (!inventoryItem) {
-            throw new NotFoundException()
+            throw new NotFoundException();
         }
         if (inventoryItem[data] === undefined) {
-            throw new BadRequestException()
+            throw new BadRequestException();
         }
         return {
             data: inventoryItem[data],
@@ -83,7 +83,6 @@ export class InventoryController {
         changes: Partial<InventoryArgs>,
         @Res() res: Response,
     ): Promise<Response<InventorySchemaType>> {
-
         const updatedEntry = await this.inventoryService.updateInventoryItem(
             id,
             changes,

@@ -40,6 +40,6 @@ export const envConstants = {
     regexRoutes,
     user: {
         email: process.env.EMAIL,
-        password: process.env.PASSWORD
-    }
+        password: process.env.PASSWORD,
+    },
 } as const;

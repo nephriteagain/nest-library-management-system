@@ -10,7 +10,7 @@ import {
     UsePipes,
     Param,
     NotFoundException,
-    BadRequestException
+    BadRequestException,
 } from '@nestjs/common';
 import { ReturnService } from './return.service';
 import { AuthService } from '../auth/auth.service';
@@ -59,7 +59,7 @@ export class ReturnController {
     ): Promise<ReturnSchemaType | 404> {
         const returnItem = await this.returnService.getReturnItem(id);
         if (!returnItem) {
-            throw new NotFoundException()
+            throw new NotFoundException();
         }
         return returnItem;
     }
@@ -70,14 +70,14 @@ export class ReturnController {
         @Query('_id', new ZodValidationPipe(zodOIDValidator)) _id: ObjectId,
     ): Promise<404 | { data: ReturnSchemaType[keyof ReturnSchemaType] }> {
         if (!_id) {
-            throw new BadRequestException('missing id!')
+            throw new BadRequestException('missing id!');
         }
         const returnItem = await this.returnService.getReturnItem(_id);
         if (!returnItem) {
-            throw new NotFoundException()
+            throw new NotFoundException();
         }
         if (returnItem[data] === undefined) {
-            throw new BadRequestException()
+            throw new BadRequestException();
         }
         return {
             data: returnItem[data],

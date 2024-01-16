@@ -59,14 +59,14 @@ export class PenaltyController {
         @Query('_id', new ZodValidationPipe(zodOIDValidator)) _id: ObjectId,
     ): Promise<404 | { data: PenaltySchemaType[keyof PenaltySchemaType] }> {
         if (!_id) {
-            throw new BadRequestException('missing id!')
+            throw new BadRequestException('missing id!');
         }
         const penalty = await this.penaltyService.getEntry(_id);
         if (!penalty) {
-            throw new NotFoundException()
+            throw new NotFoundException();
         }
         if (penalty[data] === undefined) {
-            throw new BadRequestException()
+            throw new BadRequestException();
         }
         return {
             data: penalty[data],
@@ -76,11 +76,11 @@ export class PenaltyController {
     // i am using Query here because for some reason Param doesnt work!
     @Get('query')
     async getEntry(
-        @Query('id', new ZodValidationPipe(zodOIDValidator)) id: ObjectId
+        @Query('id', new ZodValidationPipe(zodOIDValidator)) id: ObjectId,
     ): P<PenaltySchemaType> {
         const entry = await this.penaltyService.getEntry(id);
         if (!entry) {
-            throw new NotFoundException()
+            throw new NotFoundException();
         }
         return entry;
     }
@@ -100,7 +100,7 @@ export class PenaltyController {
     ): P<Response<PenaltySchemaType | 401>> {
         const accessToken = this.authService.extractTokenFromHeader(req);
         if (!accessToken) {
-            throw new UnauthorizedException()
+            throw new UnauthorizedException();
         }
         const { sub: approvedBy } = this.authService.getTokenData(accessToken);
         const newEntry = await this.penaltyService.addEntry(

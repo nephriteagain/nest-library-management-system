@@ -23,10 +23,10 @@ export class AuthGuard implements CanActivate {
 
         // NOTE: this is safe because there is a password required in the request body
         if (
-            request.path === '/api/auth/register' || 
-            request.path === ('api/auth/login')
+            request.path === '/api/auth/register' ||
+            request.path === 'api/auth/login'
         ) {
-            console.log(request.path, 'is allowed')
+            console.log(request.path, 'is allowed');
             return true;
         }
 
@@ -46,7 +46,7 @@ export class AuthGuard implements CanActivate {
 
         const jwt = request.cookies.jwt;
         if (!jwt) {
-            throw new UnauthorizedException('now jwt found!')
+            throw new UnauthorizedException('now jwt found!');
         }
         try {
             const payload = await this.jwtService.verifyAsync(jwt, {
@@ -57,7 +57,7 @@ export class AuthGuard implements CanActivate {
             // request['user'] = payload;
         } catch {
             console.error('invalid jwt');
-            throw new UnauthorizedException('invalid jwt')
+            throw new UnauthorizedException('invalid jwt');
         }
         return true;
     }

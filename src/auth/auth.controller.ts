@@ -40,19 +40,21 @@ export class AuthController {
         @Query('_id', new ZodValidationPipe(zodOIDValidator)) _id: ObjectId,
     ): Promise<404 | { data: EmployeeSchemaType[keyof EmployeeSchemaType] }> {
         if (!_id) {
-            throw new BadRequestException('missing id!')
+            throw new BadRequestException('missing id!');
         }
 
         if (data === 'password') {
-            throw new UnauthorizedException('cannot send password field to the client!')
+            throw new UnauthorizedException(
+                'cannot send password field to the client!',
+            );
         }
 
         const auth = await this.userService.getUser(_id);
         if (!auth) {
-            throw new NotFoundException()
+            throw new NotFoundException();
         }
         if (auth[data] === undefined) {
-            throw new BadRequestException()
+            throw new BadRequestException();
         }
 
         return {
@@ -66,7 +68,7 @@ export class AuthController {
     ): Promise<any> {
         const newEmployee = await this.authService.newEmployee(user, secret);
         if (!newEmployee) {
-            throw new BadRequestException()
+            throw new BadRequestException();
         }
         return newEmployee;
     }

@@ -72,14 +72,14 @@ export class BorrowController {
         @Query('_id', new ZodValidationPipe(zodOIDValidator)) _id: ObjectId,
     ): Promise<404 | { data: BorrowSchemaType[keyof BorrowSchemaType] }> {
         if (!_id) {
-            throw new BadRequestException('missing id!')
+            throw new BadRequestException('missing id!');
         }
         const borrow = await this.borrowService.getBorrowData(_id);
         if (!borrow) {
-            throw new NotFoundException()
+            throw new NotFoundException();
         }
         if (borrow[data] === undefined) {
-            throw new BadRequestException()
+            throw new BadRequestException();
         }
         return {
             data: borrow[data],

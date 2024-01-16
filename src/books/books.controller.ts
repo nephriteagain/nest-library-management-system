@@ -68,14 +68,14 @@ export class BooksController {
         @Query('_id', new ZodValidationPipe(zodOIDValidator)) _id: ObjectId,
     ): Promise<404 | { data: BookSchemaType[keyof BookSchemaType] }> {
         if (!_id) {
-            throw new BadRequestException('missing id!')
+            throw new BadRequestException('missing id!');
         }
         const book = await this.bookService.getBook(_id);
         if (!book) {
-            throw new NotFoundException()
+            throw new NotFoundException();
         }
         if (book[data] === undefined) {
-            throw new BadRequestException()
+            throw new BadRequestException();
         }
         return {
             data: book[data],
@@ -100,7 +100,7 @@ export class BooksController {
     async addBook(@Body() book: BookArgs): Promise<BookSchemaType | 500> {
         const newBook = await this.bookService.add(book);
         if (!newBook) {
-            throw new InternalServerErrorException()
+            throw new InternalServerErrorException();
         }
         return newBook;
     }

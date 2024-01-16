@@ -12,8 +12,8 @@ export function queryLengthChecker(query: Record<string, any>): void {
     for (const v of Object.values(query)) {
         if (v !== undefined) queryLength++;
     }
-    if (queryLength > 1) {        
-        throw new BadRequestException('only one query param allowed!')
+    if (queryLength > 1) {
+        throw new BadRequestException('only one query param allowed!');
     }
 }
 
