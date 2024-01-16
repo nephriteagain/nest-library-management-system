@@ -96,7 +96,7 @@ export class BorrowController {
         const { sub: aprrovedBy } = this.authService.getTokenData(accessToken);
         const borrow = await this.borrowService.add(body, aprrovedBy);
         if (!borrow) {
-            throw new BadRequestException()
+            throw new BadRequestException();
         }
         return res.send(borrow);
     }

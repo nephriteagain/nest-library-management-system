@@ -10,7 +10,9 @@ import { cookie, generateObjectId } from './test.helpers';
 import { DatabaseModule } from '../src/db/database.module';
 import { BorrowModule } from '../src/borrow/borrow.module';
 import { UsersModule } from '../src/users/users.module';
+import { BooksModule } from '../src/books/books.module';
 import { faker } from '@faker-js/faker';
+import { InventoryModule } from '../src/inventory/inventory.module';
 
 describe('Borrow Controller (e2e)', () => {
     let app: INestApplication;
@@ -24,6 +26,8 @@ describe('Borrow Controller (e2e)', () => {
                 DatabaseModule,
                 BorrowModule,
                 UsersModule,
+                BooksModule,
+                InventoryModule
             ],
         }).compile();
 
@@ -248,5 +252,21 @@ describe('Borrow Controller (e2e)', () => {
                 })
                 .expect(400);
         });
-    });
+
+        it('returns 404, when borrowing a book that DNE', () => {
+            return req(app.getHttpServer())
+                .post('/api/borrow')
+                .set('Cookie', cookie)
+                .send({
+                    bookId: generateObjectId(),
+                    borrower: '659e957b4aab92a55e47934b',
+                    promisedReturnDate: faker.date.future().getTime(),
+                })
+                .expect(404);
+        });
+
+
+});
+
+
 });
