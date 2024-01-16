@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { BorrowArgs, BorrowSchemaType, Query } from '../types/models';
 import BorrowSchema from '../db/schemas/borrow.schema';
 import InventorySchema from '../db/schemas/inventory.schema';
@@ -10,23 +10,24 @@ export class BorrowService {
     async add(
         newBorrowData: BorrowArgs,
         employeeId: ObjectId,
-    ): Promise<boolean> {
+    ): Promise<BorrowSchemaType> {
         let session = null;
         try {
             const borrowSession = await startSession();
             session = borrowSession;
             borrowSession.startTransaction();
             const book = await InventorySchema.findById(newBorrowData.bookId);
+            if (!book) {
+                throw new HttpException('missing book', HttpStatus.NOT_FOUND);
+            }
             if (book && book.available < 1) {
                 throw new HttpException(
                     'no more available books!',
                     HttpStatus.BAD_REQUEST,
                 );
             }
-            if (!book) {
-                throw new HttpException('missing book', HttpStatus.BAD_REQUEST);
-            }
-            await BorrowSchema.create({
+           
+            const borrow = await BorrowSchema.create({
                 ...newBorrowData,
                 title: book.title,
                 approvedBy: employeeId,
@@ -38,21 +39,20 @@ export class BorrowService {
                 },
             });
             await borrowSession.commitTransaction();
+            console.log('borrow transaction complete!');
+            return borrow
         } catch (error) {
             console.error('transaction failed', error);
             if (session) {
                 session.abortTransaction();
                 session.endSession();
-                return false;
+                throw new BadRequestException()
             }
         }
-
-        if (session) {
-            session.endSession();
-        }
-        console.log('borrow transaction complete!');
-        return true;
+        throw new BadRequestException()
     }
+
+
     async getBorrowData(id: ObjectId): Promise<BorrowSchemaType | null> {
         return await BorrowSchema.findById(id);
     }

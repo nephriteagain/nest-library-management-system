@@ -53,10 +53,9 @@ export class ReturnController {
     }
 
     @Get('query')
-    @UsePipes(new ZodValidationPipe(zodOIDValidator))
     async getReturnItem(
-        @Query('id') id: ObjectId,
-    ): Promise<ReturnSchemaType | 404> {
+        @Query('id', new ZodValidationPipe(zodOIDValidator)) id: ObjectId,
+    ): Promise<ReturnSchemaType> {
         const returnItem = await this.returnService.getReturnItem(id);
         if (!returnItem) {
             throw new NotFoundException();

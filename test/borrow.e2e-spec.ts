@@ -6,7 +6,6 @@ import cookieParser from 'cookie-parser';
 import { AuthGuard } from '../src/auth/auth.guard';
 import { JwtService, JwtModule } from '@nestjs/jwt';
 import { AuthModule } from '../src/auth/auth.module';
-import { InventoryModule } from '../src/inventory/inventory.module';
 import { cookie, generateObjectId } from './test.helpers';
 import { DatabaseModule } from '../src/db/database.module';
 import { BorrowModule } from '../src/borrow/borrow.module';

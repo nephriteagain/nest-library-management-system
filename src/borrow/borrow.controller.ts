@@ -14,7 +14,7 @@ import {
     BadRequestException,
 } from '@nestjs/common';
 import { BorrowService } from './borrow.service';
-import { ObjectId } from 'mongoose';
+import { ObjectId, PreMiddlewareFunction } from 'mongoose';
 import {
     BorrowArgs,
     BorrowSchemaType,
@@ -88,16 +88,16 @@ export class BorrowController {
         @Body(new ZodValidationPipe(BorrowArgsSchema)) body: BorrowArgs,
         @Req() req: Request,
         @Res() res: Response,
-    ): Promise<Response<404 | 201>> {
+    ): Promise<Response<BorrowSchemaType>> {
         const accessToken = this.authService.extractTokenFromHeader(req);
         if (!accessToken) {
             return res.sendStatus(HttpStatus.UNAUTHORIZED);
         }
         const { sub: aprrovedBy } = this.authService.getTokenData(accessToken);
-        const borrowStatus = await this.borrowService.add(body, aprrovedBy);
-        if (!borrowStatus) {
-            return res.sendStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+        const borrow = await this.borrowService.add(body, aprrovedBy);
+        if (!borrow) {
+            throw new BadRequestException()
         }
-        return res.sendStatus(HttpStatus.CREATED);
+        return res.send(borrow);
     }
 }
