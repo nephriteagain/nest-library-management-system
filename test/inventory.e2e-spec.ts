@@ -10,7 +10,7 @@ import { InventoryModule } from "../src/inventory/inventory.module";
 import { cookie , generateObjectId } from "./test.helpers";
 import { DatabaseModule } from "../src/db/database.module";
 
-describe('InvetoryController (e2e)', () => {
+describe('InventoryController (e2e)', () => {
     let app : INestApplication;
     let session : ClientSession;
 

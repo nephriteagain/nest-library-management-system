@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, BadRequestException } from '@nestjs/common';
 import PenaltySchema from '../db/schemas/penalty.schema';
 import { P, PenaltyArgs, PenaltySchemaType, Query } from '../types/models';
 import { ObjectId, isValidObjectId } from 'mongoose';
@@ -20,7 +20,7 @@ export class PenaltyService {
 
     async getEntry(id: ObjectId): P<PenaltySchemaType | null> {
         if (!isValidObjectId(id)) {
-            throw new HttpException('invalid id', HttpStatus.BAD_REQUEST);
+            throw new BadRequestException('invalid id')
         }
         const doc = await PenaltySchema.findById(id);
         return doc;

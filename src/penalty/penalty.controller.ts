@@ -11,6 +11,7 @@ import {
     UsePipes,
     NotFoundException,
     BadRequestException,
+    UnauthorizedException,
 } from '@nestjs/common';
 import { PenaltyService } from './penalty.service';
 import {
@@ -74,8 +75,9 @@ export class PenaltyController {
 
     // i am using Query here because for some reason Param doesnt work!
     @Get('query')
-    @UsePipes(new ZodValidationPipe(zodOIDValidator))
-    async getEntry(@Query('id') id: ObjectId): P<PenaltySchemaType | 404> {
+    async getEntry(
+        @Query('id', new ZodValidationPipe(zodOIDValidator)) id: ObjectId
+    ): P<PenaltySchemaType> {
         const entry = await this.penaltyService.getEntry(id);
         if (!entry) {
             throw new NotFoundException()
@@ -98,7 +100,7 @@ export class PenaltyController {
     ): P<Response<PenaltySchemaType | 401>> {
         const accessToken = this.authService.extractTokenFromHeader(req);
         if (!accessToken) {
-            return res.sendStatus(HttpStatus.UNAUTHORIZED);
+            throw new UnauthorizedException()
         }
         const { sub: approvedBy } = this.authService.getTokenData(accessToken);
         const newEntry = await this.penaltyService.addEntry(

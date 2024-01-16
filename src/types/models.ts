@@ -135,13 +135,13 @@ export const PenaltyArgsSchema = z
         bookId: zodOIDValidator,
         borrower: zodOIDValidator,
         penalty: nonNegativeIntNumber,
+        title: z.string()
     })
     .required();
 export type PenaltyArgs = z.infer<typeof PenaltyArgsSchema>;
 
 export interface PenaltySchemaType extends PenaltyArgs, Id {
     approvedBy: ObjectId;
-    title: string;
 }
 
 /**
