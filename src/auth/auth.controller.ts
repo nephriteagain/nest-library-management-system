@@ -66,7 +66,6 @@ export class AuthController {
     ): Promise<any> {
         const newEmployee = await this.authService.newEmployee(user, secret);
         if (!newEmployee) {
-            console.log(newEmployee);
             throw new BadRequestException()
         }
         return newEmployee;

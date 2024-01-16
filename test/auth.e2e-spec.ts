@@ -1,6 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { INestApplication } from "@nestjs/common"
-import request from 'supertest'
+import req from 'supertest'
 import { ClientSession, startSession } from "mongoose";
 import { AuthModule } from "../src/auth/auth.module";
 import { UsersModule } from "../src/users/users.module";
@@ -12,7 +12,6 @@ import { sampleEmployee, cookie } from "./test.helpers";
 import { faker } from "@faker-js/faker";
 
 
-const req = request;
 
 describe('AuthController (e2e)', () => {
     let app : INestApplication;

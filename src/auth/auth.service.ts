@@ -29,8 +29,7 @@ export class AuthService {
     // TODO: make a transaction that will auto add employee as a member
     async newEmployee(user: EmployeeArgs, secret: string) {
         if (secret !== envConstants.secret) {
-            console.log('secret incorrect');
-            throw new HttpException('unauthorzed', HttpStatus.UNAUTHORIZED);
+            throw new HttpException('secret incorrect', HttpStatus.UNAUTHORIZED);
         }
         EmployeeArgsSchema.parse(user);
         let session = null;
@@ -132,7 +131,7 @@ export class AuthService {
     }
 
     extractTokenFromHeader(request: Request): string | undefined {
-        return request.cookies.jwt;
+        return request.cookies?.jwt || undefined;
     }
 
     getTokenData(

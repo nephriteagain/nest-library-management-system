@@ -9,8 +9,7 @@ type Id = { _id: ObjectId };
 
 function objectIdValidator(value: unknown) {
     if (!isValidObjectId(value)) {
-        console.log('invalid ObjectId');
-        throw new Error('invalid id');
+        throw new Error('invalid id as ObjectId');
     }
     return true;
 }

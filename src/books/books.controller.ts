@@ -58,7 +58,6 @@ export class BooksController {
     async searchBooks(
         @Query('q') q: string,
     ): Promise<{ title: string; _id: ObjectId }[]> {
-        console.log('u hit this endpoint');
         const bookQuery = await this.bookService.search(q);
         return bookQuery;
     }

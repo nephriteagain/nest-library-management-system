@@ -46,8 +46,7 @@ export class AuthGuard implements CanActivate {
 
         const jwt = request.cookies.jwt;
         if (!jwt) {
-            console.error('no jwt found');
-            return false;
+            throw new UnauthorizedException('now jwt found!')
         }
         try {
             const payload = await this.jwtService.verifyAsync(jwt, {
@@ -59,8 +58,7 @@ export class AuthGuard implements CanActivate {
             // request['user'] = payload;
         } catch {
             console.error('invalid jwt');
-            response.sendStatus(HttpStatus.UNAUTHORIZED);
-            return false;
+            throw new UnauthorizedException('invalid jwt')
         }
         console.log('auth guard passed');
         return true;

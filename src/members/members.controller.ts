@@ -12,6 +12,7 @@ import {
     Query,
     NotFoundException,
     BadRequestException,
+    UnauthorizedException,
 } from '@nestjs/common';
 import { MembersService } from './members.service';
 import { ObjectId } from 'mongoose';
@@ -63,19 +64,19 @@ export class MembersController {
     async getMember(
         @Param('id') id: ObjectId,
         @Res() res: Response,
-    ): Promise<Response<MemberSchemaType | 404>> {
+    ): Promise<Response<MemberSchemaType>> {
         const member = await this.membersService.getMember(id);
-        if (member) {
-            return res.send(member);
+        if (!member) {
+            throw new NotFoundException()
         }
-        return res.sendStatus(HttpStatus.NOT_FOUND);
+        return res.send(member);
     }
 
     @Get('find/:data')
     async getData(
         @Param('data') data: keyof MemberSchemaType,
         @Query('_id', new ZodValidationPipe(zodOIDValidator)) _id: ObjectId,
-    ): Promise<404 | { data: MemberSchemaType[keyof MemberSchemaType] }> {
+    ): Promise<{ data: MemberSchemaType[keyof MemberSchemaType] }> {
         if (!_id) {
             throw new BadRequestException('missing id!')
         }
@@ -93,9 +94,9 @@ export class MembersController {
 
     @Delete(':id')
     @UsePipes(new ZodValidationPipe(zodOIDValidator))
-    async removeMember(@Param('id') id: ObjectId): Promise<Boolean> {
-        const removedStatus = await this.membersService.removeMember(id);
-        return removedStatus;
+    async removeMember(@Param('id') id: ObjectId, @Res() res: Response): Promise<Response<200>> {
+        await this.membersService.removeMember(id);
+        return res.sendStatus(200)
     }
 
     @Post('')
@@ -103,14 +104,14 @@ export class MembersController {
         @Body(new ZodValidationPipe(membersArgsSchema)) body: MemberArgs,
         @Req() req: Request,
         @Res() res: Response,
-    ): Promise<Response<MemberSchemaType | 401>> {
+    ): Promise<Response<MemberSchemaType>> {
         const accessToken = this.authService.extractTokenFromHeader(req);
         if (!accessToken) {
-            return res.sendStatus(HttpStatus.UNAUTHORIZED);
+            throw new UnauthorizedException('missing jwt token')
         }
         const { sub: approvedBy } = this.authService.getTokenData(accessToken);
         if (!approvedBy) {
-            return res.sendStatus(HttpStatus.UNAUTHORIZED);
+            throw new UnauthorizedException('invalid jwt token')
         }
         const newMember = await this.membersService.addMember(body, approvedBy);
         return res.send(newMember);

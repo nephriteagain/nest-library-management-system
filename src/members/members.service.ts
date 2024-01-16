@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import {
     MemberArgs,
     MemberSchemaType,
@@ -48,15 +48,25 @@ export class MembersService {
         return member;
     }
 
-    async removeMember(id: ObjectId): Promise<Boolean> {
-        const removedStatus = await MembersShema.findByIdAndDelete(id);
-        return Boolean(removedStatus);
+    async removeMember(id: ObjectId): Promise<void> {
+        try {
+            const d = await MembersShema.findByIdAndDelete(id);            
+            if (!d) {
+                throw new NotFoundException()
+            }
+        } catch (error) {
+            throw new NotFoundException()
+        }
     }
 
     async addMember(
         member: MemberArgs,
         approvedBy: ObjectId,
     ): Promise<MemberSchemaType> {
+        const existingUser = await MembersShema.findOne({email:member.email})
+        if (existingUser) {
+            throw new BadRequestException('user already exist!')
+        }        
         const newMember = await MembersShema.create({ ...member, approvedBy });
         return newMember;
     }
