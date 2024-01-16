@@ -7,8 +7,7 @@ import { UsersModule } from "../src/users/users.module";
 import { JwtModule } from "@nestjs/jwt";
 import { DatabaseModule } from "../src/db/database.module";
 import { envConstants } from "../src/auth/constants";
-import { generateObjectId } from '../src/utils.spec';
-import { sampleEmployee, cookie } from "./test.helpers";
+import { sampleEmployee, cookie, generateObjectId } from "./test.helpers";
 import { faker } from "@faker-js/faker";
 
 

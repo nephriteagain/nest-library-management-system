@@ -6,7 +6,7 @@ import { UsersModule } from '../src/users/users.module';
 import { AuthModule } from '../src/auth/auth.module';
 import { DatabaseModule } from '../src/db/database.module';
 import { ClientSession, startSession } from 'mongoose';
-import { generateObjectId } from '../src/utils.spec';
+import { generateObjectId } from './test.helpers';
 
 describe('BooksController (e2e)', () => {
     let app : INestApplication;

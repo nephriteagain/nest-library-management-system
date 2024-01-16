@@ -6,8 +6,7 @@ import { AuthModule } from "../src/auth/auth.module";
 import { UsersModule } from "../src/users/users.module";
 import { DatabaseModule } from "../src/db/database.module";
 import { envConstants } from "../src/auth/constants";
-import { generateObjectId } from '../src/utils.spec';
-import { sampleEmployee, cookie } from "./test.helpers";
+import { sampleEmployee, cookie, generateObjectId } from "./test.helpers";
 import { faker } from "@faker-js/faker";
 import { MembersModule } from "../src/members/members.module";
 import { z } from "zod";
@@ -16,7 +15,7 @@ import cookieParser = require("cookie-parser");
 import { AuthGuard } from "../src/auth/auth.guard";
 import { JwtModule, JwtService } from "@nestjs/jwt";
 
-describe('MembersController (e2e', () => {
+describe('MembersController (e2e)', () => {
     let app : INestApplication;
     let session : ClientSession
     beforeAll(async() => {
@@ -193,6 +192,13 @@ describe('MembersController (e2e', () => {
                 .set('Cookie', cookie)
                 .expect(200)
         })
+        it('returns a 401 response when missing jwt cookie', () => {
+            return req(app.getHttpServer())
+                // NOTE: this _id is hard coded
+                .get(`/api/members/65a10ec8dcabc3c0cfba96d7`)
+                .expect(401)
+        })
+
         it('returns 400 when document DNE', () => {
             return req(app.getHttpServer())
                 .get(`/api/members/${generateObjectId()}`)

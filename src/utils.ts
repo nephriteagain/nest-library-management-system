@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
 import { BookSchemaType, MemberSchemaType } from './types/models';
 import { ObjectId } from 'mongoose';
 
@@ -12,11 +12,8 @@ export function queryLengthChecker(query: Record<string, any>): void {
     for (const v of Object.values(query)) {
         if (v !== undefined) queryLength++;
     }
-    if (queryLength > 1) {
-        throw new HttpException(
-            'only one query param allowed!',
-            HttpStatus.BAD_REQUEST,
-        );
+    if (queryLength > 1) {        
+        throw new BadRequestException('only one query param allowed!')
     }
 }
 

@@ -45,7 +45,7 @@ export class InventoryController {
     async getInventoryItem(
         @Param('id') id: ObjectId,
         @Res() res: Response,
-    ): Promise<Response<InventorySchemaType | 400 | 404>> {
+    ): Promise<Response<InventorySchemaType>> {
         if (!isValidObjectId(id)) {
             return res.sendStatus(HttpStatus.BAD_REQUEST);
         }
@@ -82,10 +82,8 @@ export class InventoryController {
         @Body(new ZodValidationPipe(PartialInventoryArgsSchema))
         changes: Partial<InventoryArgs>,
         @Res() res: Response,
-    ): Promise<Response<InventorySchemaType | 400>> {
-        if (!isValidObjectId(id)) {
-            return res.sendStatus(HttpStatus.BAD_REQUEST);
-        }
+    ): Promise<Response<InventorySchemaType>> {
+
         const updatedEntry = await this.inventoryService.updateInventoryItem(
             id,
             changes,

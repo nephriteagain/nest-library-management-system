@@ -1,6 +1,6 @@
 import { queryLengthChecker, booksMapper, membersMapper } from "./utils";
 import { BookSchemaType, MemberSchemaType } from "./types/models";
-import { ObjectId, Types } from "mongoose";
+import { generateObjectId } from "test/test.helpers";
 import { faker } from '@faker-js/faker'
 
 
@@ -29,9 +29,7 @@ describe('queryLengthChecker', () => {
 
 })
 
-export function generateObjectId() {
-    return new Types.ObjectId().toHexString() as string & ObjectId;
-}
+
 
 
 describe('bookMapper', () => {

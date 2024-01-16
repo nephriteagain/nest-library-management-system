@@ -52,7 +52,6 @@ export class AuthGuard implements CanActivate {
             const payload = await this.jwtService.verifyAsync(jwt, {
                 secret: `${envConstants.secret}`,
             });
-            console.log('jwt accepted');
             // 💡 We're assigning the payload to the request object here
             // so that we can access it in our route handlers
             // request['user'] = payload;
@@ -60,7 +59,6 @@ export class AuthGuard implements CanActivate {
             console.error('invalid jwt');
             throw new UnauthorizedException('invalid jwt')
         }
-        console.log('auth guard passed');
         return true;
     }
 }
