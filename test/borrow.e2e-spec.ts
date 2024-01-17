@@ -27,7 +27,7 @@ describe('Borrow Controller (e2e)', () => {
                 BorrowModule,
                 UsersModule,
                 BooksModule,
-                InventoryModule
+                InventoryModule,
             ],
         }).compile();
 
@@ -264,9 +264,5 @@ describe('Borrow Controller (e2e)', () => {
                 })
                 .expect(404);
         });
-
-
-});
-
-
+    });
 });

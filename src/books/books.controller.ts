@@ -90,7 +90,7 @@ export class BooksController {
     ): Promise<Response<BookSchemaType | 404>> {
         const book = await this.bookService.getBook(id);
         if (!book) {
-            throw new NotFoundException()
+            throw new NotFoundException();
         }
         return res.send(book);
     }
@@ -113,10 +113,9 @@ export class BooksController {
     ): Promise<Response<200>> {
         const deleteStatus = await this.bookService.delete(id);
         if (!deleteStatus) {
-            throw new NotFoundException()
+            throw new NotFoundException();
         }
         return res.sendStatus(HttpStatus.OK);
-        
     }
 
     @Patch(':id')
@@ -128,7 +127,7 @@ export class BooksController {
     ): Promise<Response<BookSchemaType>> {
         const updatedBook = await this.bookService.update(id, update);
         if (!updatedBook) {
-            throw new NotFoundException()
+            throw new NotFoundException();
         }
         return res.send(updatedBook);
     }

@@ -4,19 +4,38 @@ import {
     EmployeeArgs,
     BaseDocument,
     EmployeeSchemaType,
+    P,
 } from '../types/models';
 import { genSaltSync, compareSync, hashSync } from 'bcrypt';
 import { ObjectId } from 'mongoose';
 
+interface IUsersService {
+    findUser: (email: string) => P<EmployeeSchemaType | null>;
+    getUser: (_id: ObjectId) => P<EmployeeSchemaType | null>;
+    createUser: (userData: EmployeeArgs) => P<{
+        email: string;
+        _id: ObjectId;
+        name: string;
+        age: number;
+        joinData: number;
+    }>;
+    loginUser: (password: string, hashedPassword: string) => P<boolean>;
+}
+
 @Injectable()
-export class UsersService {
+export class UsersService implements IUsersService {
+    employeeSchema: typeof EmployeeSchema;
+    constructor(employeeSchema: typeof EmployeeSchema) {
+        this.employeeSchema = employeeSchema;
+    }
+
     async findUser(email: string): Promise<EmployeeSchemaType | null> {
-        const user = await EmployeeSchema.findOne({ email });
+        const user = await this.employeeSchema.findOne({ email });
         return user;
     }
 
     async getUser(_id: ObjectId): Promise<EmployeeSchemaType | null> {
-        const user = await EmployeeSchema.findById(_id);
+        const user = await this.employeeSchema.findById(_id);
         return user;
     }
 
@@ -24,7 +43,7 @@ export class UsersService {
         const salt = genSaltSync();
         const hashedPassword = hashSync(userData.password, salt);
 
-        const newUser = await EmployeeSchema.create({
+        const newUser = await this.employeeSchema.create({
             ...userData,
             password: hashedPassword,
         });

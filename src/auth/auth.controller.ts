@@ -38,7 +38,7 @@ export class AuthController {
     async getData(
         @Param('data') data: keyof EmployeeSchemaType,
         @Query('_id', new ZodValidationPipe(zodOIDValidator)) _id: ObjectId,
-    ): Promise<404 | { data: EmployeeSchemaType[keyof EmployeeSchemaType] }> {
+    ): Promise<{ data: EmployeeSchemaType[keyof EmployeeSchemaType] }> {
         if (!_id) {
             throw new BadRequestException('missing id!');
         }

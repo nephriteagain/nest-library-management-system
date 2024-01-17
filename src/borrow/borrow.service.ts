@@ -16,7 +16,6 @@ export class BorrowService {
         newBorrowData: BorrowArgs,
         employeeId: ObjectId,
     ): Promise<BorrowSchemaType> {
-        
         const book = await InventorySchema.findById(newBorrowData.bookId);
         if (!book) {
             throw new HttpException('missing book', HttpStatus.NOT_FOUND);
@@ -24,16 +23,15 @@ export class BorrowService {
         if (book && book.available < 1) {
             throw new HttpException(
                 'no more available books!',
-                    HttpStatus.BAD_REQUEST,
-                    );
-                }
-                
+                HttpStatus.BAD_REQUEST,
+            );
+        }
+
         let session = null;
         try {
             const borrowSession = await startSession();
             session = borrowSession;
             borrowSession.startTransaction();
-            
 
             const borrow = await BorrowSchema.create({
                 ...newBorrowData,
