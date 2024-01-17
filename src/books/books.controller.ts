@@ -35,10 +35,10 @@ export class BooksController {
 
     @Get('')
     async getBooks(
-        @Query('title') title: string,
-        @Query('authors') authors: string,
+        @Query('title') title?: string,
+        @Query('authors') authors?: string,
         @Query('_id', new ZodValidationPipe(zodOIDValidatorOptional))
-        _id: ObjectId,
+        _id?: ObjectId,
         @Query('yearPublished', new ParseIntPipe({ optional: true }))
         yearPublished?: number,
     ): Promise<BookSchemaType[]> {
@@ -89,10 +89,10 @@ export class BooksController {
         @Res() res: Response,
     ): Promise<Response<BookSchemaType | 404>> {
         const book = await this.bookService.getBook(id);
-        if (book) {
-            return res.send(book);
+        if (!book) {
+            throw new NotFoundException()
         }
-        return res.sendStatus(HttpStatus.NOT_FOUND);
+        return res.send(book);
     }
 
     @Post('')
@@ -110,12 +110,13 @@ export class BooksController {
     async deleteBook(
         @Param('id') id: ObjectId,
         @Res() res: Response,
-    ): Promise<Response<200 | 404>> {
+    ): Promise<Response<200>> {
         const deleteStatus = await this.bookService.delete(id);
-        if (deleteStatus) {
-            return res.sendStatus(HttpStatus.OK);
+        if (!deleteStatus) {
+            throw new NotFoundException()
         }
-        return res.sendStatus(HttpStatus.NOT_FOUND);
+        return res.sendStatus(HttpStatus.OK);
+        
     }
 
     @Patch(':id')
@@ -124,11 +125,11 @@ export class BooksController {
         update: Partial<BookArgs>,
         @Param('id', new ZodValidationPipe(zodOIDValidator)) id: ObjectId,
         @Res() res: Response,
-    ): Promise<Response<BookSchemaType | 404>> {
+    ): Promise<Response<BookSchemaType>> {
         const updatedBook = await this.bookService.update(id, update);
-        if (updatedBook) {
-            return res.send(updatedBook);
+        if (!updatedBook) {
+            throw new NotFoundException()
         }
-        return res.sendStatus(HttpStatus.NOT_FOUND);
+        return res.send(updatedBook);
     }
 }

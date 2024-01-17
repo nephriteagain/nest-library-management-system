@@ -1,12 +1,21 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { BookArgs, BookSchemaType, Query } from '../types/models';
+import { BookArgs, BookSchemaType, P, Query } from '../types/models';
 import BookSchema from '../db/schemas/book.schema';
 import InventorySchema from '../db/schemas/inventory.schema';
 import { ObjectId, startSession, isValidObjectId } from 'mongoose';
 import { queryLengthChecker, booksMapper } from '../utils';
 
+export interface IBookService {
+    add: (book:BookArgs) => P<BookSchemaType|null>;
+    getBook: (id:ObjectId) => P<BookSchemaType|null>;
+    getBooks: (query: Query<BookSchemaType>) => P<BookSchemaType[]>;
+    delete: (id:ObjectId) => P<boolean>;
+    update: (id:ObjectId, update: Partial<BookArgs>) => P<BookSchemaType|null>;
+    search: (text:string) => P<{_id:ObjectId;title:string}[]>    
+}
+
 @Injectable()
-export class BooksService {
+export class BooksService implements IBookService {
     constructor(private readonly BookModel: typeof BookSchema) {}
 
     async add(book: BookArgs): Promise<BookSchemaType | null> {
