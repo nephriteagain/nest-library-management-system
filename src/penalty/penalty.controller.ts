@@ -57,7 +57,7 @@ export class PenaltyController {
     async getData(
         @Param('data') data: keyof PenaltySchemaType,
         @Query('_id', new ZodValidationPipe(zodOIDValidator)) _id: ObjectId,
-    ): Promise<404 | { data: PenaltySchemaType[keyof PenaltySchemaType] }> {
+    ): Promise<{ data: PenaltySchemaType[keyof PenaltySchemaType] }> {
         if (!_id) {
             throw new BadRequestException('missing id!');
         }
@@ -100,9 +100,12 @@ export class PenaltyController {
     ): P<Response<PenaltySchemaType | 401>> {
         const accessToken = this.authService.extractTokenFromHeader(req);
         if (!accessToken) {
-            throw new UnauthorizedException();
+            throw new UnauthorizedException('no access token');
         }
         const { sub: approvedBy } = this.authService.getTokenData(accessToken);
+        if (!approvedBy) {
+            throw new UnauthorizedException('invalid/expired acess token')
+        }
         const newEntry = await this.penaltyService.addEntry(
             penaltyEntry,
             approvedBy,

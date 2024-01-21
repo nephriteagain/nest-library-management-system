@@ -11,6 +11,7 @@ import {
     Param,
     NotFoundException,
     BadRequestException,
+    UnauthorizedException,
 } from '@nestjs/common';
 import { ReturnService } from './return.service';
 import { AuthService } from '../auth/auth.service';
@@ -35,13 +36,13 @@ export class ReturnController {
     @Get('')
     async getReturnList(
         @Query('_id', new ZodValidationPipe(zodOIDValidatorOptional))
-        _id: ObjectId,
+        _id?: ObjectId,
         @Query('bookId', new ZodValidationPipe(zodOIDValidatorOptional))
-        bookId: ObjectId,
+        bookId?: ObjectId,
         @Query('borrower', new ZodValidationPipe(zodOIDValidatorOptional))
-        borrower: ObjectId,
+        borrower?: ObjectId,
         @Query('approvedBy', new ZodValidationPipe(zodOIDValidatorOptional))
-        approvedBy: ObjectId,
+        approvedBy?: ObjectId,
     ): Promise<ReturnSchemaType[]> {
         const list = await this.returnService.getReturnList({
             _id,
@@ -67,7 +68,7 @@ export class ReturnController {
     async getData(
         @Param('data') data: keyof ReturnSchemaType,
         @Query('_id', new ZodValidationPipe(zodOIDValidator)) _id: ObjectId,
-    ): Promise<404 | { data: ReturnSchemaType[keyof ReturnSchemaType] }> {
+    ): Promise<{ data: ReturnSchemaType[keyof ReturnSchemaType] }> {
         if (!_id) {
             throw new BadRequestException('missing id!');
         }
@@ -88,15 +89,18 @@ export class ReturnController {
         @Param('id', new ZodValidationPipe(zodOIDValidator)) _id: ObjectId,
         @Req() req: Request,
         @Res() res: Response,
-    ): Promise<Response<401 | 201>> {
+    ): Promise<Response<201>> {
         const accessToken = this.authService.extractTokenFromHeader(req);
         if (!accessToken) {
-            return res.sendStatus(HttpStatus.UNAUTHORIZED);
+            throw new UnauthorizedException()
         }
         const { sub: approvedBy } = this.authService.getTokenData(accessToken);
+        if (!approvedBy) {
+            throw new UnauthorizedException()
+        }
         const status = await this.returnService.addEntry(_id, approvedBy);
-        if (!status) {
-            return res.sendStatus(HttpStatus.BAD_REQUEST);
+        if (!status) {            
+            throw new BadRequestException()
         }
         return res.sendStatus(HttpStatus.CREATED);
     }
